@@ -134,6 +134,8 @@ function Header() {
       return "Adicionar Enfermidade";
     } else if (path == "/measures") {
       return "Medidas";
+    } else if (path == "/profile-user") {
+      return "Perfil";
     }
   }
 
@@ -161,12 +163,12 @@ function Header() {
       ></div>
       <button
         onClick={() => navigate(-1)}
-        className={`xl:ml-40 ${location.pathname == "/profile-children" && !windowWidth ? "flex" : "hidden"}`}
+        className={`xl:ml-40 ${location.pathname == "/profile-children" || (location.pathname == "/profile-user" && !windowWidth) ? "flex" : "hidden"}`}
       >
         <img src={SetBackProfile} alt="" />
       </button>
       <div
-        className={`flex w-full h-9 rounded-2xl bg-lilas shadow-purple-sm px-2 ${(setTitleHeader(location.pathname) != "Home" && windowWidth) || location.pathname == "/profile-children" ? "hidden" : "block"}
+        className={`flex w-full h-9 rounded-2xl bg-lilas shadow-purple-sm px-2 ${(setTitleHeader(location.pathname) != "Home" && windowWidth) || location.pathname == "/profile-children" || location.pathname == "/profile-user" ? "hidden" : "block"}
         md:h-11
         xl:w-2/3`}
       >
