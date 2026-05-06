@@ -3,8 +3,6 @@ import { useEffect } from "react";
 import Date from "../../../utils/Date"
 
 import {
-    BarChart,
-    Bar,
     LineChart,
     Line,
     XAxis,

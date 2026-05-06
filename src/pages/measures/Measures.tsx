@@ -5,7 +5,6 @@ import BtnPrimary from "../../components/BtnPrimary"
 
 import type { DataChart } from "./components/Chart"
 import Chart from "./components/Chart"
-import ChildrenSelect from "../../layouts/ChildrenSelect"
 
 interface LabelDescription {
     label: string
