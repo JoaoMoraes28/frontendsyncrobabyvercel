@@ -12,7 +12,7 @@ import PerfilHeader from "../../layouts/Perfil";
 import cameraIcon from "../../assets/cameraIcon.svg";
 import logoutIcon from "../../assets/logoutIcon.svg";
 import bellIcon from "../../assets/notifications.svg";
-import backIcon from "../../assets/backIcon.svg";
+import backIcon from "../../assets/BackIcon.svg";
 
 import { inputClassName, labelClassName } from "../routines/RoutineFeeding";
 
