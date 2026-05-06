@@ -132,6 +132,8 @@ function Header() {
       return "Editar Profissional";
     } else if (path == "/add-illness") {
       return "Adicionar Enfermidade";
+    } else if (path == "/measures") {
+      return "Medidas";
     }
   }
 
