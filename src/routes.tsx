@@ -24,6 +24,7 @@ import { AddPediatrician } from "./pages/professional/pages/AddPediatrician";
 import { EditPediatrician } from "./pages/professional/pages/EditPediatrician";
 import { AddIllness } from "./pages/health/pages/AddIllness";
 import Measures from "./pages/measures/Measures";
+import { PerfilPage } from "./pages/perfil/PerfilPage";
 
 export function AppRoutes() {
   return (
@@ -34,6 +35,7 @@ export function AppRoutes() {
         <Route path="/register" element={<Register />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="*" element={<NotFound />} />
+        <Route path="/profile-user" element={<PerfilPage />} />
         <Route path="/profile-children" element={<ProfileChildren />} />
         <Route path="/" element={<MainLayout />}>
           <Route path="/home" element={<Home />} />

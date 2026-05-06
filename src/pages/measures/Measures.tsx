@@ -5,6 +5,7 @@ import BtnPrimary from "../../components/BtnPrimary"
 
 import type { DataChart } from "./components/Chart"
 import Chart from "./components/Chart"
+import ChildrenSelect from "../../layouts/ChildrenSelect"
 
 interface LabelDescription {
     label: string
@@ -55,6 +56,7 @@ const descriptionMeasure: LabelDescription[] = [
 ]
 
 function Measures() {
+    const [idChild, setIdChild] = useState<number>(1)
     const [filterSelected, setFilterSelected] = useState<string>("Perímetro cefálico")
     const [dataChart] = useState<DataChart[]>([
         {
@@ -139,17 +141,30 @@ function Measures() {
 
     return (
         <div className="flex flex-col w-full min-h-full">
-
+            <div className="xl:flex xl:w-full">
+                <ChildrenSelect idChild={idChild} setChild={setIdChild} />
+            </div>
             <div className="flex justify-between items-center w-full
-            xl:flex-col xl:items-start">
-                <DropdownFilter options={filterOptions} selectedFilter={filterSelected} onSelect={setFilterSelected} />
-                <div>
+            xl:flex-col xl:justify-evenly xl:items-start xl:h-1/3">
+                <div className="block xl:hidden">
+                    <DropdownFilter options={filterOptions} selectedFilter={filterSelected} onSelect={setFilterSelected} />
+                </div>
+                <ul className="hidden xl:flex xl:gap-6">
+                    {filterOptions.map((option) => (
+                        <li key={option.id} className={`xl:flex xl:justify-center xl:items-center xl:px-4 xl:font-nunito xl:rounded-xl xl:min-w-19 xl:h-8 xl:shadow-purple-sm ${filterSelected == option.label ? 'xl:bg-accent xl:text-white' : 'text-darker-purple'}`}>
+                            <span>{option.label}</span>
+                        </li>
+                    ))}
+                </ul>
+                <div className="xl:flex xl:justify-between xl:w-full">
                     <h3 className="hidden xl:block xl:font-poppins xl:text-primary-text xl:font-bold xl:text-2xl">Gráfico de Desenvolvimento</h3>
                     <BtnPrimary text="Atualizar dados" className="flex justify-between items-center bg-accent text-white h-8 shadow-purple-sm" />
                 </div>
             </div>
-            <section className="flex flex-col justify-evenly grow">
-                <section className="px-3 py-2 border border-primary shadow-purple-sm rounded-lg">
+            <section className="flex flex-col justify-evenly grow
+            xl:flex-row-reverse xl:h-2/3">
+                <section className="px-3 py-2 border border-primary shadow-purple-sm rounded-lg
+                xl:flex xl:flex-col-reverse">
                     <div>
                         <p className="font-nunito text-primary-text italic text-[13px]
                         md:text-[16px]">

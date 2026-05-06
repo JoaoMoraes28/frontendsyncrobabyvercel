@@ -45,7 +45,7 @@ const categoriesData = [
   { id: 2, title: "Estoque", icon: StorageIcon, path: "/storage" },
   { id: 3, title: "Rotinas", icon: RoutinesIcon, path: "/routines" },
   { id: 4, title: "Diário", icon: DiaryIcon, path: "/diary" },
-  { id: 5, title: "Medidas", icon: MeasurementsIcon, path: "/measurements" },
+  { id: 5, title: "Medidas", icon: MeasurementsIcon, path: "/measures" },
   { id: 6, title: "Pediatra", icon: PediatricianIcon, path: "/pediatrician" },
   { id: 7, title: "Saúde", icon: healthIcon, path: "/health" },
 ];
