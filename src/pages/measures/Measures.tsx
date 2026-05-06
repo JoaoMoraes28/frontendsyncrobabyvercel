@@ -141,7 +141,7 @@ function Measures() {
         <div className="flex flex-col w-full min-h-full">
 
             <div className="flex justify-between items-center w-full
-            xl:flex-col xl:items-start xl:bg-amber-200">
+            xl:flex-col xl:items-start">
                 <DropdownFilter options={filterOptions} selectedFilter={filterSelected} onSelect={setFilterSelected} />
                 <div>
                     <h3 className="hidden xl:block xl:font-poppins xl:text-primary-text xl:font-bold xl:text-2xl">Gráfico de Desenvolvimento</h3>
