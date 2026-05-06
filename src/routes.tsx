@@ -23,6 +23,7 @@ import ArticleContent from "./pages/articles/Article";
 import { AddPediatrician } from "./pages/professional/pages/AddPediatrician";
 import { EditPediatrician } from "./pages/professional/pages/EditPediatrician";
 import { AddIllness } from "./pages/health/pages/AddIllness";
+import Measures from "./pages/measures/Measures";
 
 export function AppRoutes() {
   return (
@@ -51,6 +52,7 @@ export function AppRoutes() {
           <Route path="/add-pediatrician" element={<AddPediatrician />} />
           <Route path="/edit-pediatrician" element={<EditPediatrician />} />
           <Route path="/add-illness" element={<AddIllness />} />
+          <Route path="/measures" element={<Measures />} />
         </Route>
       </Routes>
     </BrowserRouter>
