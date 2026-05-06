@@ -78,8 +78,8 @@ export const listIcons: IconsNavigation[] = [
   {
     id: 7,
     icon: statisticsIcon,
-    title: "Estatísticas",
-    path: "/statistic",
+    title: "Medidas",
+    path: "/measures",
   },
   {
     id: 8,
