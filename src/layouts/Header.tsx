@@ -136,6 +136,8 @@ function Header() {
       return "Medidas";
     } else if (path == "/profile-user") {
       return "Perfil";
+    } else if (path == "/add-child") {
+      return "Adicionar Filho(a)";
     }
   }
 
