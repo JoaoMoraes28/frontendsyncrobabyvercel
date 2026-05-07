@@ -12,4 +12,12 @@ export default defineConfig({
     babel({ presets: [reactCompilerPreset()] }),
     svgr(),
   ],
+  server: {
+    proxy: {
+      "/syncrobaby": {
+        target: "http://localhost:8080",
+        changeOrigin: true,
+      },
+    },
+  },
 });

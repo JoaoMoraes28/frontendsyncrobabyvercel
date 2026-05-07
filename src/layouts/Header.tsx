@@ -165,7 +165,7 @@ function Header() {
       ></div>
       <button
         onClick={() => navigate(-1)}
-        className={`xl:ml-40 ${location.pathname == "/profile-children" || (location.pathname == "/profile-user" && !windowWidth) ? "flex" : "hidden"}`}
+        className={`xl:ml-40 ${(location.pathname == "/profile-children" && !windowWidth) || (location.pathname == "/profile-user" && !windowWidth) ? "flex" : "hidden"}`}
       >
         <img src={SetBackProfile} alt="" />
       </button>
@@ -195,7 +195,7 @@ function Header() {
             <img
               src={SetBack}
               alt="Icone para voltar a tela anterior."
-              className="w-6"
+              className="w-6 "
             />
           </button>
           <h2 className={`text-text-primary font-poppins font-bold text-2xl`}>
