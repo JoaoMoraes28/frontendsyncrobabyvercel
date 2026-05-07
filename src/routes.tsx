@@ -25,6 +25,7 @@ import { EditPediatrician } from "./pages/professional/pages/EditPediatrician";
 import { AddIllness } from "./pages/health/pages/AddIllness";
 import Measures from "./pages/measures/Measures";
 import { PerfilPage } from "./pages/perfil/PerfilPage";
+import { AddChildPage } from "./pages/profile_children/pages/AddChild";
 
 export function AppRoutes() {
   return (
@@ -37,6 +38,7 @@ export function AppRoutes() {
         <Route path="*" element={<NotFound />} />
         <Route path="/profile-user" element={<PerfilPage />} />
         <Route path="/profile-children" element={<ProfileChildren />} />
+        <Route path="/add-child" element={<AddChildPage />} />
         <Route path="/" element={<MainLayout />}>
           <Route path="/home" element={<Home />} />
           <Route path="/routines" element={<Routines />} />

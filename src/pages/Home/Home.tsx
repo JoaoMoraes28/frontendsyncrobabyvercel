@@ -229,7 +229,7 @@ export function Home() {
           {/* Cards Container */}
           <div className="w-full bg-lilas xl:bg-transparent shadow-purple-md xl:shadow-none flex flex-col xl:flex-row gap-3 xl:gap-8 px-6 md:px-8 xl:px-0 pt-3 md:pt-4 xl:pt-0 pb-8 md:pb-10 xl:pb-0 rounded-xl">
             <div className="w-full flex justify-between xl:hidden">
-              <Link to="/add-children">
+              <Link to="/add-child">
                 <img
                   src={plusIcon}
                   alt="Icone de adicionar filho"
@@ -246,7 +246,7 @@ export function Home() {
             </div>
 
             <Link
-            to="/profile-children"
+              to="/profile-children"
               className="w-full xl:w-[320px] bg-primary xl:bg-white xl:border xl:border-gray-200 xl:border-t-4 xl:border-t-primary py-1 md:py-4 xl:py-4 px-6 md:px-8 xl:px-6 rounded-xl shadow-purple-md xl:shadow-sm flex flex-col cursor-pointer hover:opacity-90 transition-all"
             >
               <div className="flex gap-4 md:gap-6 items-center w-full">
@@ -306,7 +306,7 @@ export function Home() {
             </Link>
 
             <Link
-              to="/add-children"
+              to="/add-child"
               className="hidden xl:flex w-full xl:w-50 border-2 border-dashed border-primary/40 bg-lilas/20 rounded-xl flex-col items-center justify-center gap-3 cursor-pointer hover:bg-lilas/40 transition-colors py-4"
             >
               <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm">
