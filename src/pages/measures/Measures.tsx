@@ -1,13 +1,14 @@
 import { useState } from "react"
 
 import { DropdownFilter, type FilterOption } from "../../components/DropDownFilter"
-import BtnPrimary from "../../components/BtnPrimary"
 
 import Alert from "../../assets/alertAccent.svg"
+import Plus from "../../assets/plusWhite.svg"
 
 import type { DataChart } from "./components/Chart"
 import Chart from "./components/Chart"
 import ChildrenSelect from "../../layouts/ChildrenSelect"
+import { Link } from "react-router-dom"
 
 interface LabelDescription {
     label: string
@@ -133,41 +134,48 @@ function Measures() {
             return 'bg-green-alert text-green-dark xl:bg-green-result-measures-desk'
 
         } else if (developmentResult.result == "Desenvolvimento em média com esperado para a idade") {
-            return 'bg-yellow-alert text-yellow-dark'
+            return 'bg-yellow-alert text-yellow-dark xl:bg-yellow-result-measures-desk'
 
         } else if (developmentResult.result == "Desenvolvimento abaixo do esperado para a idade") {
-            return 'bg-red-alert text-red-dark'
+            return 'bg-red-alert text-red-dark xl:bg-red-result-measures-desk'
 
         }
     }
 
     return (
-        <div className="flex flex-col w-full min-h-full">
+        <div className="flex flex-col w-full min-h-full gap-3
+        xl:gap-0">
             <div className="xl:flex xl:w-full">
                 <ChildrenSelect idChild={idChild} setChild={setIdChild} />
             </div>
             <div className="flex justify-between items-center w-full
-            xl:flex-col xl:justify-evenly xl:items-start xl:h-1/3">
+            xl:flex-col xl:justify-around xl:items-start xl:h-[23%]">
                 <div className="block xl:hidden">
                     <DropdownFilter options={filterOptions} selectedFilter={filterSelected} onSelect={setFilterSelected} />
                 </div>
                 <ul className="hidden xl:flex xl:gap-6">
                     {filterOptions.map((option) => (
-                        <li key={option.id} className={`xl:flex xl:justify-center xl:items-center xl:px-4 xl:font-nunito xl:rounded-xl xl:min-w-19 xl:h-8 xl:shadow-purple-sm ${filterSelected == option.label ? 'xl:bg-accent xl:text-white' : 'text-darker-purple'}`}>
-                            <span>{option.label}</span>
+                        <li key={option.id} className={`xl:flex xl:justify-center xl:items-center xl:font-nunito xl:rounded-2xl xl:min-w-19 xl:h-9 xl:shadow-purple-sm ${filterSelected == option.label ? 'xl:bg-accent xl:text-white' : 'text-darker-purple'}`}>
+                            <button onClick={() => setFilterSelected(option.label)} className="xl:w-full xl:h-full xl:px-4 xl:rounded-2xl">
+                                <span>{option.label}</span>
+                            </button>
                         </li>
                     ))}
                 </ul>
                 <div className="xl:flex xl:justify-between xl:w-full">
                     <h3 className="hidden xl:block xl:font-poppins xl:text-primary-text xl:font-bold xl:text-2xl">Gráfico de Desenvolvimento</h3>
-                    <BtnPrimary text="Atualizar dados" className="flex justify-between items-center bg-accent text-white h-8 shadow-purple-sm
-                    xl:w-[40%] xl:max-w-100 xl:h-13 xl:shadow-purple-md" />
+                    <Link to="/update-measures"
+                        className="flex justify-center items-center bg-accent text-white h-8 shadow-purple-sm rounded-xl px-3
+                        xl:relative xl:w-[40%] xl:max-w-100 xl:h-13 xl:shadow-purple-md">
+                        <img aria-hidden="true" src={Plus} alt="" className="hidden xl:block xl:absolute xl:left-4" />
+                        Atualizar dados
+                    </Link>
                 </div>
             </div>
             <section className="flex flex-col justify-evenly grow
-            xl:flex-row-reverse xl:h-2/3 xl:justify-between">
+            xl:flex-row-reverse xl:h-[77%] xl:justify-between">
                 <section className="px-3 py-2 border border-primary shadow-purple-sm rounded-lg
-                xl:flex xl:flex-col-reverse xl:justify-between xl:w-[40%] xl:border-0 xl:shadow-none">
+                xl:flex xl:flex-col-reverse xl:justify-between xl:w-[40%] xl:border-0 xl:shadow-none xl:px-0">
                     <div className="xl:flex xl:flex-col xl:shadow-purple-sm xl:rounded-xl xl:w-full xl:h-[45%] xl:px-3 xl:justify-evenly">
                         <div className="hidden xl:flex xl:gap-5 xl:px-2">
                             <img aria-hidden="true" src={Alert} alt="" className="xl:w-auto h-6" />
@@ -197,11 +205,17 @@ function Measures() {
                         md:text-[17px]
                         xl:hidden">Com base nos dados fornecidos seu bebê está com o:</span>
                         <div className="hidden xl:flex xl:w-full">
-                            <div className="xl:flex xl:justify-center xl:items-center xl:bg-green-measures/40 xl:w-10 xl:h-10 xl:rounded-full">
+                            <div className={`xl:flex xl:justify-center xl:items-center xl:w-10 xl:h-10 xl:rounded-full
+                                ${developmentResult.result == "Desenvolvimento dentro do esperado para a idade" ? 'xl:bg-green-measures/40'
+                                    : developmentResult.result == "Desenvolvimento em média com esperado para a idade" ? 'xl:bg-yellow-measures/40'
+                                        : 'xl:bg-red-measures/40'}`}>
                                 <span
-                                    className={`xl:w-6 xl:h-6 xl:rounded-full xl:flex xl:items-center xl:justify-center xl:text-white xl:bg-green-measures xl:border-2 xl:font-bold`}
+                                    className={`xl:w-6 xl:h-6 xl:rounded-full xl:flex xl:items-center xl:justify-center xl:text-white xl:border-2 xl:font-bold
+                                        ${developmentResult.result == "Desenvolvimento dentro do esperado para a idade" ? 'xl:bg-green-measures'
+                                            : developmentResult.result == "Desenvolvimento em média com esperado para a idade" ? 'xl:bg-yellow-measures'
+                                                : 'xl:bg-red-measures'}`}
                                 >
-                                    ✓
+                                    {developmentResult.result == "Desenvolvimento dentro do esperado para a idade" ? '✓' : '!'}
                                 </span>
                             </div>
                         </div>
@@ -214,7 +228,7 @@ function Measures() {
                 <h3 className="font-poppins text-primary-text font-bold text-xl
                 xl:hidden">Gráfico de desenvolvimento</h3>
                 <div className="w-full h-[55%] min-h-80
-                xl:w-[55%]">
+                xl:w-[55%] xl:h-full">
                     <Chart data={dataChart} />
                 </div>
             </section>

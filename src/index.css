@@ -43,7 +43,11 @@
   --color-green-alert: #8ddb68;
   --color-green-dark: #3e5534;
   --color-green-measures: #10b981;
+  --color-yellow-measures: #b9a510;
+  --color-red-measures: #b91048;
   --color-green-result-measures-desk: #c9eea9;
+  --color-yellow-result-measures-desk: #eee7a9;
+  --color-red-result-measures-desk: #eea9a9;
   --color-blue-info: #68cadb;
 
   --font-nunito: "Nunito", sans-serif;
@@ -132,6 +136,10 @@
   .return-set {
     animation: returnSetSelector 0.4s ease-out forwards;
   }
+}
+
+.recharts-responsive-container :focus {
+  outline: none;
 }
 
 /* div:has(> input:focus)::before {
