@@ -27,6 +27,7 @@ import Measures from "./pages/measures/Measures";
 import { PerfilPage } from "./pages/perfil/PerfilPage";
 import { AddChildPage } from "./pages/profile_children/pages/AddChild";
 import UpdateMeasures from "./pages/measures/UpdateMeasures";
+import { EditIllness } from "./pages/health/pages/EditIllness";
 
 export function AppRoutes() {
   return (
@@ -59,6 +60,7 @@ export function AppRoutes() {
           <Route path="/add-illness" element={<AddIllness />} />
           <Route path="/measures" element={<Measures />} />
           <Route path="/update-measures" element={<UpdateMeasures />} />
+          <Route path="/edit-illness/:id" element={<EditIllness />} />
         </Route>
       </Routes>
     </BrowserRouter>

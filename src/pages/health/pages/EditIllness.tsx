@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import BtnPrimary from "../../../components/BtnPrimary";
 import { InputDefault } from "../../../components/InputDefault";
 import {
@@ -28,8 +28,9 @@ interface IllnessType {
   name: string;
 }
 
-export function AddIllness() {
+export function EditIllness() {
   const navigate = useNavigate();
+  const { id } = useParams();
 
   const [typeExpand, setTypeExpand] = useState<boolean>(false);
   const [typeLabel, setTypeLabel] = useState<string>("Selecione o tipo...");
@@ -37,6 +38,7 @@ export function AddIllness() {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<IllnessData>();
 
@@ -47,8 +49,31 @@ export function AddIllness() {
     { id: 4, name: "Alergia" },
   ];
 
-  async function sendDatas(data: IllnessData) {
-    console.log("Dados da enfermidade a serem registrados:", data);
+  useEffect(() => {
+    async function fetchIllness() {
+      if (id) {
+        const data = await new Promise<IllnessData>((resolve) => {
+          setTimeout(() => {
+            resolve({
+              name: "Gripe",
+              type: "Aguda (não crônica)",
+              start_date: "2026-03-10",
+              end_date: "2026-03-15",
+              medication: "Antigripal comum",
+              description: "Sintomas leves de resfriado.",
+            });
+          }, 100);
+        });
+
+        reset(data);
+        setTypeLabel(data.type);
+      }
+    }
+
+    fetchIllness();
+  }, [id, reset]);
+
+  async function updateDatas() {
     navigate(-1);
   }
 
@@ -62,9 +87,9 @@ export function AddIllness() {
     xl:flex xl:justify-center xl:items-center z-10"
     >
       <form
-        onSubmit={handleSubmit(sendDatas)}
+        onSubmit={handleSubmit(updateDatas)}
         className="flex flex-col justify-between w-full h-full
-        xl:w-[90%] md:px-6 xl:px-14 md:py-2 md:rounded-2xl md:mt-2 xl:gap-0 md:shadow-purple-md md:bg-lilas"
+        xl:w-[90%] xl:px-14 xl:py-2 xl:rounded-2xl xl:mt-2 xl:gap-0 xl:shadow-purple-md xl:bg-lilas"
       >
         <div className="flex flex-col">
           <label htmlFor="name" className={labelClassName}>
@@ -74,7 +99,7 @@ export function AddIllness() {
             id="name"
             type="text"
             placeholder="Infecção Urinária"
-            className={`${inputClassName} caret-primary-darker bg-white`}
+            className={`${inputClassName} caret-primary-darker`}
             {...register("name", { required: "O nome é obrigatório!" })}
           />
           {errors.name && (
@@ -89,7 +114,7 @@ export function AddIllness() {
             Tipo
           </label>
           <div
-            className={`flex justify-between items-center z-30 cursor-pointer bg-white ${inputClassName}`}
+            className={`flex justify-between items-center z-30 cursor-pointer ${inputClassName}`}
             onClick={() => setTypeExpand(!typeExpand)}
           >
             <InputDefault
@@ -130,6 +155,8 @@ export function AddIllness() {
                     setTypeLabel(type.name);
                     setTypeExpand(false);
                   }}
+                  // Opcional: checar visualmente se é o selecionado
+                  checked={typeLabel === type.name}
                 />
                 <label htmlFor={`type${type.id}`} className={labelRadioButton}>
                   {type.name}
@@ -151,7 +178,7 @@ export function AddIllness() {
           <InputDefault
             id="start_date"
             type="date"
-            className={`${inputClassName} caret-primary-darker bg-white`}
+            className={`${inputClassName} caret-primary-darker`}
             {...register("start_date", {
               required: "A data de início é obrigatória!",
             })}
@@ -170,7 +197,7 @@ export function AddIllness() {
           <InputDefault
             id="end_date"
             type="date"
-            className={`${inputClassName} caret-primary-darker bg-white`}
+            className={`${inputClassName} caret-primary-darker`}
             {...register("end_date")}
           />
         </div>
@@ -183,7 +210,7 @@ export function AddIllness() {
             id="medication"
             type="text"
             placeholder="Cefuroxima"
-            className={`${inputClassName} caret-primary-darker bg-white`}
+            className={`${inputClassName} caret-primary-darker`}
             {...register("medication", {
               required: "A medicação é obrigatória!",
             })}
@@ -196,13 +223,13 @@ export function AddIllness() {
         </div>
 
         <div className="flex flex-col">
-          <label htmlFor="description" className={`${labelClassName}`}>
+          <label htmlFor="description" className={labelClassName}>
             Descrição
           </label>
           <textarea
             id="description"
             placeholder="Sintomas registrados durante o tempo da doença."
-            className={`h-32 md:h-24 p-2 mt-1 border border-primary-darker rounded-lg shadow-purple-sm text-lilas-dark font-semibold text-lg outline-none resize-none caret-primary-darker bg-white`}
+            className={`h-32 md:h-24 p-2 mt-1 border border-primary-darker rounded-lg shadow-purple-sm text-lilas-dark font-semibold text-lg outline-none resize-none caret-primary-darker xl:bg-white`}
             {...register("description")}
           />
         </div>
@@ -218,7 +245,7 @@ export function AddIllness() {
             text="Cancelar"
             className={buttonCancel}
           />
-          <BtnPrimary type="submit" text="Registrar" className={buttonSubmit} />
+          <BtnPrimary type="submit" text="Salvar" className={buttonSubmit} />
         </div>
       </form>
     </div>
