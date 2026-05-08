@@ -126,8 +126,10 @@ function Header() {
       return "";
     } else if (path == "/articles") {
       return "Dicas";
-    } else if (path == "/add-pediatrician") {
-      return "Adicionar Profissional";
+    } else if (path == "/add-child") {
+      return "Adicionar Filho(a)";
+    } else if (path.includes("/article/")) {
+      return "Artigo";
     } else if (path == "/edit-pediatrician") {
       return "Editar Profissional";
     } else if (path == "/add-illness") {
@@ -138,6 +140,8 @@ function Header() {
       return "Perfil";
     } else if (path == "/add-child") {
       return "Adicionar Filho(a)";
+    } else if (path.includes("/edit-illness/")) {
+      return "Editar enfermidade";
     }
   }
 

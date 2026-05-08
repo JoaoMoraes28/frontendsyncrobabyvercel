@@ -89,7 +89,8 @@ export function EditIllness() {
       <form
         onSubmit={handleSubmit(updateDatas)}
         className="flex flex-col justify-between w-full h-full
-        xl:w-[90%] xl:px-14 xl:py-2 xl:rounded-2xl xl:mt-2 xl:gap-0 xl:shadow-purple-md xl:bg-lilas"
+        md:px-6 md:py-2 md:rounded-2xl md:mt-2 md:gap-0 md:shadow-purple-md md:bg-lilas
+        xl:w-[90%]"
       >
         <div className="flex flex-col">
           <label htmlFor="name" className={labelClassName}>
@@ -99,7 +100,7 @@ export function EditIllness() {
             id="name"
             type="text"
             placeholder="Infecção Urinária"
-            className={`${inputClassName} caret-primary-darker`}
+            className={`${inputClassName} bg-white  caret-primary-darker`}
             {...register("name", { required: "O nome é obrigatório!" })}
           />
           {errors.name && (
@@ -114,7 +115,7 @@ export function EditIllness() {
             Tipo
           </label>
           <div
-            className={`flex justify-between items-center z-30 cursor-pointer ${inputClassName}`}
+            className={`flex justify-between items-center z-30 cursor-pointer bg-white ${inputClassName}`}
             onClick={() => setTypeExpand(!typeExpand)}
           >
             <InputDefault
@@ -178,7 +179,7 @@ export function EditIllness() {
           <InputDefault
             id="start_date"
             type="date"
-            className={`${inputClassName} caret-primary-darker`}
+            className={`${inputClassName} bg-white  caret-primary-darker`}
             {...register("start_date", {
               required: "A data de início é obrigatória!",
             })}
@@ -197,7 +198,7 @@ export function EditIllness() {
           <InputDefault
             id="end_date"
             type="date"
-            className={`${inputClassName} caret-primary-darker`}
+            className={`${inputClassName} bg-white  caret-primary-darker`}
             {...register("end_date")}
           />
         </div>
@@ -210,7 +211,7 @@ export function EditIllness() {
             id="medication"
             type="text"
             placeholder="Cefuroxima"
-            className={`${inputClassName} caret-primary-darker`}
+            className={`${inputClassName} bg-white  caret-primary-darker`}
             {...register("medication", {
               required: "A medicação é obrigatória!",
             })}
@@ -229,7 +230,7 @@ export function EditIllness() {
           <textarea
             id="description"
             placeholder="Sintomas registrados durante o tempo da doença."
-            className={`h-32 md:h-24 p-2 mt-1 border border-primary-darker rounded-lg shadow-purple-sm text-lilas-dark font-semibold text-lg outline-none resize-none caret-primary-darker xl:bg-white`}
+            className={`h-32 md:h-24 p-2 mt-1 border border-primary-darker bg-white  rounded-lg shadow-purple-sm text-lilas-dark font-semibold text-lg outline-none resize-none caret-primary-darker xl:bg-white`}
             {...register("description")}
           />
         </div>
