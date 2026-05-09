@@ -50,13 +50,13 @@ export function PerfilPage() {
   };
 
   return (
-    <div className="flex flex-col xl:flex-row w-full min-h-screen bg-light font-nunito">
+    <div className="flex flex-col xl:flex-row w-full min-h-screen bg-light">
       <div className="xl:hidden w-full">
         <Header />
       </div>
       <PerfilHeader user_name="Pedro" />
 
-      <main className="flex-1 flex flex-col items-center justify-center w-full relative py-8 xl:py-0">
+      <main className="flex-1 flex flex-col items-center justify-center w-full relative py-8 xl:py-0 font-nunito">
         <div className="hidden xl:flex justify-between items-center w-full absolute top-10 left-0 px-16">
           <button
             onClick={() => navigate(-1)}

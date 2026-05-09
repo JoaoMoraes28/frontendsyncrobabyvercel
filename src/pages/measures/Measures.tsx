@@ -155,8 +155,9 @@ function Measures() {
                 </div>
                 <ul className="hidden xl:flex xl:gap-6">
                     {filterOptions.map((option) => (
-                        <li key={option.id} className={`xl:flex xl:justify-center xl:items-center xl:font-nunito xl:rounded-2xl xl:min-w-19 xl:h-9 xl:shadow-purple-sm ${filterSelected == option.label ? 'xl:bg-accent xl:text-white' : 'text-darker-purple'}`}>
-                            <button onClick={() => setFilterSelected(option.label)} className="xl:w-full xl:h-full xl:px-4 xl:rounded-2xl">
+                        <li key={option.id} className={`xl:flex xl:justify-center xl:items-center xl:font-nunito xl:rounded-lg xl:min-w-19 xl:h-9 xl:border ${filterSelected == option.label ? "bg-accent text-white border-accent shadow-sm"
+                            : "bg-white text-gray-500 border-gray-200 hover:border-accent hover:text-accent"}`}>
+                            <button onClick={() => setFilterSelected(option.label)} className="xl:w-full xl:h-full xl:px-4 xl:rounded-lg">
                                 <span>{option.label}</span>
                             </button>
                         </li>
@@ -165,7 +166,7 @@ function Measures() {
                 <div className="xl:flex xl:justify-between xl:w-full">
                     <h3 className="hidden xl:block xl:font-poppins xl:text-primary-text xl:font-bold xl:text-2xl">Gráfico de Desenvolvimento</h3>
                     <Link to="/update-measures"
-                        className="flex justify-center items-center bg-accent text-white h-8 shadow-purple-sm rounded-xl px-3
+                        className="flex justify-center items-center bg-accent text-white h-8 rounded-md px-3
                         xl:relative xl:w-[40%] xl:max-w-100 xl:h-13 xl:shadow-purple-md">
                         <img aria-hidden="true" src={Plus} alt="" className="hidden xl:block xl:absolute xl:left-4" />
                         Atualizar dados
@@ -174,9 +175,9 @@ function Measures() {
             </div>
             <section className="flex flex-col justify-evenly grow
             xl:flex-row-reverse xl:h-[77%] xl:justify-between">
-                <section className="px-3 py-2 border border-primary shadow-purple-sm rounded-lg
+                <section className="px-3 py-2 border border-primary rounded-sm
                 xl:flex xl:flex-col-reverse xl:justify-between xl:w-[40%] xl:border-0 xl:shadow-none xl:px-0">
-                    <div className="xl:flex xl:flex-col xl:shadow-purple-sm xl:rounded-xl xl:w-full xl:h-[45%] xl:px-3 xl:justify-evenly">
+                    <div className="xl:flex xl:flex-col xl:rounded-sm xl:w-full xl:h-[45%] xl:px-3 xl:justify-evenly xl:bg-lilas-bg/60">
                         <div className="hidden xl:flex xl:gap-5 xl:px-2">
                             <img aria-hidden="true" src={Alert} alt="" className="xl:w-auto h-6" />
                             <h4 className="xl:text-darker-purple xl:text-lg xl:font-semibold xl:font-poppins">Como medir</h4>
@@ -200,7 +201,7 @@ function Measures() {
                         </div>
                     </div>
                     <div className="flex flex-col font-poppins mt-2
-                    xl:shadow-purple-sm xl:rounded-xl xl:w-full xl:h-[50%] xl:justify-evenly xl:items-center xl:px-3">
+                    xl:shadow-purple-sm xl:rounded-sm xl:w-full xl:h-[50%] xl:justify-evenly xl:items-center xl:px-3">
                         <span className="text-primary-text font-semibold text-[14px]
                         md:text-[17px]
                         xl:hidden">Com base nos dados fornecidos seu bebê está com o:</span>

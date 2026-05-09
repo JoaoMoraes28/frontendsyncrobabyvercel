@@ -24,7 +24,7 @@ export interface ArticleModel {
     text_content?: string
 }
 
-const classButtonFilter: string = 'flex justify-center items-center w-[30%] h-8 font-semibold shadow-purple-sm rounded-lg md:h-10 xl:w-[15%] xl:rounded-2xl'
+const classButtonFilter: string = 'flex justify-center items-center w-[30%] h-8 font-semibold rounded-lg md:h-10 xl:w-[15%] xl:rounded-lg border border-accent'
 
 function Articles() {
     const navigate = useNavigate()
@@ -330,16 +330,20 @@ function Articles() {
                 <ul className="flex justify-between items-center w-full h-14
                 md:h-16
                 xl:justify-start xl:gap-5">
-                    <button onClick={() => onFilterArticles("Todos")} className={` hidden xl:flex ${classButtonFilter} ${filterArticles == "Todos" ? 'bg-accent scale-102 text-white' : 'text-primary-text'}`}>
+                    <button onClick={() => onFilterArticles("Todos")} className={`hidden xl:flex xl:border ${classButtonFilter} ${filterArticles == "Todos" ? "bg-accent text-white border-accent shadow-sm"
+                    : "bg-white text-gray-500 border-gray-200 hover:border-accent hover:text-accent"}`}>
                         <li>Todos</li>
                     </button>
-                    <button onClick={() => onFilterArticles("sono")} className={`${classButtonFilter} ${filterArticles == "sono" ? 'bg-accent scale-102 text-white' : 'text-primary-text'}`}>
+                    <button onClick={() => onFilterArticles("sono")} className={`border ${classButtonFilter} ${filterArticles == "sono" ? "bg-accent text-white border-accent shadow-sm"
+                    : "bg-white text-gray-500 border-gray-200 hover:border-accent hover:text-accent"}`}>
                         <li>Sono</li>
                     </button>
-                    <button onClick={() => onFilterArticles("alimentacao")} className={`${classButtonFilter} ${filterArticles == "alimentacao" ? 'bg-accent scale-102 text-white' : 'text-primary-text'}`}>
+                    <button onClick={() => onFilterArticles("alimentacao")} className={`border ${classButtonFilter} ${filterArticles == "alimentacao" ? "bg-accent text-white border-accent shadow-sm"
+                    : "bg-white text-gray-500 border-gray-200 hover:border-accent hover:text-accent"}`}>
                         <li>Alimentação</li>
                     </button>
-                    <button onClick={() => onFilterArticles("saude")} className={`${classButtonFilter} ${filterArticles == "saude" ? 'bg-accent scale-102 text-white' : 'text-primary-text'}`}>
+                    <button onClick={() => onFilterArticles("saude")} className={`border ${classButtonFilter} ${filterArticles == "saude" ? "bg-accent text-white border-accent shadow-sm"
+                    : "bg-white text-gray-500 border-gray-200 hover:border-accent hover:text-accent"}`}>
                         <li>Saúde</li>
                     </button>
                 </ul>
@@ -348,22 +352,22 @@ function Articles() {
                     {articles.map((article) => (
                         <li ref={cardArticleDesktop} key={article.id} className="flex w-full min-h-22
                         md:min-h-24
-                        xl:min-w-50 xl:max-w-50 xl:h-full xl:overflow-hidden xl:rounded-xl xl:shadow-purple-sm xl:snap-center xl:hover:shadow-purple-md xl:hover:scale-102 xl:transition xl:duration-300">
+                        xl:min-w-50 xl:max-w-50 xl:h-full xl:overflow-hidden xl:rounded-sm xl:snap-center xl:hover:shadow-purple-sm xl:hover:scale-102 xl:transition xl:duration-300">
                             <article className="flex w-full h-full rounded-lg
                             xl:flex-col xl:relative">
                                 <div className="flex justify-center pt-4 w-1/3 h-full bg-primary rounded-l-lg
                                 md:w-[28%]
-                                xl:relative xl:w-full xl:h-1/2 xl:rounded-bl-none xl:rounded-tl-xl xl:rounded-tr-xl xl:pt-0">
+                                xl:relative xl:w-full xl:h-1/2 xl:rounded-bl-none xl:rounded-tl-sm xl:rounded-tr-sm xl:pt-0">
                                     <span className="flex justify-center items-center w-22 h-6 font-nunito text-primary-text bg-light font-bold rounded-md
                                     md:w-30 md:h-8
-                                    xl:absolute xl:bg-accent xl:text-white xl:font-normal xl:text-[12px] xl:rounded-xl xl:w-18 xl:h-6 xl:top-2 xl:right-2">{Date.formatedDate(article.date)}</span>
-                                    <figure className="hidden xl:block xl:w-full xl:h-full xl:rounded-t-xl">
-                                        <img src={article.midia} alt="" className="xl:w-full xl:h-full xl:rounded-t-xl xl:object-cover xl:object-top" />
+                                    xl:absolute xl:bg-accent xl:text-white xl:font-normal xl:text-[12px] xl:rounded-sm xl:w-18 xl:h-6 xl:top-2 xl:right-2">{Date.formatedDate(article.date)}</span>
+                                    <figure className="hidden xl:block xl:w-full xl:h-full xl:rounded-t-sm">
+                                        <img src={article.midia} alt="" className="xl:w-full xl:h-full xl:rounded-t-sm xl:object-cover xl:object-top" />
                                     </figure>
                                 </div>
                                 <div className="flex flex-col justify-between w-2/3 h-full bg-lilas py-2 rounded-r-lg
                                 md:w-[72%]
-                                xl:w-full xl:h-1/2 xl:justify-start xl:rounded-tr-none xl:rounded-b-xl xl:pb-7 xl:overflow-y-auto">
+                                xl:w-full xl:h-1/2 xl:justify-start xl:rounded-tr-none xl:rounded-b-sm xl:pb-7 xl:overflow-y-auto">
                                     <p className="w-full px-4 text-primary font-poppins font-semibold text-[12px]
                                     md:text-[16px]
                                     xl:text-[14px]">{article.title}</p>
@@ -371,7 +375,7 @@ function Articles() {
                                     md:text-[12px]">{article.description}</p>
                                     <p className="w-full px-2 text-end text-primary-text font-poppins font-medium text-[8px]
                                     md:text-[10px]
-                                    xl:absolute xl:flex xl:items-center xl:justify-end xl:bg-lilas xl:bottom-0 xl:h-6 xl:rounded-b-xl">{article.author}</p>
+                                    xl:absolute xl:flex xl:items-center xl:bg-lilas xl:justify-end xl:bottom-0 xl:h-6 xl:rounded-b-sm">{article.author}</p>
                                 </div>
                             </article>
                         </li>

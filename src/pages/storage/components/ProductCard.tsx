@@ -34,7 +34,7 @@ export function ProductCard({
   return (
     <div
       key={item.id}
-      className="flex-none lg:flex-none w-full lg:h-fit overflow-hidden lg:overflow-visible rounded-2xl shadow-purple-md bg-white border-t-0 lg:border-t-[6px] lg:flex lg:flex-col"
+      className="flex-none lg:flex-none w-full lg:h-fit overflow-hidden lg:overflow-visible rounded-sm shadow-purple-sm bg-white border-t-0 lg:border-t-[6px] lg:flex lg:flex-col"
       style={{
         borderTopColor: getStatusColor(item.quantity, item.daysRemaining),
       }}

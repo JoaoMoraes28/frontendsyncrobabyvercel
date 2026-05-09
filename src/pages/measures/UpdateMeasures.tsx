@@ -7,6 +7,7 @@ import { useState } from "react"
 import { InputDefault } from "../../components/InputDefault"
 import BtnPrimary from "../../components/BtnPrimary"
 import ChildrenSelect from "../../layouts/ChildrenSelect"
+import { useNavigate } from "react-router-dom"
 
 interface DataMeasures {
     weight: number
@@ -26,6 +27,7 @@ function UpdateMeasures() {
         formState: { errors }
     } = useForm<DataMeasures>()
 
+    const navigate = useNavigate()
     const [childSelected, setChildSelected] = useState<number>(1)
 
     function sendData(data: DataMeasures) {
@@ -117,7 +119,7 @@ function UpdateMeasures() {
                 </div>
                 <div className="flex justify-center gap-8 mt-7 w-full font-poppins
                 md:gap-20 md:mt-0">
-                    <BtnPrimary type="button" text="Cancelar" className="flex justify-center items-center w-26 h-10 rounded-md bg-white shadow-purple-sm text-dark-purple font-semibold
+                    <BtnPrimary onClick={() => navigate(-1)} type="button" text="Cancelar" className="flex justify-center items-center w-26 h-10 rounded-md bg-white shadow-purple-sm text-dark-purple font-semibold
                     md:w-38 md:h-12 md:text-[18px]" />
                     <BtnPrimary type="submit" text="Registrar" className="flex justify-center items-center w-26 h-10 rounded-md bg-accent shadow-purple-sm text-white font-semibold
                     md:w-38 md:h-12 md:text-[18px]" />

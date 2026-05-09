@@ -1,8 +1,8 @@
 import { Link, useLocation } from "react-router-dom";
 
 import Logo from "../assets/navigation/logoHeader.png";
-import HomeIcon from "../assets/navigation/home.svg";
 import arrowIcon from "../assets/navigation/ArrowIcon.svg";
+import Profile from "../assets/navigation/profileHeader.svg"
 
 import type { IconsNavigation } from "../layouts/MainLayout";
 
@@ -16,7 +16,7 @@ function NavigationBar({ listIcons }: Props) {
   return (
     <nav
       className="fixed bottom-0 flex justify-center w-full h-22 md:h-28 z-100 bg-light backdrop-blur-sm 
-      xl:left-0 xl:w-1/5 xl:min-w-90 xl:h-screen xl:bg-primary xl:rounded-tr-2xl xl:rounded-br-2xl xl:flex-col xl:justify-between xl:items-start"
+      xl:left-0 xl:w-[15%] xl:min-w-50 xl:h-screen xl:bg-primary xl:flex-col xl:justify-between"
     >
       <div
         className="flex justify-center w-full items-center
@@ -31,9 +31,6 @@ function NavigationBar({ listIcons }: Props) {
             src={Logo}
             alt="Logo principal do web-site, representada por uma mãe segurando seu filho so colo"
           />
-          <h1 className="xl:text-dark-purple xl:text-[32px] xl:font-semibold">
-            SYNCROBABY
-          </h1>
         </header>
 
         <ul
@@ -122,20 +119,23 @@ function NavigationBar({ listIcons }: Props) {
       <div className="hidden xl:flex xl:w-full xl:h-22 xl:justify-between xl:items-center xl:px-4 xl:border-t xl:border-white">
         <div className="xl:flex xl:items-top xl:gap-2">
           <img
-            src={HomeIcon}
+            src={Profile}
             alt="Foto de perfil do usuário"
-            className="xl:w-10 xl:h-10 xl:rounded-full xl:border xl:border-white"
+            className="xl:w-8 xl:h-8 xl:rounded-full xl:border xl:border-white"
           />
           <div className="xl:flex xl:flex-col xl:font-nunito xl:text-white">
-            <span className="">Mariana Silvana</span>
+            <span className="text-[14px]">Mariana Silvana</span>
             <span className="xl:text-[10px] xl:font">Pedro Henrique</span>
           </div>
         </div>
-        <img
-          src={arrowIcon}
-          alt="Redirecionamento para o perfil de usuário"
-          className="xl:w-5 xl:h-5"
-        />
+        <Link
+        to="/profile-user"
+          className="xl:w-4 xl:h-4"
+        >
+          <img src={arrowIcon}
+            alt="Redirecionamento para o perfil de usuário"
+            className="w-full h-full" />
+        </Link>
       </div>
     </nav>
   );

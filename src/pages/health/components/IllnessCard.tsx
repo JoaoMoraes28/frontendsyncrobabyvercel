@@ -22,7 +22,7 @@ export function IllnessCard({
   return (
     <>
       <div
-        className="block md:hidden bg-lilas cursor-pointer rounded-lg overflow-hidden p-4 border-2 border-primary-darker shadow-purple-md text-center text-dark-purple"
+        className="block md:hidden bg-lilas/80 cursor-pointer overflow-hidden p-4 border-2 border-primary-darker text-center text-dark-purple"
         onClick={() => toggleCard(item.id)}
       >
         <h2 className="font-bold font-poppins text-lg">{item.nome}</h2>
@@ -63,7 +63,7 @@ export function IllnessCard({
       </div>
 
       <div
-        className={`hidden md:flex flex-col bg-white rounded-xl shadow-md border-l-[6px] ${borderColorDesktop} p-5 pb-4 h-full relative group`}
+        className={`hidden md:flex flex-col bg-white shadow-md border-l-[6px] ${borderColorDesktop} p-5 pb-4 h-full relative group`}
       >
         <button
           onClick={(e) => {

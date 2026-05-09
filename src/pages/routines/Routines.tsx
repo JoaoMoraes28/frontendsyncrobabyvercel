@@ -319,7 +319,7 @@ function Routines() {
                     xl:w-[45%] xl:justify-between">
                     <section className="mt-8
                         md:mt-5
-                        xl:flex xl:flex-col xl:justify-evenly xl:w-full xl:h-[45%] xl:rounded-2xl xl:bg-primary xl:font-poppins">
+                        xl:flex xl:flex-col xl:justify-evenly xl:w-full xl:h-[45%] xl:rounded-sm xl:bg-primary xl:font-poppins">
                         <h3 className="hidden xl:flex xl:justify-center xl:w-full xl:text-white xl:font-bold xl:text-[2rem]">Novo Registro</h3>
                         <ul className="flex justify-between w-full h-22
                                 xl:w-full xl:h-2/3 xl:flex-wrap xl:flex-row xl:justify-center xl:gap-2 xl:px-3">
@@ -371,7 +371,7 @@ function Routines() {
                 </div>
                 <section className="relative pb-39
                 md:mt-4
-                xl:w-[45%] xl:bg-lilas xl:rounded-2xl xl:shadow-purple-sm xl:pb-0 xl:overflow-y-auto">
+                xl:w-[45%] xl:bg-lilas xl:rounded-sm xl:pb-0 xl:overflow-y-auto">
                     <ul className="flex flex-col w-full gap-4 py-4 pb-8
                     xl:items-end xl:px-4 xl:py-6 xl:relative xl:gap-6 xl:min-h-full">
                         <div className="absolute top-0 left-26 w-1 min-h-[55dvh] h-full bg-primary

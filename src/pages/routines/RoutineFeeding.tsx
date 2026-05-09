@@ -12,6 +12,7 @@ import SolidFood from "../../assets/routines/solidFood.svg";
 import BtnPrimary from "../../components/BtnPrimary";
 import Close from "../../assets/closeModal.svg";
 import setSelector from "../../assets/setExpandSelector.svg";
+import Trash from "../../assets/routines/trashPurple.svg"
 
 interface DataFeeding {
   hour: string;
@@ -118,6 +119,11 @@ function RoutineFeeding() {
       measure: "ml",
     },
   ];
+
+  function removeItemRegister(id: number) {
+    const newData: ListFood[] = listFood.filter(it => it.id != id)
+    setListFood(newData)
+  }
 
   function addImageFoodType(type: string) {
     if (type == "Leite e Derivados") {
@@ -299,23 +305,18 @@ function RoutineFeeding() {
             <label htmlFor="type-foodXl" className={labelClassName}>
               Tipo de alimento
             </label>
-            <div
-              className={`xl:flex xl:justify-between xl:z-50 ${inputClassName}`}
+            <div onClick={() =>
+              setTypeFoodExpandSelector(!typeFoodExpandSelector)
+            }
+              aria-label="Icone para visualizar os tipos de alimento."
+              className={`xl:flex xl:justify-between xl:items-center xl:z-50 ${inputClassName}`}
             >
               <InputDefault readOnly value={valueInputTypeFood} />
-              <button
-                type="button"
-                onClick={() =>
-                  setTypeFoodExpandSelector(!typeFoodExpandSelector)
-                }
-                aria-label="Icone para visualizar os tipos de alimento."
-              >
-                <img
-                  src={setSelector}
-                  alt=""
-                  className={`xl:w-6 xl:h-6 ${typeFoodExpandSelector ? "turn-set" : "return-set"}`}
-                />
-              </button>
+              <img
+                src={setSelector}
+                alt=""
+                className={`xl:w-6 xl:h-6 ${typeFoodExpandSelector ? "turn-set" : "return-set"}`}
+              />
             </div>
             <fieldset
               className={`xl:absolute xl:top-15 xl:justify-around xl:w-full xl:h-12 xl:z-40 xl:rounded-bl-lg xl:rounded-br-lg xl:border-b xl:border-l xl:border-r xl:border-primary-darker
@@ -395,14 +396,19 @@ function RoutineFeeding() {
               >
                 {food.food_name}
               </span>
-              <div className={inputMeasureClass}>
-                <InputDefault
-                  onChange={(e) => changeQuantityFood(food.id, e.target.value)}
-                  type="number"
-                  value={`${food.food_quantity}`}
-                  className="w-2/3 pl-2 text-center"
-                />
-                <span className="w-1/3">{`${food.measure}`}</span>
+              <div className="flex gap-10">
+                <div className={inputMeasureClass}>
+                  <InputDefault
+                    onChange={(e) => changeQuantityFood(food.id, e.target.value)}
+                    type="number"
+                    value={`${food.food_quantity}`}
+                    className="w-2/3 pl-2 text-center"
+                  />
+                  <span className="w-1/3">{`${food.measure}`}</span>
+                </div>
+                <button onClick={() => removeItemRegister(food.id)} type="button">
+                  <img src={Trash} alt="Exclui o item do registro." className="w-auto h-4" />
+                </button>
               </div>
             </li>
           ))}

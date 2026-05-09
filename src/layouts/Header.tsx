@@ -21,6 +21,7 @@ export interface Notification {
 }
 
 function Header() {
+  const [DateHour, setDateHour] = useState<string>(Date.getDateFormated())
   const [notifications, setNotifications] = useState<Notification[]>([
     {
       id: 1,
@@ -159,21 +160,29 @@ function Header() {
     return () => mediaQuery.removeEventListener("change", handleResize);
   }, []);
 
+  useEffect(() => {
+    const handleTime = setInterval(() => {
+      setDateHour(Date.getDateFormated())
+    }, 60000);
+
+    return () => clearInterval(handleTime)
+  }, [])
+
   return (
     <header
       className={`fixed top-0 flex flex-col justify-between items-center w-screen px-6 pt-6 z-90 bg-light ${setTitleHeader(location.pathname) != "Home" ? "h-24" : "h-32"}
       md:px-14
-      xl:h-24 xl:flex-row xl:px-14 xl:pt-8 xl:items-start xl:right-0 xl:w-[calc(100%-20%)] xl:max-w-[calc(100%-360px)]`}
+      xl:h-24 xl:flex-row xl:px-20 xl:pt-8 xl:items-start xl:right-0 ${location.pathname == '/profile-children' || location.pathname == '/profile-user' ? 'xl:w-[calc(100%-20%)]' : 'xl:w-[calc(100%-15%)] xl:max-w-[calc(100%-200px)]'}`}
     >
       <div
         onClick={moveNoticationsBar}
-        className={`xl:absolute xl:top-0 xl:z-80 xl:right-0 xl:w-screen xl:h-screen xl:bg-black/60 ${visibleNotifications ? "xl:block" : "hidden"}`}
+        className={`xl:absolute xl:top-0 xl:z-80 xl:right-0 xl:w-screen xl:h-screen xl:bg-black/60 xl:backdrop-blur-[1px]  ${visibleNotifications ? "xl:block" : "hidden"}`}
       ></div>
       <button
         onClick={() => navigate(-1)}
-        className={`xl:ml-40 ${(location.pathname == "/profile-children" && !windowWidth) || (location.pathname == "/profile-user" && !windowWidth) ? "flex" : "hidden"}`}
+        className={`xl:ml-58 ${(location.pathname == "/profile-children" && !windowWidth) || (location.pathname == "/profile-user" && !windowWidth) ? "flex" : "hidden"}`}
       >
-        <img src={SetBackProfile} alt="" />
+        <img src={SetBackProfile} alt="Retorna a tela anterior." />
       </button>
       <div
         className={`flex w-full h-9 rounded-2xl bg-lilas shadow-purple-sm px-2 ${(setTitleHeader(location.pathname) != "Home" && windowWidth) || location.pathname == "/profile-children" || location.pathname == "/profile-user" ? "hidden" : "block"}
@@ -192,7 +201,7 @@ function Header() {
           className="hidden
           xl:flex xl:font-nunito xl:text-black/50 xl:font-bold"
         >
-          {Date.getDateFormated()}
+          {DateHour}
         </span>
         <div
           className={`flex gap-3 ${setTitleHeader(location.pathname) != "Home" && windowWidth ? "block" : "hidden"}`}
@@ -201,7 +210,7 @@ function Header() {
             <img
               src={SetBack}
               alt="Icone para voltar a tela anterior."
-              className="w-6 "
+              className="w-6"
             />
           </button>
           <h2 className={`text-text-primary font-poppins font-bold text-2xl`}>

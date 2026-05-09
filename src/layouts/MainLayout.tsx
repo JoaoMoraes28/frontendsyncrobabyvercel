@@ -104,7 +104,7 @@ export function MainLayout() {
         <div
           className="content flex w-full min-h-full px-6 pt-25 pb-24
         md:px-14 md:pb-30
-        xl:px-14 xl:w-[calc(100%-20%)] xl:max-w-[calc(100%-360px)] xl:pb-8"
+        xl:px-20 xl:w-[calc(100%-15%)] xl:max-w-[calc(100%-200px)] xl:pb-8"
         >
           <Outlet />
         </div>

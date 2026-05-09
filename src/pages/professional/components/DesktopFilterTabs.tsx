@@ -17,11 +17,10 @@ export function DesktopFilterTabs({
         <button
           key={option.id}
           onClick={() => onSelect(option.label)}
-          className={`px-6 py-2 rounded-3xl font-poppins font-semibold text-sm transition-all border cursor-pointer whitespace-nowrap
-            ${
-              selectedFilter === option.label
-                ? "bg-accent text-white border-accent shadow-purple-md"
-                : "bg-white text-gray-500 border-transparent hover:border-accent"
+          className={`px-6 py-2 rounded-lg font-poppins font-semibold text-sm transition-all border cursor-pointer whitespace-nowrap
+            ${selectedFilter === option.label
+              ? "bg-accent text-white border-accent shadow-sm"
+              : "bg-white text-gray-500 border-gray-200 hover:border-accent hover:text-accent"
             }
           `}
         >
