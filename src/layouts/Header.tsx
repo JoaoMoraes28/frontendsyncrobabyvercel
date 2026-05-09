@@ -136,6 +136,8 @@ function Header() {
       return "Adicionar Enfermidade";
     } else if (path == "/measures") {
       return "Medidas";
+    } else if (path == '/update-measures') {
+      return "Atualizar medidas";
     } else if (path == "/profile-user") {
       return "Perfil";
     } else if (path == "/add-child") {
