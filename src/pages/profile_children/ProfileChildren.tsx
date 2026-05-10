@@ -158,7 +158,7 @@ function ProfileChildren() {
       name: dataChildren.name,
       date_birth: dataChildren.date_birth,
       blood_type: dataChildren.blood_type,
-    },
+    }
   });
 
   return (
