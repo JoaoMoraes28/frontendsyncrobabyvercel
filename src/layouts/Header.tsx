@@ -144,6 +144,12 @@ function Header() {
       return "Adicionar Filho(a)";
     } else if (path.includes("/edit-illness/")) {
       return "Editar enfermidade";
+    } else if (path == "/diary") {
+      return "Diário";
+    } else if (path.includes("/anotation-diary/")) {
+      return "Anotação"
+    } else if (path == ("/new-anotation")) {
+      return "Nova lembrança"
     }
   }
 

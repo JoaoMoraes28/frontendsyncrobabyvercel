@@ -7,6 +7,7 @@ import {
   isAfter,
   parseISO,
   subDays,
+  differenceInCalendarDays
 } from "date-fns";
 
 const date = new Date();
@@ -19,6 +20,10 @@ function getDateUTC() {
   return date.toISOString();
 }
 
+function getTodayFormated() {
+  return getDateUTC().split("T")[0]
+}
+
 function getDateFormated() {
   const fullDate: string = format(date, "EEEE, dd 'de' MMMM", { locale: ptBR });
   const formatedDate: string =
@@ -29,6 +34,13 @@ function getDateFormated() {
 
 function formatedDate(date: string) {
   return format(date, "dd/MM/yyyy");
+}
+
+function formatedDayYear(data: string) {
+  const fullDate: string = format(data, "dd MMMM yyyy", {
+    locale: ptBR,
+  })
+  return fullDate
 }
 
 function calculateDaysFormated(dayInitial: Date, operator: "more" | "less") {
@@ -80,6 +92,17 @@ function subYearsFormated(startDate: string | undefined) {
   return (months / 12).toFixed(1);
 }
 
+function subDaysFormated(startTime: string) {
+  const days: number = differenceInCalendarDays(date, startTime)
+  if (days == 0) {
+    return "Hoje"
+  } else if (days == 1) {
+    return "Ontem"
+  } else {
+    return `Há ${days} dias`
+  }
+}
+
 export default {
   getHourFormated,
   getDateUTC,
@@ -88,5 +111,8 @@ export default {
   calculateDaysFormated,
   subHoursFormated,
   subYearsFormated,
+  subDaysFormated,
+  formatedDayYear,
+  getTodayFormated,
   date,
 };
