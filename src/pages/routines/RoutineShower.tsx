@@ -10,6 +10,7 @@ import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom"
 
 import Close from "../../assets/closeModal.svg"
+import Trash from "../../assets/routines/trashPurple.svg"
 
 import type { Products } from "./RoutineDiaper"
 

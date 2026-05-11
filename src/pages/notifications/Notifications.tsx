@@ -43,7 +43,7 @@ function Notifications({
   return (
     <aside className={`fixed px-6 pt-10 pb-34 top-0 w-screen h-screen z-90 overflow-auto bg-light
         md:px-14 md:mt-0
-        xl:w-1/3 xl:min-w-90 xl:h-screen xl:top-0 xl:right-0 xl:mt-0 xl:py-10 xl:rounded-tl-2xl xl:rounded-bl-2xl xl:border-l-4 xl:border-primary
+        xl:w-1/3 xl:min-w-90 xl:h-screen xl:top-0 xl:right-0 xl:mt-0 xl:py-10 xl:border-l-4 xl:border-primary
         ${visibleNotifications ? "block" : "hidden"}`}
     >
       <header className="flex justify-between items-center gap-3">
@@ -76,7 +76,7 @@ function Notifications({
           {notifications.map((notification: Notification) => (
             <li
               key={notification.id}
-              className="flex w-full h-28 p-2 gap-3 shadow-purple-sm rounded-lg border-2 border-primary overflow-hidden
+              className="flex w-full h-28 p-2 gap-3 rounded-sm border-2 border-primary overflow-hidden
                     xl:hover:scale-102 xl:transition xl:duration-300"
             >
               <div className="flex flex-col justify-between w-auto">

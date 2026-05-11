@@ -64,13 +64,13 @@ function ProfileChildren() {
       title: "Peso:",
       img: Weight,
       aria: "Redireciona para a tela de registro de peso.",
-      path: "/register-measures",
+      path: "/update-measures",
     },
     {
       title: "Altura:",
       img: Height,
       aria: "Redireciona para a tela de registro de altura.",
-      path: "/register-measures",
+      path: "/update-measures",
     },
     {
       title: "Vacinação:",

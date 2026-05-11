@@ -52,7 +52,7 @@ function Chart({ data }: Props) {
         <ResponsiveContainer width="100%" height="100%">
             <LineChart data={formatedData(data)}
                 margin={{ left: -40, right: 5, top: 0, bottom: 0 }}
-                className="bg-lilas-bg py-2 rounded-sm shadow-purple-md">
+                className="bg-lilas-bg py-2 shadow-purple-md">
                 <CartesianGrid stroke="#9d87d2" strokeDasharray="3 3" />
                 <XAxis dataKey="name"
                     tick={{ fill: "#41354c", fontSize: 12 }}

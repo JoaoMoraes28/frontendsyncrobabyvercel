@@ -34,7 +34,7 @@ function HourCard({ routineData, visibilityTrash, onClick, onDelete }: Props) {
       onClick={() => onClick(routineData.id)}
       onMouseEnter={() => setHoverVisibilityTrash(routineData.id)}
       onMouseLeave={() => setHoverVisibilityTrash(0)}
-      className={`flex w-full px-4 rounded-lg overflow-hidden font-semibold transition-[max-height] duration-500 ease-in-out bg-lilas ${routineData.asClicked ? "max-h-50" : "max-h-16"}
+      className={`flex w-full px-4 overflow-hidden font-semibold transition-[max-height] duration-500 ease-in-out bg-lilas ${routineData.asClicked ? "max-h-50" : "max-h-16"}
         xl:bg-white xl:w-3/4 xl:mr-[5%] xl:shadow-purple-sm xl:pl-1`}
     >
       <div

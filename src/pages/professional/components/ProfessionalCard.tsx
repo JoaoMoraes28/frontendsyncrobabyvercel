@@ -18,7 +18,7 @@ export function ProfessionalCard({
   onEdit,
 }: ProfessionalCardProps) {
   return (
-    <div className="w-full bg-white border-2 border-transparent hover:border-accent shadow-purple-md rounded-2xl flex flex-col p-5 cursor-pointer transition-all">
+    <div className="w-full bg-white shadow-purple-sm border-2 border-transparent hover:border-accent rounded-sm flex flex-col p-5 cursor-pointer transition-all">
       <div className="w-full flex justify-between items-start mb-4">
         <div className="flex gap-3 items-center">
           <div className="w-12 h-12 bg-gray-200 rounded-full shrink-0"></div>

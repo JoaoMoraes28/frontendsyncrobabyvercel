@@ -28,7 +28,7 @@ function Perfil({
   const location = useLocation();
 
   return (
-    <aside className="hidden xl:flex xl:flex-col xl:z-99 xl:justify-center xl:items-center xl:w-1/3 xl:min-w-136 xl:h-screen xl:pt-8 xl:rounded-tr-2xl xl:rounded-br-2xl xl:bg-primary">
+    <aside className="hidden xl:flex xl:flex-col xl:z-99 xl:items-center xl:w-1/3 xl:min-w-136 xl:h-screen xl:pt-8 xl:rounded-tr-2xl xl:rounded-br-2xl xl:bg-primary">
       <h1 className="xl:w-full xl:pl-18 xl:font-semibold xl:text-[4.2rem] xl:text-darker-purple">
         SYNCROBABY
       </h1>

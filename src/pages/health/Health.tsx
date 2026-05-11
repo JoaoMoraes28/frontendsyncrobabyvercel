@@ -6,6 +6,7 @@ import {
 } from "../../components/DropDownFilter";
 import BtnPrimary from "../../components/BtnPrimary";
 import { IllnessCard } from "./components/IllnessCard";
+import ChildrenSelect from "../../layouts/ChildrenSelect";
 
 export interface HealthRecord {
   id: number;
@@ -80,6 +81,7 @@ export function Health() {
   const navigate = useNavigate();
   const [selectedFilter, setSelectedFilter] = useState("Todas");
   const [expandedCardId, setExpandedCardId] = useState<number | null>(null);
+  const [childSelected, setChildSelected] = useState<number>(1)
 
   const toggleCard = (id: number) => {
     setExpandedCardId((prev) => (prev === id ? null : id));
@@ -101,7 +103,7 @@ export function Health() {
           />
           <BtnPrimary
             text="Registrar Enfermidade"
-            className="bg-accent flex justify-center items-center text-white font-poppins font-bold text-sm max-w-[65%] max-h-10 text-center rounded-xl shadow-md cursor-pointer hover:opacity-90 active:scale-95 transition-all"
+            className="bg-accent flex justify-center items-center text-white font-poppins font-bold text-sm max-w-[65%] max-h-10 text-center rounded-lg shadow-md cursor-pointer hover:opacity-90 active:scale-95 transition-all"
             onClick={() => navigate("/add-illness")}
           />
         </div>
@@ -109,13 +111,8 @@ export function Health() {
 
       <div className="hidden md:flex flex-col gap-6 w-full">
         <div className="flex flex-row items-center gap-6">
-          <div className="flex items-center bg-white rounded-full shadow-sm p-1">
-            <button className="bg-[#8A56E2] text-white px-5 py-1.5 rounded-full text-sm font-semibold transition-all">
-              João
-            </button>
-            <button className="text-gray-600 px-5 py-1.5 rounded-full text-sm font-semibold flex items-center gap-2 hover:bg-gray-50 transition-all">
-              Joana <span className="text-lg font-light leading-none">+</span>
-            </button>
+          <div className="flex">
+            <ChildrenSelect idChild={childSelected} setChild={setChildSelected} />
           </div>
 
           <div className="flex items-center gap-3">
@@ -123,10 +120,10 @@ export function Health() {
               <button
                 key={opt.id}
                 onClick={() => setSelectedFilter(opt.label)}
-                className={`px-4 py-1.5 rounded-full text-sm font-semibold border transition-all ${
+                className={`px-4 py-1.5 rounded-lg text-sm font-semibold border transition-all ${
                   selectedFilter === opt.label
-                    ? "bg-[#8A56E2] text-white border-[#8A56E2] shadow-sm"
-                    : "bg-white text-gray-500 border-gray-200 hover:border-[#8A56E2] hover:text-[#8A56E2]"
+                    ? "bg-accent text-white border-accent shadow-sm"
+                    : "bg-white text-gray-500 border-gray-200 hover:border-accent hover:text-accent"
                 }`}
               >
                 {opt.label}

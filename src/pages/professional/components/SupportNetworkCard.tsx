@@ -14,7 +14,7 @@ export function SupportNetworkCard() {
         </h1>
         <BtnPrimary
           text="Adicionar profissional"
-          className="bg-accent flex justify-center items-center text-white font-poppins font-bold text-lg max-w-[65%] max-h-10 text-center lg:w-auto lg:px-6 rounded-xl shadow-md cursor-pointer hover:opacity-90 active:scale-95 transition-all"
+          className="bg-accent flex justify-center items-center text-white font-poppins font-bold text-lg max-w-[65%] max-h-10 text-center lg:w-auto lg:px-6 rounded-lg shadow-md cursor-pointer hover:opacity-90 active:scale-95 transition-all"
           onClick={() => {
             navigate("/add-pediatrician");
           }}
@@ -22,7 +22,7 @@ export function SupportNetworkCard() {
       </div>
 
       {/* Card Principal */}
-      <div className="relative overflow-hidden rounded-2xl border border-accent bg-lilas backdrop-blur-md shadow-purple-md p-4  flex flex-col md:flex-row gap-6 items-center transition-all duration-300 hover:shadow-[0_0_45px_rgba(168,85,247,0.25)]">
+      <div className="relative overflow-hidden rounded-md border border-accent bg-lilas backdrop-blur-md p-4  flex flex-col md:flex-row gap-6 items-center transition-all duration-300 hover:shadow-[0_0_45px_rgba(168,85,247,0.25)]">
         <div className="flex shrink-0">
           <div className="w-16 h-16 bg-white rounded-full shadow-[0_6px_15px_rgba(0,0,0,0.08)] flex items-center justify-center">
             <div className="w-9 h-9 bg-accent rounded-full flex items-center justify-center">

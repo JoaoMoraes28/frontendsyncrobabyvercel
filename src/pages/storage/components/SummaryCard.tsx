@@ -10,7 +10,7 @@ export function SummaryCard({
   color: string;
 }) {
   return (
-    <div className="bg-white p-6 rounded-2xl shadow-md flex flex-col items-center gap-2 border border-gray-100">
+    <div className="bg-lilas-bg/50 p-6 rounded-md flex flex-col items-center gap-2 border border-gray-100">
       <div
         className={`w-10 h-10 rounded-full flex items-center justify-center border-2 ${color} font-bold`}
       >
