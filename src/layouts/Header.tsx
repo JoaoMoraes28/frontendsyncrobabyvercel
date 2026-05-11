@@ -108,6 +108,8 @@ function Header() {
       return "Alimentacão";
     } else if (path == "/storage") {
       return "Estoque";
+    } else if (path == "/add-storage") {
+      return "Adicionar produto"
     } else if (path == "/sleep") {
       return "Sono";
     } else if (path == "/health") {
@@ -148,7 +150,7 @@ function Header() {
       return "Diário";
     } else if (path.includes("/anotation-diary/")) {
       return "Anotação"
-    } else if (path == ("/new-anotation")) {
+    } else if (path == "/new-anotation") {
       return "Nova lembrança"
     }
   }

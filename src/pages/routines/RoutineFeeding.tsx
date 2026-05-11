@@ -45,7 +45,7 @@ interface ListFood {
 }
 
 export const inputClassName: string =
-  'className="w-full h-11 mt-1 border border-primary-darker rounded-lg shadow-purple-sm px-2 text-lilas-dark font-semibold text-lg md:h-14 xl:bg-white xl:h-11 xl:px-4 caret-primary-darker';
+  'className="w-full h-11 mt-1 border border-primary-darker bg-white rounded-sm px-2 text-lilas-dark font-semibold text-lg md:h-14 xl:bg-white xl:h-11 xl:px-4 caret-primary-darker';
 export const labelClassName: string =
   "font-poppins text-primary-darker font-bold md:text-xl";
 export const buttonSubmit: string =
@@ -263,7 +263,7 @@ function RoutineFeeding() {
             {food_type.map((food) => (
               <li
                 key={food.id}
-                className={`w-28 h-26 rounded-lg bg-lilas border border-primary ${typeFood == food.id ? "shadow-purple-md bg-lilas-dark/10" : ""}
+                className={`w-28 h-26 rounded-lg bg-lilas border border-primary ${typeFood == food.id ? "shadow-purple-sm bg-lilas-dark/10" : ""}
                                                 md:w-42 md:h-42`}
               >
                 <button

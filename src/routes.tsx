@@ -31,6 +31,7 @@ import { EditIllness } from "./pages/health/pages/EditIllness";
 import Diary from "./pages/diary/Diary";
 import Anotation from "./pages/diary/Anotation";
 import NewAnotation from "./pages/diary/NewAnotation";
+import AddStorage from "./pages/storage/AddStorage";
 
 export function AppRoutes() {
   return (
@@ -53,6 +54,7 @@ export function AppRoutes() {
           <Route path="/shower" element={<RoutineShower />} />
           <Route path="/medicine" element={<RoutineMedicine />} />
           <Route path="/storage" element={<Storage />} />
+          <Route path="/add-storage" element={<AddStorage />} />
           <Route path="/health" element={<Health />} />
           <Route path="/pediatrician" element={<Professional />} />
           <Route path="/vaccines" element={<Vaccines />} />
