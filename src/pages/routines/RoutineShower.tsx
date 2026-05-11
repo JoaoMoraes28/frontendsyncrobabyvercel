@@ -113,15 +113,22 @@ function RoutineShower() {
             return newProduct
         })
 
-        const fullDatas: DataShower = {
-            "start_time": data.start_time,
-            "end_time": data.end_time,
-            "time": data.time,
-            "product_id": newListProduct,
-            "description": data.description
+        if (getValues("time") != "Datas inválidas!") {
+            const fullDatas: DataShower = {
+                "start_time": data.start_time,
+                "end_time": data.end_time,
+                "time": data.time,
+                "product_id": newListProduct,
+                "description": data.description
+            }
+
+            console.log(fullDatas)
+
+        } else {
+            alert("Data inválida!")
+
         }
 
-        console.log(fullDatas)
     }
 
     return (
@@ -155,10 +162,10 @@ function RoutineShower() {
                     <InputDefault readOnly {...register("time")} type="text" id="time-shower" className={inputClassName} />
                 </div>
                 <div className="relative flex flex-col">
-                    <label htmlFor="products" className={labelClassName}>Produtos utilizados</label>
+                    <label htmlFor="products" className={labelClassName}>Produtos utilizados <span className="italic text-[12px]">(Registre apenas items que esgotaram por completo!)</span></label>
                     <InputDefault aria-label="Clique para visualizar os produtos para selecionar no registro." onClick={() => setExpandSelectorProduct(!expandSelectorProduct)} readOnly id="products" value={productSelected} className={`z-50 ${inputClassName}`} />
 
-                    <fieldset className={`absolute flex-col w-full h-68 top-16 overflow-y-scroll bg-lightest pt-4 gap-2 rounded-bl-lg rounded-br-lg border-b border-l border-r border-primary-darker z-40 ${expandSelectorProduct ? 'flex' : 'hidden'}
+                    <fieldset className={`absolute flex-col w-full h-68 top-21 overflow-y-scroll bg-lightest pt-4 gap-2 rounded-bl-lg rounded-br-lg border-b border-l border-r border-primary-darker z-40 ${expandSelectorProduct ? 'flex' : 'hidden'}
                     xl:h-46`}>
                         {products.map((product) => (
                             <div key={product.id} className="flex items-center w-full h-8 pl-2 gap-2">

@@ -10,7 +10,8 @@ import Search from "../../assets/search.svg"
 import { InputDefault } from "../../components/InputDefault"
 import { CarouselDots } from "../../components/CarouselDots"
 
-import Date from "../../utils/Date"
+import CardCarousel from "./components/CardCarousel";
+import ArticleCard from "./components/ArticleCard";
 
 export interface ArticleModel {
     id: number
@@ -270,51 +271,7 @@ function Articles() {
                 <ul onScroll={scrollCarousel} ref={carousel} className="flex items-center gap-6 w-full max-h-[calc(100%-110px)] px-0.5 overflow-x-auto scroll-smooth snap-x snap-mandatory
                 xl:min-h-[90%]">
                     {articlesCarousel.map((article) => (
-                        <li onClick={(e) => handleArticlePage(e, article.id)} key={article.id} ref={articleCarousel} className="min-w-full h-[96%] rounded-xl shadow-purple-sm snap-center bg-lilas
-                        xl:pointer-events-none">
-                            <article className="w-full h-full
-                                xl:relative">
-                                <figure className="w-full h-[calc(100%-40px)]
-                                    xl:flex xl:h-full xl:rounded-xl">
-                                    <img aria-hidden="true" src={article.midia} alt="" className="w-full h-[70%] rounded-t-xl object-top object-cover
-                                        xl:w-1/2 xl:h-full xl:rounded-tr-none xl:rounded-bl-xl" />
-                                    <figcaption className="px-4 pt-2 space-y-2 font-poppins h-[30%] bg-lilas
-                                        xl:w-1/2 xl:h-full xl:rounded-tr-xl xl:rounded-br-xl xl:px-10 xl:pt-6">
-                                        <span className={`hidden xl:flex xl:justify-center xl:items-center xl:w-30 xl:h-8 xl:rounded-xl xl:shadow-purple-sm xl:font-medium xl:font-nunito xl:bg-white `}>
-                                            {article.type == 'saude' ? 'Saúde'
-                                                : article.type == 'alimentacao' ? 'Alimentação'
-                                                    : 'Sono'}
-                                        </span>
-                                        <p className="text-primary-text font-semibold
-                                            md:text-xl xl:text-[1.5rem]">{article.title}</p>
-                                        <p className="hidden md:block md:text-lg md:font-medium md:text-primary
-                                            xl:text-black xl:text-[1.2rem]">{article.description}</p>
-                                    </figcaption>
-                                </figure>
-                                <footer className="flex justify-between items-center px-4 w-full h-10 rounded-b-xl font-nunito text-[10px] bg-lilas
-                                    xl:absolute xl:bottom-0 xl:right-0 xl:w-1/2 xl:h-12 xl:pb-4 xl:rounded-bl-none">
-                                    <span className="text-primary/40
-                                        md:text-[12px]
-                                        xl:hidden">{article.font}</span>
-                                    <div className="xl:hidden">
-                                        <span className="text-primary font-semibold
-                                            md:text-[12px]">Autor(a): </span>
-                                        <span className="text-primary
-                                            md:text-[12px]">{article.author}</span>
-                                    </div>
-                                    <div className="hidden xl:flex xl:justify-between xl:items-center xl:w-full">
-                                        <Link to={`/article/${article.id}`}
-                                            className="xl:rounded-lg xl:pointer-events-auto xl:hover:bg-accent-darker xl:flex xl:justify-center xl:items-center xl:bg-accent xl:shadow-purple-md xl:text-white xl:text-[125%] xl:w-2/5 xl:h-12"
-                                        >
-                                            Ler o artigo completo
-                                        </Link>
-                                        <span className="xl:flex xl:justify-center xl:items-center xl:w-16 xl:h-6 xl:bg-accent xl:rounded-lg xl:text-white xl:text-[110%]">
-                                            {Date.formatedDate(article.date)}
-                                        </span>
-                                    </div>
-                                </footer>
-                            </article>
-                        </li>
+                        <CardCarousel key={article.id} article={article} handleArticlePage={handleArticlePage} articleCarousel={articleCarousel} />
                     ))}
                 </ul>
                 <div className="flex justify-center w-full
@@ -331,54 +288,28 @@ function Articles() {
                 md:h-16
                 xl:justify-start xl:gap-5">
                     <button onClick={() => onFilterArticles("Todos")} className={`hidden xl:flex xl:border ${classButtonFilter} ${filterArticles == "Todos" ? "bg-accent text-white border-accent shadow-sm"
-                    : "bg-white text-gray-500 border-gray-200 hover:border-accent hover:text-accent"}`}>
+                        : "bg-white text-gray-500 border-gray-200 hover:border-accent hover:text-accent"}`}>
                         <li>Todos</li>
                     </button>
                     <button onClick={() => onFilterArticles("sono")} className={`border ${classButtonFilter} ${filterArticles == "sono" ? "bg-accent text-white border-accent shadow-sm"
-                    : "bg-white text-gray-500 border-gray-200 hover:border-accent hover:text-accent"}`}>
+                        : "bg-white text-gray-500 border-gray-200 hover:border-accent hover:text-accent"}`}>
                         <li>Sono</li>
                     </button>
                     <button onClick={() => onFilterArticles("alimentacao")} className={`border ${classButtonFilter} ${filterArticles == "alimentacao" ? "bg-accent text-white border-accent shadow-sm"
-                    : "bg-white text-gray-500 border-gray-200 hover:border-accent hover:text-accent"}`}>
+                        : "bg-white text-gray-500 border-gray-200 hover:border-accent hover:text-accent"}`}>
                         <li>Alimentação</li>
                     </button>
                     <button onClick={() => onFilterArticles("saude")} className={`border ${classButtonFilter} ${filterArticles == "saude" ? "bg-accent text-white border-accent shadow-sm"
-                    : "bg-white text-gray-500 border-gray-200 hover:border-accent hover:text-accent"}`}>
+                        : "bg-white text-gray-500 border-gray-200 hover:border-accent hover:text-accent"}`}>
                         <li>Saúde</li>
                     </button>
                 </ul>
                 <ul ref={carouselArticlesDesktop} className="flex flex-col justify-around w-full h-auto gap-4 py-2
                 xl:flex-row xl:w-[calc(100%-52px)] xl:h-[calc(100%-56px)] xl:justify-start xl:gap-8 xl:overflow-x-auto scroll-smooth snap-x snap-mandatory">
                     {articles.map((article) => (
-                        <li ref={cardArticleDesktop} key={article.id} className="flex w-full min-h-22
-                        md:min-h-24
-                        xl:min-w-50 xl:max-w-50 xl:h-full xl:overflow-hidden xl:rounded-sm xl:snap-center xl:hover:shadow-purple-sm xl:hover:scale-102 xl:transition xl:duration-300">
-                            <article className="flex w-full h-full rounded-lg
-                            xl:flex-col xl:relative">
-                                <div className="flex justify-center pt-4 w-1/3 h-full bg-primary rounded-l-lg
-                                md:w-[28%]
-                                xl:relative xl:w-full xl:h-1/2 xl:rounded-bl-none xl:rounded-tl-sm xl:rounded-tr-sm xl:pt-0">
-                                    <span className="flex justify-center items-center w-22 h-6 font-nunito text-primary-text bg-light font-bold rounded-md
-                                    md:w-30 md:h-8
-                                    xl:absolute xl:bg-accent xl:text-white xl:font-normal xl:text-[12px] xl:rounded-sm xl:w-18 xl:h-6 xl:top-2 xl:right-2">{Date.formatedDate(article.date)}</span>
-                                    <figure className="hidden xl:block xl:w-full xl:h-full xl:rounded-t-sm">
-                                        <img src={article.midia} alt="" className="xl:w-full xl:h-full xl:rounded-t-sm xl:object-cover xl:object-top" />
-                                    </figure>
-                                </div>
-                                <div className="flex flex-col justify-between w-2/3 h-full bg-lilas py-2 rounded-r-lg
-                                md:w-[72%]
-                                xl:w-full xl:h-1/2 xl:justify-start xl:rounded-tr-none xl:rounded-b-sm xl:pb-7 xl:overflow-y-auto">
-                                    <p className="w-full px-4 text-primary font-poppins font-semibold text-[12px]
-                                    md:text-[16px]
-                                    xl:text-[14px]">{article.title}</p>
-                                    <p className="w-full px-4 text-dark-purple-muted font-nunito font-normal text-[10px]
-                                    md:text-[12px]">{article.description}</p>
-                                    <p className="w-full px-2 text-end text-primary-text font-poppins font-medium text-[8px]
-                                    md:text-[10px]
-                                    xl:absolute xl:flex xl:items-center xl:bg-lilas xl:justify-end xl:bottom-0 xl:h-6 xl:rounded-b-sm">{article.author}</p>
-                                </div>
-                            </article>
-                        </li>
+                        <Link to={`/article/${article.id}`}>
+                            <ArticleCard key={article.id} article={article} cardArticleDesktop={cardArticleDesktop} />
+                        </Link>
                     ))}
                     <div className="hidden xl:absolute xl:top-[calc(50%+12px)] xl:right-0 xl:flex xl:w-full xl:h-6 xl:justify-between">
                         <button onClick={() => moveCarouselArticles('left')} className="">

@@ -12,6 +12,7 @@ import {
   labelRadioButton,
 } from "../../routines/RoutineFeeding";
 
+import Close from "../../../assets/closeModal.svg"
 import setSelector from "../../../assets/setExpandSelector.svg";
 
 interface IllnessData {
@@ -64,8 +65,24 @@ export function AddIllness() {
       <form
         onSubmit={handleSubmit(sendDatas)}
         className="flex flex-col justify-between w-full h-full
-        xl:w-[90%] md:px-6 xl:px-14 md:py-2 md:rounded-2xl md:mt-2 xl:gap-0 md:shadow-purple-md md:bg-lilas"
+        xl:w-[90%] xl:py-4 md:px-6 xl:px-14 md:py-2 md:rounded-2xl md:mt-2 xl:gap-0 md:shadow-purple-md md:bg-lilas"
       >
+        <header className="hidden xl:flex xl:justify-between">
+          <h2 className="xl:flex xl:w-70 xl:-ml-4 xl:text-darker-purple xl:font-bold xl:text-[22px]">
+            Registrar enfermidade
+          </h2>
+          <button
+            type="button"
+            onClick={() => navigate(-1)}
+            className="xl:-mr-4"
+          >
+            <img
+              src={Close}
+              alt="Fecha o registro de enfermidades e retorna a tela anterior."
+              className="xl:w-8 xl:h-8"
+            />
+          </button>
+        </header>
         <div className="flex flex-col">
           <label htmlFor="name" className={labelClassName}>
             Nome
@@ -102,17 +119,15 @@ export function AddIllness() {
               <img
                 src={setSelector}
                 alt=""
-                className={`w-6 h-6 transition-transform ${
-                  typeExpand ? "rotate-180" : ""
-                }`}
+                className={`w-6 h-6 transition-transform ${typeExpand ? "rotate-180" : ""
+                  }`}
               />
             </button>
           </div>
 
           <fieldset
-            className={`absolute top-20 md:top-22 xl:top-20 flex-col w-full rounded-bl-lg rounded-br-lg border-b border-l border-r border-primary-darker overflow-y-auto bg-white z-40 pt-2 pb-2 gap-2 shadow-purple-sm ${
-              typeExpand ? "flex" : "hidden"
-            }`}
+            className={`absolute top-20 md:top-22 xl:top-20 flex-col w-full rounded-bl-lg rounded-br-lg border-b border-l border-r border-primary-darker overflow-y-auto bg-white z-40 pt-2 pb-2 gap-2 shadow-purple-sm ${typeExpand ? "flex" : "hidden"
+              }`}
           >
             {illnessTypes.map((type) => (
               <div
@@ -210,7 +225,7 @@ export function AddIllness() {
         <div
           className="flex justify-between w-full h-10 mt-4 md:mb-10
                         md:justify-center md:gap-10 md:h-12
-                        xl:h-10 xl:gap-20 xl:mt-3"
+                        xl:h-10 xl:gap-20 xl:mt-3 xl:mb-0"
         >
           <BtnPrimary
             onClick={() => navigate(-1)}
