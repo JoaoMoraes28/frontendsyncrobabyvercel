@@ -116,7 +116,7 @@ export function Storage() {
   const [expandedCardId, setExpandedCardId] = useState<number | null>(null);
   const [userInput, setUserInput] = useState("");
 
-  const getStatusColor = (quantity: number, daysRemaining: number) => {
+  const getStatusColor = (quantity: number) => {
     if (quantity <= 1) return "var(--color-red-light)";
     if (quantity <= 3)
       return "var(--color-yellow-warning)";
