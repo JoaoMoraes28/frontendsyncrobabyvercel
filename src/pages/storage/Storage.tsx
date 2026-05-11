@@ -133,17 +133,17 @@ export function Storage() {
     return {
       healthy: inventoryItems.filter(
         (i) =>
-          getStatusColor(i.quantity, i.daysRemaining) ===
+          getStatusColor(i.quantity) ===
           "var(--color-green-success)",
       ).length,
       warning: inventoryItems.filter(
         (i) =>
-          getStatusColor(i.quantity, i.daysRemaining) ===
+          getStatusColor(i.quantity) ===
           "var(--color-yellow-warning)",
       ).length,
       danger: inventoryItems.filter(
         (i) =>
-          getStatusColor(i.quantity, i.daysRemaining) ===
+          getStatusColor(i.quantity) ===
           "var(--color-red-light)",
       ).length,
     };
