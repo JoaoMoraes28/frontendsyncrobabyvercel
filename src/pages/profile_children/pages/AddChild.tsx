@@ -36,7 +36,7 @@ export function AddChildPage() {
   }
 
   return (
-    <div className="flex flex-col w-full min-h-screen bg-light font-nunito xl:pb-0 xl:flex-row">
+    <div className="flex flex-col w-full min-h-screen bg-light xl:pb-0 xl:flex-row">
       {/* Header Mobile*/}
       <div className="xl:hidden w-full">
         <Header />

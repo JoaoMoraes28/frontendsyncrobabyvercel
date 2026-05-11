@@ -116,7 +116,9 @@ function NavigationBar({ listIcons }: Props) {
         </ul>
       </div>
 
-      <div className="hidden xl:flex xl:w-full xl:h-22 xl:justify-between xl:items-center xl:px-4 xl:border-t xl:border-white">
+      <Link
+        to="/profile-user"
+        className="hidden xl:flex xl:w-full xl:h-22 xl:justify-between xl:items-center xl:px-4 xl:border-t xl:border-white">
         <div className="xl:flex xl:items-top xl:gap-2">
           <img
             src={Profile}
@@ -128,15 +130,10 @@ function NavigationBar({ listIcons }: Props) {
             <span className="xl:text-[10px] xl:font">Pedro Henrique</span>
           </div>
         </div>
-        <Link
-        to="/profile-user"
-          className="xl:w-4 xl:h-4"
-        >
-          <img src={arrowIcon}
-            alt="Redirecionamento para o perfil de usuário"
-            className="w-full h-full" />
-        </Link>
-      </div>
+        <img src={arrowIcon}
+          alt="Redirecionamento para o perfil de usuário"
+          className="xl:w-4 xl:h-4" />
+      </Link>
     </nav>
   );
 }

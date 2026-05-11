@@ -32,7 +32,7 @@ function Perfil({
       <h1 className="xl:w-full xl:pl-18 xl:font-semibold xl:text-[4.2rem] xl:text-darker-purple">
         SYNCROBABY
       </h1>
-      <h3 className="xl:flex xl:items-center xl:justify-center xl:full xl:mt-1">
+      <h3 className="xl:flex xl:w-full xl:items-center xl:justify-center xl:full xl:mt-1">
         {location.pathname == "/profile-children" ? (
           <InputDefault
             readOnly={readonly}
@@ -40,7 +40,7 @@ function Perfil({
             className={`xl:w-[77%] xl:pl-2 xl:text-[3.1rem] xl:text-text-primary xl:font-bold ${readonly ? "" : "xl:bg-white xl:rounded-xl"}`}
           />
         ) : (
-          <span className="text-primary-text">
+          <span className="xl:w-[77%] xl:pl-2 xl:text-[3.1rem] xl:text-text-primary xl:font-bold">
             Olá {user_name ? user_name : "usuário"}
           </span>
         )}

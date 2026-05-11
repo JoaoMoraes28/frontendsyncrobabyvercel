@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom'
+
 import Plus from '../assets/plus.svg'
 
 interface Children {
@@ -12,7 +14,7 @@ interface Props {
 }
 
 function ChildrenSelect({ idChild, setChild }: Props) {
-    const children: Children[]= [
+    const children: Children[] = [
         {
             "id": 1,
             "name": "Pedro",
@@ -42,8 +44,11 @@ function ChildrenSelect({ idChild, setChild }: Props) {
                     </span>
                 </li>
             ))}
-            <img src={Plus} alt="Icone para redirecionar a tela de registrar um novo filho(a)." 
-            className="xl:w-auto xl:h-4" />
+            <Link
+                to="/add-child">
+                <img src={Plus} alt="Icone para redirecionar a tela de registrar um novo filho(a)."
+                    className="xl:w-auto xl:h-4" />
+            </Link>
         </ul>
     )
 }

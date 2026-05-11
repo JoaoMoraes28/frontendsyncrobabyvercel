@@ -102,6 +102,11 @@ function RoutineShower() {
         setListProductSelected(newList)
     }
 
+    function removeItemRegister(id: number) {
+        const newData: Products[] = listProductSelected.filter(it => it.id != id)
+        setListProductSelected(newData)
+    }
+
     function sendDatas(data: DataShower) {
         const newListProduct: Products[] = listProductSelected.map((it) => {
             const { type, product, measure, ...newProduct } = it
@@ -168,9 +173,14 @@ function RoutineShower() {
                         <li key={product.id} className="flex justify-between items-center">
                             <span className="text-lilas-dark font-semibold text-lg
                                     md:text-xl">{product.product}</span>
-                            <div className={inputMeasureClass}>
-                                <InputDefault onChange={(e) => onHandleQuantity(product.id, e.target.value)} type="number" className="w-2/3 pl-2 text-center" />
-                                <span className="w-1/3">{product.measure}</span>
+                            <div className="flex gap-10">
+                                <div className={inputMeasureClass}>
+                                    <InputDefault onChange={(e) => onHandleQuantity(product.id, e.target.value)} type="number" className="w-2/3 pl-2 text-center" />
+                                    <span className="w-1/3">{product.measure}</span>
+                                </div>
+                                <button onClick={() => removeItemRegister(product.id)} type="button">
+                                    <img src={Trash} alt="Exclui produto do registro." className="w-auto h-4" />
+                                </button>
                             </div>
                         </li>
                     ))}

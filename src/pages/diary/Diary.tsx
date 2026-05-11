@@ -54,7 +54,7 @@ function Diary() {
 
     return (
         <div className="relative flex flex-col items-center w-full min-h-full pb-8">
-            <div className="hidden xl:w-full xl:h-14 xl:flex xl:justify-between xl:items-center xl:bg-white">
+            <div className="hidden xl:w-full xl:h-14 xl:flex xl:justify-between xl:items-center xl:bg-light">
                 <div className="xl:flex">
                     <ChildrenSelect idChild={childSelected} setChild={setChildSelected} />
                 </div>
@@ -83,7 +83,7 @@ function Diary() {
                     </Link>
                 ))}
             </ul>
-            <div className="fixed bottom-22 w-full h-14 flex justify-center items-center bg-white
+            <div className="fixed bottom-22 w-full h-14 flex justify-center items-center bg-light
             md:bottom-28
             xl:hidden">
                 <Link

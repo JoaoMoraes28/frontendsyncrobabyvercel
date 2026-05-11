@@ -12,7 +12,7 @@ export function BtnPrimary({
   return (
     <button
       type="button"
-      className={`rounded-lg py-2 px-3 ${className}`}
+      className={`rounded-sm py-2 px-3 ${className}`}
       {...props}
     >
       <p className=" font-poppins">{text}</p>

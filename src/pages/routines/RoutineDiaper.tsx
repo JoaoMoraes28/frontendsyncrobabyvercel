@@ -112,6 +112,11 @@ function RoutineDiaper() {
         setProductSelected(newList)
     }
 
+    function removeItemRegister(id: number) {
+        const newData: Products[] = productSelected.filter(it => it.id != id)
+        setProductSelected(newData)
+    }
+
     function sendDatas(datas: DataDiaper) {
         if (typeSelected != 0) {
 
@@ -178,7 +183,7 @@ function RoutineDiaper() {
                     <label htmlFor="typeDiaper" className={labelClassName}>Tipo</label>
                     <div onClick={() => setExpandTypeSelector(!expandTypeSelector)} aria-label="Visualiza os tipos de registro para troca de fralda." className={`xl:flex xl:w-full xl:justify-between xl:items-center xl:z-50 ${inputClassName}`}>
                         <InputDefault readOnly id="typeDiaper" value={valueInputType} className="w-1/2" />
-                            <img src={setSelector} alt="" className={`xl:w-6 xl:h-6 ${expandTypeSelector ? "turn-set" : "return-set"}`} />
+                        <img src={setSelector} alt="" className={`xl:w-6 xl:h-6 ${expandTypeSelector ? "turn-set" : "return-set"}`} />
                     </div>
                     <fieldset className={`xl:absolute xl:top-15 xl:justify-around xl:w-full xl:h-15 xl:z-40 xl:rounded-bl-lg xl:rounded-br-lg xl:border-b xl:border-l xl:border-r xl:border-primary-darker
                         xl:bg-lightest xl:pt-4 xl:gap-2 ${expandTypeSelector ? "xl:flex" : "xl:hidden"}`}>
@@ -215,9 +220,14 @@ function RoutineDiaper() {
                         <li key={product.id} className="flex items-center justify-between">
                             <span className="text-lilas-dark font-semibold text-lg
                                     md:text-xl">{product.product}</span>
-                            <div className={inputMeasureClass}>
-                                <InputDefault onChange={(e) => onHandleQuantity(product.id, e.target.value)} type="number" className="w-2/3 pl-2 text-center" />
-                                <span className="flex items-center w-1/3">{product.measure}</span>
+                            <div className="flex gap-10">
+                                <div className={inputMeasureClass}>
+                                    <InputDefault onChange={(e) => onHandleQuantity(product.id, e.target.value)} type="number" className="w-2/3 pl-2 text-center" />
+                                    <span className="flex items-center w-1/3">{product.measure}</span>
+                                </div>
+                                <button onClick={() => removeItemRegister(product.id)} type="button">
+                                    <img src={Trash} alt="Exclui produto do regiustro." className="w-auto h-4" />
+                                </button>
                             </div>
                         </li>
                     ))}

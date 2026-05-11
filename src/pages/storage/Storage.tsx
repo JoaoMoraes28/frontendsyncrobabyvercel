@@ -198,11 +198,13 @@ export function Storage() {
           <img src={micIcon} alt="" className="w-4 h-auto" />
         </div>
 
-        <BtnPrimary
-          text="Adicionar item ao estoque"
-          className="hidden lg:flex bg-accent text-white font-bold py-2 px-6 rounded-xl shadow-md hover:brightness-95 active:scale-95 transition-all cursor-pointer"
+        <Link
+          to="/add-storage"
+          className="hidden lg:flex justify-center bg-accent text-white font-bold py-2 px-6 rounded-xl shadow-md hover:brightness-95 active:scale-95 transition-all cursor-pointer"
           onClick={() => { }}
-        />
+        >
+          Adicionar item ao estoque
+        </Link>
       </div>
 
       <div className="w-full flex justify-between items-center z-89">
