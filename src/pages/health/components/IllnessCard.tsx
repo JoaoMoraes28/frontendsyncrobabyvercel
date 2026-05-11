@@ -64,7 +64,7 @@ export function IllnessCard({
       </div>
 
       <div
-        className={`hidden md:flex flex-col bg-white shadow-md border-l-[6px] ${borderColorDesktop} p-5 pb-4 h-full relative group`}
+        className={`hidden md:flex flex-col bg-white shadow-md border-l-[6px] ${borderColorDesktop} p-5 pb-4 h-full relative rounded-lg group`}
       >
         <button
           onClick={(e) => {

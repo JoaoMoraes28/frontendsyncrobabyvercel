@@ -181,27 +181,32 @@ function RoutineFeeding() {
   }
 
   function sendDatas(datas: DataFeeding) {
+    let newListFood: ListFood[] = []
+
     if (listFood.length > 0 && !listFood.some((it) => it.food_quantity == 0)) {
-      const newListFood: ListFood[] = listFood.map((food) => {
+      newListFood = listFood.map((food) => {
         const { food_name, measure, ...newFood } = food;
         return newFood;
       });
 
+    }
+
+
+    if (typeFood != 0) {
       const fullDatas = {
-        date: dateUTC,
+        hour: dateUTC,
+        typeFood: typeFood,
         description: datas.description,
         food: newListFood,
       };
 
       console.log(fullDatas);
-      alert("Registro concluído");
-    } else if (listFood.length <= 0) {
-      alert("Selecione ao menos um alimento!");
-    } else if (listFood.some((it) => it.food_quantity == 0)) {
-      alert(
-        "Você possui alimentos selecionados que não foram consumidos, deseja continuar?",
-      );
+    } else {
+      
+      alert("Selecione o tipo d registro!")
     }
+
+
   }
 
   useEffect(() => {
@@ -286,7 +291,7 @@ function RoutineFeeding() {
                       src={addImageFoodType(food.type)}
                       alt=""
                       className="w-15 h-15
-                                                                                                            md:w-23 md:h-23"
+                      md:w-23 md:h-23"
                     />
                     <span
                       className="w-[90%] text-center font-nunito text-primary text-sm font-semibold
@@ -348,7 +353,7 @@ function RoutineFeeding() {
         </div>
         <div className="relative flex flex-col">
           <label htmlFor="food" className={labelClassName}>
-            Alimento
+            Alimento <span className="italic text-[12px]">(Registre apenas items que esgotaram por completo!)</span>
           </label>
           <InputDefault
             aria-label="Clique aqui para exibir os alimentos cadastrados e selecioná-los."
@@ -362,7 +367,7 @@ function RoutineFeeding() {
           />
 
           <fieldset
-            className={`absolute top-16 flex-col w-full h-70 rounded-bl-lg rounded-br-lg border-b border-l border-r border-primary-darker
+            className={`absolute top-21 flex-col w-full h-70 rounded-bl-lg rounded-br-lg border-b border-l border-r border-primary-darker
                         overflow-y-scroll bg-lightest pt-4 gap-2 ${foodExpandSelector && typeFood != 0 ? "flex" : "hidden"}
                         md:top-20 md:h-76
                         xl:top-15 xl:h-54`}

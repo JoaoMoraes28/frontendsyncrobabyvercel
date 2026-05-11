@@ -8,7 +8,6 @@ import { InputDefault } from "../../components/InputDefault";
 import Search from "../../assets/search.svg";
 import micIcon from "../../assets/micIcon.svg";
 import HygieneIcon from "../../assets/hygieneIcon.svg?react";
-import BtnPrimary from "../../components/BtnPrimary";
 import { SummaryCard } from "./components/SummaryCard";
 import { ProductCard } from "./components/ProductCard";
 
@@ -117,9 +116,9 @@ export function Storage() {
   const [expandedCardId, setExpandedCardId] = useState<number | null>(null);
   const [userInput, setUserInput] = useState("");
 
-  const getStatusColor = (quantity: number, daysRemaining: number) => {
-    if (quantity <= 1 || daysRemaining <= 3) return "var(--color-red-light)";
-    if (quantity <= 3 || daysRemaining <= 7)
+  const getStatusColor = (quantity: number) => {
+    if (quantity <= 1) return "var(--color-red-light)";
+    if (quantity <= 3)
       return "var(--color-yellow-warning)";
     return "var(--color-green-success)";
   };

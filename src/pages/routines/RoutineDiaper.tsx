@@ -201,10 +201,10 @@ function RoutineDiaper() {
                     </fieldset>
                 </div>
                 <div className="relative flex flex-col">
-                    <label htmlFor="product" className={labelClassName}>Produtos utilizados</label>
+                    <label htmlFor="product" className={labelClassName}>Produtos utilizados <span className="italic text-[12px]">(Registre apenas items que esgotaram por completo!)</span></label>
                     <InputDefault aria-label="Clique para visualizar os produtos para selecionar no registro." onClick={() => setExpandSelectorProduct(!expandSelectorProduct)} readOnly id="prodict" value={valueProduct} className={`z-50 ${inputClassName}`} />
 
-                    <fieldset className={`absolute flex-col w-full h-70 top-16 overflow-y-scroll bg-lightest pt-4 gap-2 rounded-bl-lg rounded-br-lg border-b border-l border-r border-primary-darker z-40 ${expandSelectorProduct ? 'flex' : 'hidden'}`}>
+                    <fieldset className={`absolute flex-col w-full h-70 top-21 overflow-y-scroll bg-lightest pt-4 gap-2 rounded-bl-lg rounded-br-lg border-b border-l border-r border-primary-darker z-40 ${expandSelectorProduct ? 'flex' : 'hidden'}`}>
                         {products.map((product) => (
                             <div key={product.id} className="flex items-center w-full h-8 pl-2 gap-2">
                                 <InputDefault onChange={() => {
