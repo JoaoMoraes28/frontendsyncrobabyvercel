@@ -311,7 +311,7 @@ function RoutineFeeding() {
               aria-label="Icone para visualizar os tipos de alimento."
               className={`xl:flex xl:justify-between xl:items-center xl:z-50 ${inputClassName}`}
             >
-              <InputDefault readOnly value={valueInputTypeFood} />
+              <InputDefault readOnly value={valueInputTypeFood} className="w-full" />
               <img
                 src={setSelector}
                 alt=""

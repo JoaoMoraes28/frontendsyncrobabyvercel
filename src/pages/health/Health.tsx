@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   DropdownFilter,
@@ -25,72 +25,91 @@ const filterOptions: FilterOption[] = [
   { id: "Crônica", label: "Crônica" },
 ];
 
-const items: HealthRecord[] = [
-  {
-    id: 1,
-    nome: "Gripe",
-    tipo: "Aguda",
-    dataRegistro: "01/06/2025",
-    dataInicio: "01/06/2025",
-    dataTermino: "05/06/2025",
-    medicacao: "Dipirona",
-    descricao: "Congestão nasal, dor de garganta, cansaço extremo.",
-  },
-  {
-    id: 2,
-    nome: "Infecção de Ouvido",
-    tipo: "Aguda",
-    dataRegistro: "07/07/2025",
-    dataInicio: "05/07/2025",
-    dataTermino: "12/07/2025",
-    medicacao: "Amoxicilina",
-    descricao: "Dor intensa no canal auditivo e febre leve.",
-  },
-  {
-    id: 3,
-    nome: "Conjuntivite Alérgica",
-    tipo: "Crônica",
-    dataRegistro: "05/04/2024",
-    dataInicio: "01/04/2024",
-    medicacao: "Colírio Antihistamínico",
-    descricao: "Irritação ocular sazonal devido a pólen.",
-  },
-  {
-    id: 4,
-    nome: "Gripe",
-    tipo: "Aguda",
-    dataRegistro: "11/03/2026",
-    dataInicio: "10/03/2026",
-    dataTermino: "15/03/2026",
-    medicacao: "Antigripal comum",
-    descricao: "Sintomas leves de resfriado.",
-  },
-  {
-    id: 5,
-    nome: "Gripe",
-    tipo: "Aguda",
-    dataRegistro: "18/09/2026",
-    dataInicio: "15/09/2026",
-    dataTermino: "22/09/2026",
-    medicacao: "Repouso e hidratação",
-    descricao: "Dores no corpo e coriza.",
-  },
-];
-
 export function Health() {
   const navigate = useNavigate();
   const [selectedFilter, setSelectedFilter] = useState("Todas");
   const [expandedCardId, setExpandedCardId] = useState<number | null>(null);
   const [childSelected, setChildSelected] = useState<number>(1)
+  const [items, setItems] = useState<HealthRecord[]>([
+    {
+      id: 1,
+      nome: "Gripe",
+      tipo: "Aguda",
+      dataRegistro: "01/06/2025",
+      dataInicio: "01/06/2025",
+      dataTermino: "05/06/2025",
+      medicacao: "Dipirona",
+      descricao: "Congestão nasal, dor de garganta, cansaço extremo.",
+    },
+    {
+      id: 2,
+      nome: "Infecção de Ouvido",
+      tipo: "Aguda",
+      dataRegistro: "07/07/2025",
+      dataInicio: "05/07/2025",
+      dataTermino: "12/07/2025",
+      medicacao: "Amoxicilina",
+      descricao: "Dor intensa no canal auditivo e febre leve.",
+    },
+    {
+      id: 3,
+      nome: "Conjuntivite Alérgica",
+      tipo: "Crônica",
+      dataRegistro: "05/04/2024",
+      dataInicio: "01/04/2024",
+      medicacao: "Colírio Antihistamínico",
+      descricao: "Irritação ocular sazonal devido a pólen.",
+    },
+    {
+      id: 4,
+      nome: "Gripe",
+      tipo: "Aguda",
+      dataRegistro: "11/03/2026",
+      dataInicio: "10/03/2026",
+      dataTermino: "15/03/2026",
+      medicacao: "Antigripal comum",
+      descricao: "Sintomas leves de resfriado.",
+    },
+    {
+      id: 5,
+      nome: "Gripe",
+      tipo: "Aguda",
+      dataRegistro: "18/09/2026",
+      dataInicio: "15/09/2026",
+      dataTermino: "22/09/2026",
+      medicacao: "Repouso e hidratação",
+      descricao: "Dores no corpo e coriza.",
+    },
+  ]);
+  const [itemsHealth, setItemsHealth] = useState<HealthRecord[]>([])
 
   const toggleCard = (id: number) => {
     setExpandedCardId((prev) => (prev === id ? null : id));
   };
 
-  const filteredItems = items.filter((item) => {
-    if (selectedFilter === "Todas") return true;
-    return item.tipo === selectedFilter;
-  });
+  function filteredItems(opt: string) {
+    setSelectedFilter(opt)
+
+    if (opt === "Todas") {
+      setItemsHealth(items)
+
+    } else {
+      const newData: HealthRecord[] = items.filter(it => it.tipo === opt)
+      setItemsHealth(newData)
+
+    }
+
+  }
+
+  function deleteItem(id: number) {
+    const newData: HealthRecord[] = items.filter(it => it.id != id)
+    setItems(newData)
+    setItemsHealth(newData)
+  }
+
+  useEffect(() => {
+    setItemsHealth(items)
+  }, [])
 
   return (
     <div className="flex w-full flex-col gap-6">
@@ -119,12 +138,11 @@ export function Health() {
             {filterOptions.map((opt) => (
               <button
                 key={opt.id}
-                onClick={() => setSelectedFilter(opt.label)}
-                className={`px-4 py-1.5 rounded-lg text-sm font-semibold border transition-all ${
-                  selectedFilter === opt.label
-                    ? "bg-accent text-white border-accent shadow-sm"
-                    : "bg-white text-gray-500 border-gray-200 hover:border-accent hover:text-accent"
-                }`}
+                onClick={() => filteredItems(opt.label)}
+                className={`px-4 py-1.5 rounded-lg text-sm font-semibold border transition-all ${selectedFilter === opt.label
+                  ? "bg-accent text-white border-accent shadow-sm"
+                  : "bg-white text-gray-500 border-gray-200 hover:border-accent hover:text-accent"
+                  }`}
               >
                 {opt.label}
               </button>
@@ -144,15 +162,16 @@ export function Health() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 overflow-y-auto max-h-[75vh] md:max-h-full pr-2 pb-4">
-        {filteredItems.map((item) => (
+        {itemsHealth.map((item) => (
           <IllnessCard
             key={item.id}
             item={item}
             expandedCardId={expandedCardId}
             toggleCard={toggleCard}
+            onDelete={deleteItem}
           />
         ))}
-        {filteredItems.length === 0 && (
+        {itemsHealth.length === 0 && (
           <p className="text-center text-primary-darker font-nunito mt-10 md:col-span-full">
             Nenhuma enfermidade encontrada para este filtro.
           </p>

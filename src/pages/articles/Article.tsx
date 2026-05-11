@@ -5,8 +5,13 @@ import remarkGfm from 'remark-gfm'
 import type { ArticleModel } from "./Articles"
 
 import Baby2 from "../../assets/articles/baby1.png"
+import SetBack from "../../assets/navigation/setBack.svg";
+
+import { useNavigate } from "react-router-dom"
 
 function ArticleContent() {
+    const navigate = useNavigate()
+
     const [article] = useState<ArticleModel>(
         {
             "id": 1,
@@ -23,6 +28,11 @@ function ArticleContent() {
 
     return (
         <div className="flex flex-col gap-5">
+            <div className="hidden xl:flex xl:justify-start xl:w-full">
+                <button onClick={() => navigate(-1)}>
+                    <img src={SetBack} alt="Retorna a tela anterior." className="xl:w-auto xl:h-9" />
+                </button>
+            </div>
             <div className="flex flex-col h-auto gap-6
             xl:flex-row-reverse">
                 <div className="flex flex-col 

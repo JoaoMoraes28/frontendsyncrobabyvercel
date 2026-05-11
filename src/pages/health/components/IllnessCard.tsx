@@ -5,12 +5,14 @@ interface IllnessCardProps {
   item: HealthRecord;
   expandedCardId: number | null;
   toggleCard: (id: number) => void;
+  onDelete: (id: number) => void
 }
 
 export function IllnessCard({
   item,
   expandedCardId,
   toggleCard,
+  onDelete
 }: IllnessCardProps) {
   const borderColorDesktop =
     item.tipo === "Crônica" ? "border-[#8A56E2]" : "border-[#4A90E2]";
@@ -31,11 +33,10 @@ export function IllnessCard({
         </span>
 
         <div
-          className={`grid transition-all duration-300 ease-in-out overflow-hidden ${
-            expandedCardId === item.id
+          className={`grid transition-all duration-300 ease-in-out overflow-hidden ${expandedCardId === item.id
               ? "grid-rows-[1fr] opacity-100 mt-4"
               : "grid-rows-[0fr] opacity-0"
-          }`}
+            }`}
         >
           <div className="min-h-0 flex flex-col gap-2 ">
             <span className="flex gap-1 text-primary-darker">
@@ -68,7 +69,7 @@ export function IllnessCard({
         <button
           onClick={(e) => {
             e.stopPropagation();
-            console.log(`Excluir enfermidade ${item.id}`);
+            onDelete(item.id)
           }}
           className="absolute top-4 right-4 text-red-500 hover:bg-red-50 p-1.5 rounded-md opacity-0 group-hover:opacity-100 transition-all duration-300"
           title="Excluir enfermidade"

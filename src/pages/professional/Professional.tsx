@@ -180,7 +180,7 @@ export function Professional() {
           />
           <BtnPrimary
             text="Adicionar profissional"
-            className="bg-accent flex justify-center items-center text-white font-poppins font-bold text-lg max-w-[70%] max-h-10 text-center rounded-xl shadow-md cursor-pointer hover:opacity-90 active:scale-95 transition-all"
+            className="bg-accent flex justify-center items-center text-white font-poppins font-bold text-lg max-w-[70%] max-h-10 text-center shadow-md cursor-pointer hover:opacity-90 active:scale-95 transition-all"
             onClick={() => navigate("/add-pediatrician")}
           />
         </div>

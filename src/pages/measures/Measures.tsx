@@ -157,7 +157,7 @@ function Measures() {
                     {filterOptions.map((option) => (
                         <li key={option.id} className={`xl:flex xl:justify-center xl:items-center xl:font-nunito xl:rounded-lg xl:min-w-19 xl:h-9 xl:border ${filterSelected == option.label ? "bg-accent text-white border-accent shadow-sm"
                             : "bg-white text-gray-500 border-gray-200 hover:border-accent hover:text-accent"}`}>
-                            <button onClick={() => setFilterSelected(option.label)} className="xl:w-full xl:h-full xl:px-4 xl:rounded-lg">
+                            <button onClick={() => setFilterSelected(option.label)} className="xl:w-full xl:h-full xl:px-4 xl:rounded-sm">
                                 <span>{option.label}</span>
                             </button>
                         </li>
@@ -166,7 +166,7 @@ function Measures() {
                 <div className="xl:flex xl:justify-between xl:w-full">
                     <h3 className="hidden xl:block xl:font-poppins xl:text-primary-text xl:font-bold xl:text-2xl">Gráfico de Desenvolvimento</h3>
                     <Link to="/update-measures"
-                        className="flex justify-center items-center bg-accent text-white h-8 rounded-md px-3
+                        className="flex justify-center items-center bg-accent text-white h-8 rounded-sm px-3
                         xl:relative xl:w-[40%] xl:max-w-100 xl:h-13 xl:shadow-purple-md">
                         <img aria-hidden="true" src={Plus} alt="" className="hidden xl:block xl:absolute xl:left-4" />
                         Atualizar dados
