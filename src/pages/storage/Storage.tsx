@@ -12,6 +12,8 @@ import BtnPrimary from "../../components/BtnPrimary";
 import { SummaryCard } from "./components/SummaryCard";
 import { ProductCard } from "./components/ProductCard";
 
+import { Link } from "react-router-dom";
+
 export interface InventoryItem {
   id: number;
   category: string;
@@ -199,7 +201,7 @@ export function Storage() {
         <BtnPrimary
           text="Adicionar item ao estoque"
           className="hidden lg:flex bg-accent text-white font-bold py-2 px-6 rounded-xl shadow-md hover:brightness-95 active:scale-95 transition-all cursor-pointer"
-          onClick={() => {}}
+          onClick={() => { }}
         />
       </div>
 
@@ -250,11 +252,12 @@ export function Storage() {
       </div>
 
       <div className="lg:hidden shrink-0 w-full flex justify-center pb-6 md:mt-0">
-        <BtnPrimary
-          text="Adicionar produto"
-          className="bg-accent text-white font-poppins font-bold text-lg w-[90%] max-w-87.5 py-3 rounded-xl shadow-md cursor-pointer hover:opacity-90 active:scale-95 transition-all"
-          onClick={() => {}}
-        />
+        <Link
+          to="/add-storage"
+          className="flex justify-center bg-accent text-white font-poppins font-bold text-lg w-[90%] max-w-87.5 py-3 rounded-xl shadow-md cursor-pointer hover:opacity-90 active:scale-95 transition-all"
+        >
+          Adicionar produto
+        </Link>
       </div>
     </div>
   );
