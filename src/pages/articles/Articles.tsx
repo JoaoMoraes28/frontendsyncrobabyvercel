@@ -307,7 +307,8 @@ function Articles() {
                 <ul ref={carouselArticlesDesktop} className="flex flex-col justify-around w-full h-auto gap-4 py-2
                 xl:flex-row xl:w-[calc(100%-52px)] xl:h-[calc(100%-56px)] xl:justify-start xl:gap-8 xl:overflow-x-auto scroll-smooth snap-x snap-mandatory">
                     {articles.map((article) => (
-                        <Link to={`/article/${article.id}`}>
+                        <Link to={`/article/${article.id}`}
+                        className="min-h-22 flex">
                             <ArticleCard key={article.id} article={article} cardArticleDesktop={cardArticleDesktop} />
                         </Link>
                     ))}
