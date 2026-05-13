@@ -55,7 +55,7 @@ function UpdateMeasures() {
                 xl:h-[90%]">
                 <header className="flex flex-col gap-5
                 md:items-center">
-                    <div className="flex flex-col items-center w-full gap-0.5 h-36 pt-4 px-4 rounded-t-md bg-linear-to-l from-light to-lilas-bg">
+                    <div className="flex flex-col items-center w-full gap-0.5 h-36 pt-4 px-4 rounded-t-md bg-linear-to-l from-[#f4ebfb] to-[#ffefef]">
                         <div className="flex justify-center items-center w-8 h-8 rounded-full shadow-purple-md
                         md:w-10 md:h-10">
                             <img aria-hidden="true" src={MeasuresIcon} alt="" className="w-auto h-4.5

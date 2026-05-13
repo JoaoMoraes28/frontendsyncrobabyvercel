@@ -5,7 +5,6 @@ import NotificationsPage from "../pages/notifications/Notifications";
 import Date from "../utils/Date";
 
 import Search from "../assets/search.svg";
-import micIcon from "../assets/micIcon.svg";
 import Notifications from "../assets/notifications.svg";
 import SetBack from "../assets/navigation/setBack.svg";
 import Profile from "../assets/navigation/profileHeader.svg";
@@ -199,7 +198,6 @@ function Header() {
       >
         <img aria-hidden="true" src={Search} alt="" className="w-4 h-auto" />
         <InputDefault className="w-full pl-2 font-poppins text-primary-text" />
-        <img aria-hidden="true" src={micIcon} alt="" className="w-4 h-auto" />
       </div>
       <div
         className="flex w-full justify-between items-center mt-4

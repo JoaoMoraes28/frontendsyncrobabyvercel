@@ -17,28 +17,28 @@ function Diary() {
             "title": "Os primeiros passos da Maya",
             "creation_date": "2026-03-12T10:30:00Z",
             "text_content": "Hoje estávamos na sala e ele soltou do sofá de repente! Deu três passinhos na minha direção antes de cair sentado rindo muito. Eu juro, foi como assistir um pequeno milagre acontecendo em câmera lenta — aqueles passinhos meio tortinhos, cheios de coragem e desequilíbrio, como se o mundo inteiro fosse grande demais pra ele e, ainda assim, ele estivesse disposto a conquistar cada centímetro. Fiquei tão surpresa que nem consegui reagir na hora, só abri um sorriso bobo enquanto ele ria, como se tivesse contado a melhor piada do universo. Depois ele bateu as mãozinhas no chão, todo orgulhoso de si mesmo, e tentou levantar de novo — claro que sem muito sucesso, mas com uma determinação que parecia maior que ele.",
-            "label_color": "#9D87D2"
+            "label_color": "#FFA9DD"
         },
         {
             "id": 2,
             "title": "Primeiro dia de aula (muito choro, mais da nossa parte)",
             "creation_date": "2026-02-05T08:15:00Z",
             "text_content": "Hoje estávamos na sala e ele soltou do sofá de repente! Deu três passinhos na minha direção antes de cair sentado rindo muito. Eu juro, foi como assistir um pequeno milagre acontecendo em câmera lenta — aqueles passinhos meio tortinhos, cheios de coragem e desequilíbrio, como se o mundo inteiro fosse grande demais pra ele e, ainda assim, ele estivesse disposto a conquistar cada centímetro. Fiquei tão surpresa que nem consegui reagir na hora, só abri um sorriso bobo enquanto ele ria, como se tivesse contado a melhor piada do universo. Depois ele bateu as mãozinhas no chão, todo orgulhoso de si mesmo, e tentou levantar de novo — claro que sem muito sucesso, mas com uma determinação que parecia maior que ele.",
-            "label_color": "#68CADB"
+            "label_color": "#68DBCE"
         },
         {
             "id": 3,
             "title": "A primeira palavra foi 'Gato'!",
             "creation_date": "2026-04-20T19:45:00Z",
             "text_content": "Hoje estávamos na sala e ele soltou do sofá de repente! Deu três passinhos na minha direção antes de cair sentado rindo muito. Eu juro, foi como assistir um pequeno milagre acontecendo em câmera lenta — aqueles passinhos meio tortinhos, cheios de coragem e desequilíbrio, como se o mundo inteiro fosse grande demais pra ele e, ainda assim, ele estivesse disposto a conquistar cada centímetro. Fiquei tão surpresa que nem consegui reagir na hora, só abri um sorriso bobo enquanto ele ria, como se tivesse contado a melhor piada do universo. Depois ele bateu as mãozinhas no chão, todo orgulhoso de si mesmo, e tentou levantar de novo — claro que sem muito sucesso, mas com uma determinação que parecia maior que ele.",
-            "label_color": "#8DDB68"
+            "label_color": "#F3DC82"
         },
         {
             "id": 4,
             "title": "Noite difícil: febre e muitos dentes nascendo",
             "creation_date": "2026-05-08T03:00:00Z",
             "text_content": "Hoje estávamos na sala e ele soltou do sofá de repente! Deu três passinhos na minha direção antes de cair sentado rindo muito. Eu juro, foi como assistir um pequeno milagre acontecendo em câmera lenta — aqueles passinhos meio tortinhos, cheios de coragem e desequilíbrio, como se o mundo inteiro fosse grande demais pra ele e, ainda assim, ele estivesse disposto a conquistar cada centímetro. Fiquei tão surpresa que nem consegui reagir na hora, só abri um sorriso bobo enquanto ele ria, como se tivesse contado a melhor piada do universo. Depois ele bateu as mãozinhas no chão, todo orgulhoso de si mesmo, e tentou levantar de novo — claro que sem muito sucesso, mas com uma determinação que parecia maior que ele.",
-            "label_color": "#9D87D2"
+            "label_color": "#FF9193"
         }
     ])
     const [register, setRegister] = useState<Register[]>([])

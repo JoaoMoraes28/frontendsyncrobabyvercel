@@ -15,7 +15,6 @@ export interface Register {
     title: string
     creation_date: string
     label_color?: string
-    label_color_update?: number
     midia?: string
     text_content?: string
 }
@@ -32,12 +31,12 @@ function Card({ card }: Props) {
     }
 
     return (
-        <li onMouseEnter={() => setCardHover(card.id)} onMouseLeave={() => setCardHover(0)} className="w-full h-28 flex rounded-sm bg-lilas-bg/80
+        <li onMouseEnter={() => setCardHover(card.id)} onMouseLeave={() => setCardHover(0)} className="w-full h-28 flex rounded-sm bg-white shadow-purple-sm
         xl:relative xl:h-62">
             <div style={{ backgroundColor: card.label_color }} className="w-15 h-full rounded-l-sm
-            xl:absolute xl:w-full xl:h-8 xl:flex xl:items-center xl:pl-2">
-                <div className="hidden xl:flex xl:bg-accent/50 xl:w-38 xl:h-[85%] xl:rounded-lg xl:text-white xl:font-semibold xl:justify-center xl:items-center">
-                    <span>{Date.formatedDayYear(card.creation_date)}</span>
+            xl:absolute xl:w-full xl:h-8 xl:flex xl:items-center xl:pl-2 xl:rounded-tr-sm xl:rounded-l-none xl:rounded-tl-sm">
+                <div className="hidden xl:flex xl:pl-3 xl:w-full xl:h-[85%] xl:text-white xl:font-semibold xl:justify-center xl:items-center">
+                    <span className="xl:w-full xl:text-[18px]">{Date.formatedDayYear(card.creation_date)}</span>
                 </div>
             </div>
             <div className="flex flex-col w-[calc(100%-60px)] px-2 pt-2
@@ -55,7 +54,7 @@ function Card({ card }: Props) {
                     xl:text-start xl:text-xl">{card.title}</h4>
                     <span className="font-nunito text-primary italic text-[14px]
                     xl:hidden">{Date.formatedDate(card.creation_date)}</span>
-                    <p className="hidden xl:block xl:font-nunito xl:w-full xl:h-26 xl:overflow-hidden xl:text-[14px]">{card.text_content}</p>
+                    <p className="hidden xl:block xl:font-nunito xl:w-full xl:h-22 xl:overflow-hidden xl:text-[14px]">{card.text_content}</p>
                 </div>
                 <footer className="flex justify-end items-center h-[20%]">
                     <span className="font-nunito text-primary italic text-[12px] xl:hidden">{`${Date.subDaysFormated(card.creation_date)}`}</span>

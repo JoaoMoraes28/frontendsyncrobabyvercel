@@ -1,17 +1,18 @@
 import exportIcon from "../../assets/exportIcon.svg";
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useRef } from "react";
 import {
   DropdownFilter,
   type FilterOption,
 } from "../../components/DropDownFilter";
 import { InputDefault } from "../../components/InputDefault";
 import Search from "../../assets/search.svg";
-import micIcon from "../../assets/micIcon.svg";
 import HygieneIcon from "../../assets/hygieneIcon.svg?react";
 import { SummaryCard } from "./components/SummaryCard";
 import { ProductCard } from "./components/ProductCard";
 
 import { Link } from "react-router-dom";
+
+import ConvertImg from "../../utils/DownloadImg"
 
 export interface InventoryItem {
   id: number;
@@ -111,6 +112,8 @@ const getCategoryIcon = (category: string): React.ElementType => {
 };
 
 export function Storage() {
+  const refProducts = useRef<HTMLDivElement | null>(null)
+
   const [selectedFilter, setSelectedFilter] = useState("Todas");
   const [inventoryItems, setInventoryItems] = useState<InventoryItem[]>(items);
   const [expandedCardId, setExpandedCardId] = useState<number | null>(null);
@@ -194,7 +197,6 @@ export function Storage() {
             onChange={(e) => setUserInput(e.target.value)}
             placeholder="Buscar produto..."
           />
-          <img src={micIcon} alt="" className="w-4 h-auto" />
         </div>
 
         <Link
@@ -212,7 +214,9 @@ export function Storage() {
           selectedFilter={selectedFilter}
           onSelect={setSelectedFilter}
         />
-        <img src={exportIcon} alt="Exportar" className="w-5 cursor-pointer" />
+        <button onClick={() => ConvertImg.DownloadElement(refProducts.current!!, 'storage')}>
+          <img src={exportIcon} alt="Exportar lista de produtos para pdf." className="w-5 cursor-pointer" />
+        </button>
       </div>
 
       <div className="hidden lg:grid grid-cols-3 gap-6">
@@ -236,7 +240,7 @@ export function Storage() {
         />
       </div>
 
-      <div className="flex flex-col gap-4 lg:grid lg:grid-cols-3 lg:gap-6 lg:items-start overflow-y-auto flex-1 min-h-0 lg:max-h-none lg:overflow-visible p-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+      <div ref={refProducts} className="flex flex-col gap-4 lg:grid lg:grid-cols-3 lg:gap-6 lg:items-start overflow-y-auto flex-1 min-h-0 lg:max-h-none lg:overflow-visible p-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         {filteredItems.map((item) => (
           <ProductCard
             key={item.id}
