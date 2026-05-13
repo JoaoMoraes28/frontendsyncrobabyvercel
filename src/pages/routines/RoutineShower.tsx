@@ -5,7 +5,7 @@ import ChildrenSelect from "../../layouts/ChildrenSelect";
 import { buttonCancel, buttonSubmit, radioButton, labelRadioButton, inputMeasureClass, listProductsClass, inputClassName, labelClassName } from "./RoutineFeeding"
 import Date from "../../utils/Date"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom"
 
@@ -35,9 +35,9 @@ function RoutineShower() {
     const navigate = useNavigate()
     const [childrenSelected, setChildSelected] = useState<number>(1)
     const [expandSelectorProduct, setExpandSelectorProduct] = useState<boolean>(false)
-    const [productSelected, setProductSelected] = useState<string>("Selecione produtos utilizados")
+    const [productSelected, setProductSelected] = useState<string>("")
     const [listProductSelected, setListProductSelected] = useState<Products[]>([])
-    const products: Products[] = [
+    const productsMain: Products[] = [
         {
             "id": 1,
             "type": "Higiene",
@@ -57,6 +57,26 @@ function RoutineShower() {
             "measure": "un"
         }
     ]
+    const [products, setProducts] = useState<Products[]> ([
+        {
+            "id": 1,
+            "type": "Higiene",
+            "product": "Fraldas(M)",
+            "measure": "un"
+        },
+        {
+            "id": 2,
+            "type": "Higiene",
+            "product": "Sabonete neutro",
+            "measure": "un"
+        },
+        {
+            "id": 3,
+            "type": "Higiene",
+            "product": "Xampu",
+            "measure": "un"
+        }
+    ])
 
     function calculateTimeShower() {
         const { start_time, end_time } = getValues()
@@ -131,6 +151,15 @@ function RoutineShower() {
 
     }
 
+    function filterProducts(text: string) {
+        const newData: Products[] = productsMain.filter(it => it.product?.toLowerCase().includes(text.toLowerCase()))
+        setProducts(newData)
+    }
+
+    useEffect(() => {
+        setProducts(productsMain)
+    }, [])
+
     return (
         <div className="w-screen min-h-full
         md:flex md:items-center
@@ -163,7 +192,10 @@ function RoutineShower() {
                 </div>
                 <div className="relative flex flex-col">
                     <label htmlFor="products" className={labelClassName}>Produtos utilizados <span className="italic text-[12px]">(Registre apenas items que esgotaram por completo!)</span></label>
-                    <InputDefault aria-label="Clique para visualizar os produtos para selecionar no registro." onClick={() => setExpandSelectorProduct(!expandSelectorProduct)} readOnly id="products" value={productSelected} className={`z-50 ${inputClassName}`} />
+                    <InputDefault aria-label="Clique para visualizar os produtos para selecionar no registro." onChange={(e) => {
+                        setProductSelected(e.target.value)
+                        filterProducts(e.target.value)
+                    }} onClick={() => setExpandSelectorProduct(!expandSelectorProduct)} placeholder="Selecione produtos utilizados" id="products" value={productSelected} className={`z-50 ${inputClassName}`} />
 
                     <fieldset className={`absolute flex-col w-full h-68 top-21 overflow-y-scroll bg-lightest pt-4 gap-2 rounded-bl-lg rounded-br-lg border-b border-l border-r border-primary-darker z-40 ${expandSelectorProduct ? 'flex' : 'hidden'}
                     xl:h-46`}>

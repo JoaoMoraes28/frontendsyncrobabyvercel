@@ -55,7 +55,7 @@ function NewAnotation() {
     return (
         <div className="w-full min-h-full
         xl:flex xl:justify-center">
-            <form onSubmit={handleSubmit(sendData)} className="flex flex-col items-center w-full h-full rounded-md shadow-purple-sm gap-1.5
+            <form onSubmit={handleSubmit(sendData)} className="flex flex-col items-center w-full h-full bg-white rounded-md shadow-purple-sm gap-1.5
             xl:w-[85%]">
                 <div className="flex flex-col items-center bg-linear-to-l from-[#f4ebfb] to-[#ffefef] w-full rounded-t-md">
                     <div className="flex justify-center items-center w-8 h-8 rounded-full shadow-purple-md">

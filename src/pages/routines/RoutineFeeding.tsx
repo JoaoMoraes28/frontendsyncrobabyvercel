@@ -1,9 +1,11 @@
 import { useForm } from "react-hook-form";
 import { InputDefault } from "../../components/InputDefault";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import Date from "../../utils/Date";
+import CloseElement from "../../utils/CloseElementClick"
+
 import ChildrenSelect from "../../layouts/ChildrenSelect";
 
 import Milk from "../../assets/routines/milk.svg";
@@ -16,8 +18,9 @@ import Trash from "../../assets/routines/trashPurple.svg"
 
 interface DataFeeding {
   hour: string;
+  food?: string
   typeFood: number;
-  feeding: {
+  product_id: {
     id_food: number;
     quantity: number;
   };
@@ -60,7 +63,7 @@ export const labelRadioButton: string =
 export const inputMeasureClass: string =
   "flex w-18 h-6 bg-lilas border border-primary-darker text-primary-darker shadow-purple-sm rounded-lg md:w-20 md:h-7";
 export const listProductsClass: string =
-  "flex flex-col w-full min-h-34 border border-primary-darker rounded-lg shadow-purple-sm px-4 py-3 gap-2 overflow-y-auto md:gap-4 xl:bg-white xl:min-h-24 xl:max-h-24 xl:px-6";
+  "flex flex-col w-full min-h-34 border border-primary-darker bg-white rounded-lg px-4 py-3 gap-2 overflow-y-auto md:gap-4 xl:bg-white xl:min-h-24 xl:max-h-24 xl:px-6";
 
 function RoutineFeeding() {
   const {
@@ -74,6 +77,10 @@ function RoutineFeeding() {
   });
 
   const navigate = useNavigate();
+
+  const refDiv = useRef<HTMLDivElement | null>(null)
+  const refChild = useRef<HTMLInputElement | null>(null)
+
   const [childrenSelected, setChildSelected] = useState<number>(1);
   const [dateUTC, setDateUTC] = useState<string>("");
   const [typeFood, setTypeFood] = useState<number>(0);
@@ -99,7 +106,7 @@ function RoutineFeeding() {
       type: "Papinha ou Purê",
     },
   ]);
-  const foods: Food[] = [
+  const foodsMain: Food[] = [
     {
       id: 1,
       type: "Leite e Derivados",
@@ -119,6 +126,7 @@ function RoutineFeeding() {
       measure: "ml",
     },
   ];
+  const [foods, setFoods] = useState<Food[]>([])
 
   function removeItemRegister(id: number) {
     const newData: ListFood[] = listFood.filter(it => it.id != id)
@@ -197,16 +205,21 @@ function RoutineFeeding() {
         hour: dateUTC,
         typeFood: typeFood,
         description: datas.description,
-        food: newListFood,
+        product_id: newListFood,
       };
 
       console.log(fullDatas);
     } else {
-      
+
       alert("Selecione o tipo d registro!")
     }
 
 
+  }
+
+  function filterFood(text: string) {
+    const newData: Food[] = foodsMain.filter(it => it.food.toLowerCase().includes(text.toLowerCase()))
+    setFoods(newData)
   }
 
   useEffect(() => {
@@ -215,10 +228,13 @@ function RoutineFeeding() {
 
   useEffect(() => {
     setDateUTC(Date.getDateUTC());
+    setFoods(foodsMain)
   }, []);
 
   return (
     <div
+      onClick={(e) => CloseElement.CloseElement(refChild, setFoodExpandSelector, e)}
+      ref={refDiv}
       className="w-screen min-h-full
                 xl:flex xl:flex-col xl:items-center xl:h-[calc(100%-85px)]"
     >
@@ -355,9 +371,13 @@ function RoutineFeeding() {
           <label htmlFor="food" className={labelClassName}>
             Alimento <span className="italic text-[12px]">(Registre apenas items que esgotaram por completo!)</span>
           </label>
-          <InputDefault
+          <input
+            ref={refChild}
+            onChange={(e) => {
+              setFoodSelected(e.target.value)
+              filterFood(e.target.value)
+            }}
             aria-label="Clique aqui para exibir os alimentos cadastrados e selecioná-los."
-            readOnly
             value={
               typeFood == 0 ? "Selecione um tipo de alimento!" : foodSelected
             }

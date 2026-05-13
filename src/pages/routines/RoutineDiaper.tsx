@@ -3,9 +3,11 @@ import { InputDefault } from "../../components/InputDefault"
 import ChildrenSelect from "../../layouts/ChildrenSelect";
 
 import { buttonCancel, buttonSubmit, radioButton, labelRadioButton, inputMeasureClass, listProductsClass, inputClassName, labelClassName } from "./RoutineFeeding"
-import Date from "../../utils/Date"
 
-import { useEffect, useState } from "react"
+import Date from "../../utils/Date"
+import CloseElement from "../../utils/CloseElementClick"
+
+import { useEffect, useState, useRef } from "react"
 import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom"
 
@@ -44,10 +46,13 @@ function RoutineDiaper() {
         formState: { errors }
     } = useForm<DataDiaper>()
 
+    const refDiv = useRef<HTMLDivElement | null>(null)
+    const refChild = useRef<HTMLInputElement | null>(null)
+
     const navigate = useNavigate()
     const [childrenSelected, setChildSelected] = useState<number>(1)
     const [expandSelectorProduct, setExpandSelectorProduct] = useState<boolean>(false)
-    const [valueProduct, setValueProduct] = useState<string>("Selecione os produtos desejados")
+    const [valueProduct, setValueProduct] = useState<string>("")
     const [productSelected, setProductSelected] = useState<Products[]>([])
     const [typeSelected, setTypeSelected] = useState<number>(0)
     const [expandTypeSelector, setExpandTypeSelector] = useState<boolean>(false)
@@ -64,7 +69,7 @@ function RoutineDiaper() {
             "img": Pee
         }
     ]
-    const products: Products[] = [
+    const productsMain: Products[] = [
         {
             "id": 1,
             "type": "Higiene",
@@ -84,6 +89,27 @@ function RoutineDiaper() {
             "measure": "un"
         }
     ]
+    const [products, setProducts] = useState<Products[]>([
+        {
+            "id": 1,
+            "type": "Higiene",
+            "product": "Fraldas(M)",
+            "measure": "un"
+        },
+        {
+            "id": 2,
+            "type": "Higiene",
+            "product": "Sabonete neutro",
+            "measure": "un"
+        },
+        {
+            "id": 3,
+            "type": "Higiene",
+            "product": "Talco",
+            "measure": "un"
+        }
+    ])
+
 
     function addProductList(product: Products) {
         setExpandSelectorProduct(false)
@@ -141,12 +167,21 @@ function RoutineDiaper() {
 
     }
 
+    function filterProducts(text: string) {
+        const newData: Products[] = productsMain.filter(it => it.product?.toLowerCase().includes(text.toLowerCase()))
+        setProducts(newData)
+    }
+
     useEffect(() => {
         setValue("hour", Date.getHourFormated())
+        setProducts(productsMain)
     }, [])
 
     return (
-        <div className="w-full min-h-full
+        <div
+        ref={refDiv}
+        onClick={(e) => CloseElement.CloseElement(refChild, setExpandSelectorProduct, e)}
+        className="w-full min-h-full
         xl:flex xl:flex-col xl:items-center xl:h-[calc(100%-85px)]">
             <div className="flex w-full">
                 <ChildrenSelect idChild={childrenSelected} setChild={setChildSelected} />
@@ -202,7 +237,12 @@ function RoutineDiaper() {
                 </div>
                 <div className="relative flex flex-col">
                     <label htmlFor="product" className={labelClassName}>Produtos utilizados <span className="italic text-[12px]">(Registre apenas items que esgotaram por completo!)</span></label>
-                    <InputDefault aria-label="Clique para visualizar os produtos para selecionar no registro." onClick={() => setExpandSelectorProduct(!expandSelectorProduct)} readOnly id="prodict" value={valueProduct} className={`z-50 ${inputClassName}`} />
+                    <input
+                    ref={refChild}
+                    aria-label="Clique para visualizar os produtos para selecionar no registro." onChange={(e) => {
+                        setValueProduct(e.target.value)
+                        filterProducts(e.target.value)
+                    }} onClick={() => setExpandSelectorProduct(true)} id="prodict" placeholder="Selecione os produtos desejados" value={valueProduct} className={`z-50 ${inputClassName}`} />
 
                     <fieldset className={`absolute flex-col w-full h-70 top-21 overflow-y-scroll bg-lightest pt-4 gap-2 rounded-bl-lg rounded-br-lg border-b border-l border-r border-primary-darker z-40 ${expandSelectorProduct ? 'flex' : 'hidden'}`}>
                         {products.map((product) => (

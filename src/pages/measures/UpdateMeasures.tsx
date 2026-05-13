@@ -50,9 +50,9 @@ function UpdateMeasures() {
             </div>
 
             <form onSubmit={handleSubmit(sendData)}
-                className="flex flex-col gap-3 w-full h-full shadow-purple-md rounded-md
-                md:justify-around md:gap-0 md:pt-0
-                xl:h-[90%]">
+                className="flex flex-col gap-3 w-full h-full shadow-purple-md rounded-md bg-white
+                md:justify-between md:pb-7 md:gap-5 md:pt-0
+                xl:h-[90%] xl:">
                 <header className="flex flex-col gap-5
                 md:items-center">
                     <div className="flex flex-col items-center w-full gap-0.5 h-36 pt-4 px-4 rounded-t-md bg-linear-to-l from-[#f4ebfb] to-[#ffefef]">

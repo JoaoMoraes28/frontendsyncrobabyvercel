@@ -305,8 +305,8 @@ function AddStorage() {
                             </p>
                         )}
 
-                        <fieldset className={`absolute top-10 flex-col w-full h-70 rounded-bl-lg rounded-br-lg border-b border-l border-r border-primary-darker
-                        overflow-y-scroll bg-lightest pt-4 gap-2 ${selectProduct && typeProduct != 0 ? 'flex' : 'hidden'}`}>
+                        <fieldset className={`absolute top-10 pb-4 flex-col w-full h-70 rounded-bl-lg rounded-br-lg border-b border-l border-r border-primary-darker
+                        overflow-y-scroll bg-lightest pt-4 gap-2 md:top-13 ${selectProduct && typeProduct != 0 ? 'flex' : 'hidden'}`}>
                             {listProducts.map((product) => (
                                 <div key={product.id} className="flex items-center w-full h-8 pl-4 gap-2">
                                     <InputDefault onChange={(e) => {
