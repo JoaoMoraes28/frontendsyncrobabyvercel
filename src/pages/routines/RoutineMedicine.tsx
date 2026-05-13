@@ -15,7 +15,7 @@ import type { Products } from "./RoutineDiaper"
 
 interface DataMedicine {
     hour: string,
-    remedy_id: Products,
+    product_id: Products,
     description?: string
 }
 
@@ -30,11 +30,11 @@ function RoutineMedicine() {
     const navigate = useNavigate()
     const [childrenSelected, setChildSelected] = useState<number>(1)
     const [expandRemedy, setExpandRemedy] = useState<boolean>(false)
-    const [remedyListSelected, setRemedyListSelected] = useState<string>("Selecione um medicamento")
+    const [remedyListSelected, setRemedyListSelected] = useState<string>("")
     const [idRemedySelected, setIdRemedySelected] = useState<number>(0)
     const [disableInput, setDisableInput] = useState<boolean>(true)
     const [measure, setMeasure] = useState<string>("")
-    const remedy: Products[] = [
+    const remedyMain: Products[] = [
         {
             "id": 1,
             "type": "Medicamentos",
@@ -54,6 +54,26 @@ function RoutineMedicine() {
             "measure": "ml"
         }
     ]
+    const [remedy, setRemedy] = useState<Products[]>([
+        {
+            "id": 1,
+            "type": "Medicamentos",
+            "product": "Dipirona(100ml)",
+            "measure": "ml"
+        },
+        {
+            "id": 2,
+            "type": "Medicamentos",
+            "product": "Dipirona(comprimido)",
+            "measure": "u"
+        },
+        {
+            "id": 3,
+            "type": "Medicamentos",
+            "product": "Xarope(100ml)",
+            "measure": "ml"
+        }
+    ])
 
     function selectRemedy(remedy: Products) {
         setIdRemedySelected(remedy.id)
@@ -69,9 +89,9 @@ function RoutineMedicine() {
     function sendDatas(data: DataMedicine) {
         const fullData: DataMedicine = {
             'hour': data.hour,
-            'remedy_id': {
+            'product_id': {
                 'id': idRemedySelected,
-                'quantity_product': Number(data.remedy_id.quantity_product)
+                'quantity_product': Number(data.product_id.quantity_product)
             },
             'description': data.description
         }
@@ -79,8 +99,14 @@ function RoutineMedicine() {
         console.log(fullData)
     }
 
+    function filterRemedy(text: string) {
+        const newData: Products[] = remedyMain.filter(it => it.product?.toLowerCase().includes(text.toLowerCase()))
+        setRemedy(newData)
+    }
+
     useEffect(() => {
         setValue("hour", Date.getHourFormated())
+        setRemedy(remedyMain)
     }, [])
 
     return (
@@ -106,9 +132,12 @@ function RoutineMedicine() {
                 </div>
                 <div className="relative flex flex-col">
                     <label htmlFor="medicine" className={labelClassName}>Medicação</label>
-                    <InputDefault onClick={() => setExpandRemedy(!expandRemedy)} aria-label="Clique aqui para visualizar os medicamentos para registro." readOnly type="text" id="medicine" value={remedyListSelected} className={`z-50 ${inputClassName}`} />
+                    <InputDefault onClick={() => setExpandRemedy(!expandRemedy)} onChange={(e) => {
+                        setRemedyListSelected(e.target.value)
+                        filterRemedy(e.target.value)
+                    }} aria-label="Clique aqui para visualizar os medicamentos para registro." type="text" id="medicine" value={remedyListSelected} placeholder="Selecione um medicamento" className={`z-50 ${inputClassName}`} />
 
-                    <fieldset className={`absolute flex-col w-full h-68 top-16 overflow-y-scroll bg-lightest pt-4 gap-2 rounded-bl-lg rounded-br-lg border-b border-l border-r border-primary-darker z-40 ${expandRemedy ? 'flex' : 'hidden'}
+                    <fieldset className={`absolute flex-col w-full h-68 top-16 md:top-18 overflow-y-scroll bg-lightest pt-4 gap-2 rounded-bl-lg rounded-br-lg border-b border-l border-r border-primary-darker z-40 ${expandRemedy ? 'flex' : 'hidden'}
                     xl:h-46`}>
                         {remedy.map((it) => (
                             <div key={it.id} className="flex items-center w-full h-8 pl-2 gap-2">
@@ -121,10 +150,10 @@ function RoutineMedicine() {
                 <div className="flex flex-col">
                     <label htmlFor="quantity" className={labelClassName}>Dose</label>
                     <div className={`flex items-center ${inputClassName}`}>
-                        <InputDefault disabled={disableInput} {...register("remedy_id.quantity_product", { required: "Informe a quantidade do medicamento!" })} type="number" id="quantity" className="w-full h-full" />
+                        <InputDefault disabled={disableInput} {...register("product_id.quantity_product", { required: "Informe a quantidade do medicamento!" })} type="number" id="quantity" className="w-full h-full" />
                         <span className="flex pl-1 w-7">{measure}</span>
                     </div>
-                    {errors.remedy_id?.quantity_product && <p className="text-red-600/70 text-sm font-nunito">{errors.remedy_id.quantity_product.message}</p>}
+                    {errors.product_id?.quantity_product && <p className="text-red-600/70 text-sm font-nunito">{errors.product_id.quantity_product.message}</p>}
                 </div>
                 <div className="flex flex-col">
                     <label htmlFor="description" className={labelClassName}>Descrição</label>
