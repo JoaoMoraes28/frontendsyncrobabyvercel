@@ -4,6 +4,7 @@ import Perfil from "../../layouts/Perfil";
 import { InputDefault } from "../../components/InputDefault";
 
 import Date from "../../utils/Date";
+import ConvertImg from "../../utils/DownloadImg"
 
 import ProfilePicture from "../../assets/profileChildren/profilePicture.svg";
 import EditIcon from "../../assets/editIcon.svg";
@@ -22,7 +23,7 @@ import AtributesProfile from "./components/AtributesProfile";
 import NavigationBar from "../../layouts/NavigationBar";
 
 import { listIcons } from "../../layouts/MainLayout";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import BtnPrimary from "../../components/BtnPrimary";
 
@@ -55,6 +56,8 @@ export interface DataChild {
 }
 
 function ProfileChildren() {
+  const refProfile = useRef<HTMLDivElement | null>(null)
+
   const [descriptionItems, setDescriptionItems] = useState<ListDescription[]>([
     {
       title: "Data de nascimento:",
@@ -177,7 +180,7 @@ function ProfileChildren() {
         readonly={onlyRead}
         child={dataChildren}
       />
-      <div
+      <div ref={refProfile}
         className="flex w-full h-full
             xl:justify-center xl:items-center xl:pt-10 bg-light"
       >
@@ -195,11 +198,13 @@ function ProfileChildren() {
                     xl:hidden"
           >
             <div className="flex justify-between items-start">
-              <img
-                src={exportIcon}
-                alt="Gera um arquivo PDF com os dados da criança."
-                className="mt-2 w-auto h-5"
-              />
+              <button type="button" onClick={() => ConvertImg.DownloadElement(refProfile.current!!, 'profile-child')}>
+                <img
+                  src={exportIcon}
+                  alt="Gera um arquivo com os dados da criança."
+                  className="mt-2 w-auto h-5"
+                />
+              </button>
               <img src={ProfilePicture} alt="Foto de perfil da criança." />
               <div className="relative flex w-4 h-6">
                 <button

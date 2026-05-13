@@ -11,20 +11,35 @@ import Date from "../../utils/Date"
 
 import Image from "../../assets/imageExDiary.png"
 import Trash from "../../assets/routines/trashPurple.svg"
+import SetBack from "../../assets/navigation/setBack.svg"
 
 import { useForm } from "react-hook-form"
 
 export interface Color {
-    id: number
     color: string
 }
+
+export const colors: Color[] = [
+    {
+        "color": "#FFA9DD"
+    },
+    {
+        "color": "#68DBCE"
+    },
+    {
+        "color": "#F3DC82"
+    },
+    {
+        "color": "#FF9193"
+    }
+]
 
 function Anotation() {
     const navigate = useNavigate()
     const [params] = useSearchParams()
     const edit = params.get('edit')
 
-    const [colorSelected, setColorSelected] = useState<number>(0)
+    const [colorSelected, setColorSelected] = useState<string>("")
     const [anotation] = useState<Register>(
         {
             "id": 1,
@@ -35,20 +50,7 @@ function Anotation() {
             "midia": Image
         }
     )
-    const [colors] = useState<Color[]>([
-        {
-            "id": 1,
-            "color": "#9D87D2"
-        },
-        {
-            "id": 2,
-            "color": "#68CADB"
-        },
-        {
-            "id": 3,
-            "color": "#8DDB68"
-        }
-    ])
+
     const [previewImg, setPreviewImg] = useState<string | undefined>(anotation.midia)
 
     const {
@@ -78,7 +80,7 @@ function Anotation() {
             midia: previewImg,
             creation_date: data.creation_date,
             text_content: data.text_content,
-            label_color_update: colorSelected != 0 ? colorSelected : idColor[0].id
+            label_color: colorSelected != "" ? colorSelected : idColor[0].color
         }
 
         console.log(fullData)
@@ -86,8 +88,13 @@ function Anotation() {
 
     return (
         <div className={`relative w-full text-primary-text
-        xl:flex xl:justify-center`}>
-            <form onSubmit={handleSubmit(sendData)} className={`flex flex-col w-full min-h-full gap-2 ${edit == "true" ? 'pb-28' : 'pb-0'}
+        xl:flex xl:justify-center xl:flex-col xl:items-center`}>
+            <div className="hidden xl:flex xl:justify-start xl:w-full">
+                <button onClick={() => navigate(-1)}>
+                    <img src={SetBack} alt="Retorna a tela anterior." className="xl:w-auto xl:h-9" />
+                </button>
+            </div>
+            <form onSubmit={handleSubmit(sendData)} className={`flex flex-col w-full min-h-[calc(100%-36px)] gap-2 ${edit == "true" ? 'pb-28' : 'pb-0'}
             xl:w-[80%]`}>
                 <div className="relative">
                     <button className={`absolute right-2 top-2 ${edit == "false" ? 'hidden' : 'block'}`}>
@@ -118,8 +125,8 @@ function Anotation() {
                     <div className="flex justify-between w-full h-[calc(100%-48px)]">
                         <ul className="flex justify-end w-full h-full py-1">
                             {colors.map((color) => (
-                                <li key={color.id} className={`${colorSelected == color.id ? 'border border-accent' : ''}`}>
-                                    <button type="button" onClick={() => setColorSelected(color.id)} style={{ backgroundColor: color.color }} className="w-10 h-full"></button>
+                                <li key={color.color} className={`${colorSelected == color.color ? 'border border-accent' : ''}`}>
+                                    <button type="button" onClick={() => setColorSelected(color.color)} style={{ backgroundColor: color.color }} className="w-10 h-full"></button>
                                 </li>
                             ))}
                         </ul>

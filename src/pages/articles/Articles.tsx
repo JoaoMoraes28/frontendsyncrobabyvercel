@@ -308,8 +308,9 @@ function Articles() {
                 xl:flex-row xl:w-[calc(100%-52px)] xl:h-[calc(100%-56px)] xl:justify-start xl:gap-8 xl:overflow-x-auto scroll-smooth snap-x snap-mandatory">
                     {articles.map((article) => (
                         <Link to={`/article/${article.id}`}
-                        className="min-h-22 flex">
-                            <ArticleCard key={article.id} article={article} cardArticleDesktop={cardArticleDesktop} />
+                            key={article.id}
+                            className="min-h-22 flex">
+                            <ArticleCard article={article} cardArticleDesktop={cardArticleDesktop} />
                         </Link>
                     ))}
                     <div className="hidden xl:absolute xl:top-[calc(50%+12px)] xl:right-0 xl:flex xl:w-full xl:h-6 xl:justify-between">

@@ -37,7 +37,7 @@ function formatedDate(date: string) {
 }
 
 function formatedDayYear(data: string) {
-  const fullDate: string = format(data, "dd MMMM yyyy", {
+  const fullDate: string = format(data, "dd 'de' MMMM 'de' yyyy", {
     locale: ptBR,
   })
   return fullDate
