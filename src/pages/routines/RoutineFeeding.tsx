@@ -381,7 +381,7 @@ function RoutineFeeding() {
             value={
               typeFood == 0 ? "Selecione um tipo de alimento!" : foodSelected
             }
-            onClick={() => setFoodExpandSelector(!foodExpandSelector)}
+            onClick={() => setFoodExpandSelector(true)}
             id="food"
             className={`z-30 ${inputClassName}`}
           />
