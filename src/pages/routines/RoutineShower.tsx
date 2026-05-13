@@ -3,9 +3,11 @@ import { InputDefault } from "../../components/InputDefault"
 import ChildrenSelect from "../../layouts/ChildrenSelect";
 
 import { buttonCancel, buttonSubmit, radioButton, labelRadioButton, inputMeasureClass, listProductsClass, inputClassName, labelClassName } from "./RoutineFeeding"
-import Date from "../../utils/Date"
 
-import { useEffect, useState } from "react"
+import Date from "../../utils/Date"
+import CloseElement from "../../utils/CloseElementClick"
+
+import { useEffect, useState, useRef } from "react"
 import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom"
 
@@ -33,6 +35,10 @@ function RoutineShower() {
     } = useForm<DataShower>()
 
     const navigate = useNavigate()
+
+    const refDiv = useRef<HTMLDivElement | null>(null)
+    const refChild = useRef<HTMLInputElement | null>(null)
+
     const [childrenSelected, setChildSelected] = useState<number>(1)
     const [expandSelectorProduct, setExpandSelectorProduct] = useState<boolean>(false)
     const [productSelected, setProductSelected] = useState<string>("")
@@ -57,7 +63,7 @@ function RoutineShower() {
             "measure": "un"
         }
     ]
-    const [products, setProducts] = useState<Products[]> ([
+    const [products, setProducts] = useState<Products[]>([
         {
             "id": 1,
             "type": "Higiene",
@@ -161,7 +167,9 @@ function RoutineShower() {
     }, [])
 
     return (
-        <div className="w-screen min-h-full
+        <div onClick={(e) => CloseElement.CloseElement(refChild, setExpandSelectorProduct, e)}
+        ref={refDiv}
+        className="w-screen min-h-full
         md:flex md:items-center
         xl:flex xl:flex-col xl:items-center xl:h-[calc(100%-85px)]">
             <div className="flex w-full">
@@ -192,10 +200,12 @@ function RoutineShower() {
                 </div>
                 <div className="relative flex flex-col">
                     <label htmlFor="products" className={labelClassName}>Produtos utilizados <span className="italic text-[12px]">(Registre apenas items que esgotaram por completo!)</span></label>
-                    <InputDefault aria-label="Clique para visualizar os produtos para selecionar no registro." onChange={(e) => {
+                    <input 
+                    ref={refChild}
+                    aria-label="Clique para visualizar os produtos para selecionar no registro." onChange={(e) => {
                         setProductSelected(e.target.value)
                         filterProducts(e.target.value)
-                    }} onClick={() => setExpandSelectorProduct(!expandSelectorProduct)} placeholder="Selecione produtos utilizados" id="products" value={productSelected} className={`z-50 ${inputClassName}`} />
+                    }} onClick={() => setExpandSelectorProduct(true)} placeholder="Selecione produtos utilizados" id="products" value={productSelected} className={`z-50 ${inputClassName}`} />
 
                     <fieldset className={`absolute flex-col w-full h-68 top-21 overflow-y-scroll bg-lightest pt-4 gap-2 rounded-bl-lg rounded-br-lg border-b border-l border-r border-primary-darker z-40 ${expandSelectorProduct ? 'flex' : 'hidden'}
                     xl:h-46`}>

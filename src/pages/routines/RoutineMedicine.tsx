@@ -3,9 +3,11 @@ import { InputDefault } from "../../components/InputDefault"
 import ChildrenSelect from "../../layouts/ChildrenSelect";
 
 import { buttonCancel, buttonSubmit, radioButton, labelRadioButton, inputClassName, labelClassName } from "./RoutineFeeding"
-import Date from "../../utils/Date"
 
-import { useEffect, useState } from "react"
+import Date from "../../utils/Date"
+import CloseElement from "../../utils/CloseElementClick"
+
+import { useEffect, useState, useRef } from "react"
 import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom"
 
@@ -28,6 +30,10 @@ function RoutineMedicine() {
     } = useForm<DataMedicine>()
 
     const navigate = useNavigate()
+
+    const refDiv = useRef<HTMLDivElement | null>(null)
+    const refChild = useRef<HTMLInputElement | null>(null)
+
     const [childrenSelected, setChildSelected] = useState<number>(1)
     const [expandRemedy, setExpandRemedy] = useState<boolean>(false)
     const [remedyListSelected, setRemedyListSelected] = useState<string>("")
@@ -110,7 +116,9 @@ function RoutineMedicine() {
     }, [])
 
     return (
-        <div className="w-screen min-h-full
+        <div onClick={(e) => CloseElement.CloseElement(refChild, setExpandRemedy, e)}
+        ref={refDiv}
+        className="w-screen min-h-full
         md:flex md:items-center
         xl:flex xl:flex-col xl:items-center xl:h-[calc(100%-85px)]">
             <div className="flex w-full">
@@ -132,7 +140,9 @@ function RoutineMedicine() {
                 </div>
                 <div className="relative flex flex-col">
                     <label htmlFor="medicine" className={labelClassName}>Medicação</label>
-                    <InputDefault onClick={() => setExpandRemedy(!expandRemedy)} onChange={(e) => {
+                    <input 
+                    ref={refChild}
+                    onClick={() => setExpandRemedy(true)} onChange={(e) => {
                         setRemedyListSelected(e.target.value)
                         filterRemedy(e.target.value)
                     }} aria-label="Clique aqui para visualizar os medicamentos para registro." type="text" id="medicine" value={remedyListSelected} placeholder="Selecione um medicamento" className={`z-50 ${inputClassName}`} />
