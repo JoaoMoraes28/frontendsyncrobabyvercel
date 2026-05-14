@@ -16,7 +16,7 @@ export interface LoginResponse {
       email: string;
       profile_picture: string;
       active: number;
-      token: string;
+      token?: string;
     }>;
   };
   status: boolean;
