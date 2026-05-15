@@ -15,6 +15,8 @@ import { CardPrincipal } from "../../components/CarouselCard";
 import { CarouselDots } from "../../components/CarouselDots";
 import { CategorySection } from "./components/CategorySection";
 import { useNavigate, Link } from "react-router-dom";
+import { onGetChildren } from "../../services/hooks/children/getChildren"
+import Date from "../../utils/Date"
 
 const articlesData = [
   {
@@ -53,8 +55,8 @@ const categoriesData = [
 const childrenList = [
   {
     id: 1,
-    name: "João",
-    age: "2 anos",
+    child_name: "João",
+    birth_data: "2026-02-07",
     photo: childrenPhoto,
     lastFeeding: "Há 2 Horas",
   },
@@ -136,6 +138,8 @@ const inventoryStatusData = [
 export function Home() {
   const navigate = useNavigate();
 
+  const { data: childrenData } = onGetChildren();
+
   const handleCategoryNavigation = (path: string) => {
     if (path && path !== "") {
       navigate(path);
@@ -165,9 +169,10 @@ export function Home() {
         }
       }
     }, 3000);
-
+    
     return () => clearInterval(interval);
   }, []);
+  
 
   const handleScroll = () => {
     if (carouselRef.current) {
@@ -214,7 +219,7 @@ export function Home() {
         {/* children section */}
         <div className="flex flex-col gap-2 md:gap-6">
           <div className="flex justify-between items-end">
-            <h3 className="text-xl md:text-2xl font-bold font-poppins text-primary-text xl:text-2xl">
+            <h3 onClick={() => console.log(childrenData)} className="text-xl md:text-2xl font-bold font-poppins text-primary-text xl:text-2xl">
               <span className="xl:hidden">Filhos</span>
               <span className="hidden xl:inline">Meus Filhos</span>
             </h3>
@@ -253,16 +258,16 @@ export function Home() {
                 <div className="bg-lilas rounded-full p-1 xl:p-0 xl:bg-transparent">
                   <img
                     src={selectedChild.photo}
-                    alt={`Foto de ${selectedChild.name}`}
+                    alt={`Foto de ${selectedChild.child_name}`}
                     className="w-11 h-11 md:w-14 md:h-14 xl:w-12 xl:h-12 rounded-full object-cover"
                   />
                 </div>
                 <div className="flex flex-col justify-center flex-1">
                   <p className="font-poppins font-bold text-white xl:text-primary-text text-base md:text-xl xl:text-lg leading-tight">
-                    {selectedChild.name}
+                    {selectedChild.child_name}
                   </p>
                   <span className="font-poppins text-sm md:text-base xl:text-sm text-lilas-medium xl:text-primary-text/70">
-                    {selectedChild.age}
+                    {Date.subYearsFormated(selectedChild.birth_data)}
                   </span>
                 </div>
                 <div className="hidden xl:flex text-gray-500 hover:text-primary transition-colors cursor-pointer p-2">
@@ -300,7 +305,7 @@ export function Home() {
                   Ultima Alimentação:
                 </span>
                 <span className="text-primary-text font-bold text-xs ml-auto">
-                  {selectedChild.lastFeeding}
+                  A ser implementado
                 </span>
               </div>
             </Link>
@@ -454,26 +459,26 @@ export function Home() {
 
               {/* List */}
               <div className="flex flex-col gap-3 max-h-[60vh] overflow-y-auto [&::-webkit-scrollbar]:hidden">
-                {childrenList.map((child) => (
+                {childrenData!!.map((child) => (
                   <div
-                    key={child.id}
+                    key={child.id_child}
                     onClick={() => {
-                      setSelectedChild(child);
+                      // setSelectedChild(child);
                       setIsModalOpen(false);
                     }}
                     className="w-full bg-white border border-lilas md:py-3 py-2 px-4 rounded-xl flex items-center gap-4 cursor-pointer hover:bg-lilas/20 transition-colors"
                   >
                     <img
                       src={child.photo}
-                      alt={`Foto de ${child.name}`}
+                      alt={`Foto de ${child.child_name}`}
                       className="w-11 h-11 md:w-12 md:h-12 rounded-full object-cover"
                     />
                     <div className="flex flex-col">
                       <p className="font-poppins font-bold text-primary-text text-sm md:text-base leading-tight">
-                        {child.name}
+                        {child.child_name}
                       </p>
                       <span className="font-poppins text-xs md:text-sm text-primary-text/70 mt-0.5">
-                        {child.age}
+                        {child.child_name}
                       </span>
                     </div>
                   </div>

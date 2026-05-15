@@ -1,9 +1,5 @@
 import { api } from "../api";
 
-interface ResponseIllness {
-  
-}
-
 interface InsertIllness {
   illness_name: string
   start_time: string

@@ -10,19 +10,49 @@ import PerfilHeader from "../../../layouts/Perfil";
 import bellIcon from "../../../assets/notifications.svg";
 import backIcon from "../../../assets/BackIcon.svg";
 import logoutIcon from "../../../assets/logoutIcon.svg";
+import Male from "../../../assets/profileChildren/male.svg";
+import Fem from "../../../assets/profileChildren/fem.svg";
 
 import { inputClassName } from "../../routines/RoutineFeeding";
 import Header from "../../../layouts/Header";
+
+import { onInsertChild } from "../../../services/hooks/children/insertChild";
+import { useState } from "react";
 
 interface ChildData {
   name: string;
   birthDate: string;
   weight?: string;
   height?: string;
+  photo: string
+  gender: string
 }
+
+interface Genders {
+  id: string
+  gender: string
+  opposite: string
+}
+
+const genderList: Genders[] = [
+  {
+    id: "male",
+    gender: Male,
+    opposite: "female"
+  },
+  {
+    id: "female",
+    gender: Fem,
+    opposite: "male"
+  }
+]
 
 export function AddChildPage() {
   const navigate = useNavigate();
+
+  const { mutate: handleRegisterAPI } = onInsertChild();
+
+  const [photo, setPhoto] = useState<string>("")
 
   const {
     register,
@@ -30,9 +60,33 @@ export function AddChildPage() {
     formState: { errors },
   } = useForm<ChildData>();
 
+  const [genderSelected, setGenderSelected] = useState<string>("male")
+
+  function generatePhoto(e: React.ChangeEvent<HTMLInputElement>) {
+    if (e.target.files) {
+      setPhoto(URL.createObjectURL(e.target.files[0]))
+    }
+  }
+
+
   function handleAddChild(data: ChildData) {
-    console.log("Filho(a) adicionado(a):", data);
-    navigate("/");
+    handleRegisterAPI(
+      {
+        child_name: data.name,
+        height: Number(data.height),
+        weight: Number(data.weight),
+        blood_type: "",
+        gender: genderSelected,
+        photo: photo,
+        birth_date: data.birthDate
+      },
+      {
+        onError: (error: any) => {
+          const message = error.response?.data?.message
+          alert(message)
+        },
+      },
+    );
   }
 
   return (
@@ -67,10 +121,20 @@ export function AddChildPage() {
         </div>
 
         <div className="w-full max-w-[90%] xl:max-w-2xl bg-lilas rounded-4xl px-6 py-8 md:py-12 relative mx-auto my-auto flex flex-col items-center shadow-purple-md">
+          <ul className="absolute left-6 top-6">
+            {genderList.map((gender) => (
+              <li key={gender.id} className={`w-14 h-14 ${genderSelected != gender.id ? 'hidden' : 'flex'}`}>
+                <button onClick={() => setGenderSelected(gender.opposite)} className="rounded-full w-full h-full">
+                  <img src={gender.gender} alt="Gênero da criança." className="w-8 h-auto" />
+                </button>
+              </li>
+            ))}
+          </ul>
           <div className="w-36 h-36 rounded-full border-[3px] border-primary bg-transparent flex items-center justify-center mb-8 xl:w-48 xl:h-48 cursor-pointer hover:bg-white/40 transition-colors">
-            <span className="text-primary text-6xl font-light xl:text-8xl">
+            <label htmlFor="fileImage" className="text-primary text-center w-full h-full flex justify-center items-center pb-4 text-6xl font-light xl:text-8xl">
               +
-            </span>
+            </label>
+            <input onChange={(e) => generatePhoto(e)} type="file" id="fileImage" className="hidden" />
           </div>
 
           <form
@@ -113,8 +177,8 @@ export function AddChildPage() {
             <div className="flex flex-col w-full">
               <InputDefault
                 id="weight"
-                type="text"
-                placeholder="Peso"
+                type="number"
+                placeholder="Peso(Kg)"
                 className={`${inputClassName} bg-white`}
                 {...register("weight")}
               />
@@ -123,8 +187,8 @@ export function AddChildPage() {
             <div className="flex flex-col w-full mb-4">
               <InputDefault
                 id="height"
-                type="text"
-                placeholder="Altura"
+                type="number"
+                placeholder="Altura(cm)"
                 className={`${inputClassName} bg-white`}
                 {...register("height")}
               />
