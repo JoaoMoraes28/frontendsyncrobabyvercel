@@ -89,6 +89,7 @@ function subHoursFormated(startTime: string, endTime: string) {
 function subYearsFormated(startDate: string | undefined) {
   if (!startDate) return "0.0";
   const months: number = differenceInMonths(date, parseISO(startDate));
+  console.log(startDate)
   return (months / 12).toFixed(1);
 }
 

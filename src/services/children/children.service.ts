@@ -1,6 +1,6 @@
 import { api } from "../api"
 
-interface Children {
+export interface Children {
   id_child: number
   child_name: string
   height: number
@@ -14,17 +14,9 @@ interface Children {
   fk_id_guardian: number
 }
 
-interface A {
-  children: Children[]
-}
-
 export interface ResponseChild {
-  development: string
-  api_description: string
-  request_date: string
-  response: A
-  status: boolean
   status_code: number
+  response: Children[]
 }
 
 export interface UpdateChild {
@@ -77,8 +69,8 @@ export const getChild = async (id: number): Promise<ResponseChild> => {
   return response.data;
 };
 
-export const getChildren = async (): Promise<any[]> => {
-  const response = await api.get<any[]>(`user/child`);
+export const getChildren = async (): Promise<ResponseChild> => {
+  const response = await api.get<ResponseChild>(`user/child`);
   return response.data;
 };
 
