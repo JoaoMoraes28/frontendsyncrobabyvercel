@@ -1,6 +1,6 @@
 import { api } from "../api"
 
-interface ResponseChild {
+interface Children {
   id_child: number
   child_name: string
   height: number
@@ -14,7 +14,21 @@ interface ResponseChild {
   fk_id_guardian: number
 }
 
-interface UpdateChild {
+interface A {
+  children: Children[]
+}
+
+export interface ResponseChild {
+  development: string
+  api_description: string
+  request_date: string
+  response: A
+  status: boolean
+  status_code: number
+}
+
+export interface UpdateChild {
+  id_child: number
   child_name: string
   birth_date: string
   blood_type: string
@@ -22,7 +36,7 @@ interface UpdateChild {
   gender: string
 }
 
-interface ResponseUpdateChild {
+export interface ResponseUpdateChild {
   child_name: string
   birth_date: string
   blood_type: string
@@ -32,17 +46,17 @@ interface ResponseUpdateChild {
   id_child: number
 }
 
-interface InsertChild {
+export interface InsertChild {
   child_name: string
   height: number | null
   weight: number | null
-  birth_data: string
+  birth_date: string
   blood_type: string | null
   gender: string
   photo: string | null
 }
 
-interface ResponseInsertChild {
+export interface ResponseInsertChild {
   child_name: string
   height: number
   weight: number
@@ -53,7 +67,8 @@ interface ResponseInsertChild {
   fk_id_guardian: number
 }
 
-interface VerifyDesactivate {
+export interface VerifyDesactivate {
+  id_child: number
   child_name: string
 }
 
@@ -62,8 +77,8 @@ export const getChild = async (id: number): Promise<ResponseChild> => {
   return response.data;
 };
 
-export const getChildren = async (): Promise<ResponseChild[]> => {
-  const response = await api.get<ResponseChild[]>(`/child/user/child`);
+export const getChildren = async (): Promise<any[]> => {
+  const response = await api.get<any[]>(`user/child`);
   return response.data;
 };
 
