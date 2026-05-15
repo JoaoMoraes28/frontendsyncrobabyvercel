@@ -17,6 +17,7 @@ import { CategorySection } from "./components/CategorySection";
 import { useNavigate, Link } from "react-router-dom";
 import { onGetChildren } from "../../services/hooks/children/getChildren"
 import Date from "../../utils/Date"
+import type { ResponseChild, Children } from "../../services/children/children.service";
 
 const articlesData = [
   {
@@ -150,8 +151,10 @@ export function Home() {
 
   const [activeIndex, setActiveIndex] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedChild, setSelectedChild] = useState(childrenList[0]);
-
+  const [selectedChild, setSelectedChild] = useState(childrenData?.response[0]);
+  
+  const [listC, setListC] = useState<ResponseChild>()
+  const [yearsChildren, setYearsChildren] = useState<string>("")
   const carouselRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -172,7 +175,11 @@ export function Home() {
     
     return () => clearInterval(interval);
   }, []);
-  
+
+  useEffect(() => {
+    setListC(childrenData!!)
+
+  }, [])
 
   const handleScroll = () => {
     if (carouselRef.current) {
@@ -257,17 +264,17 @@ export function Home() {
               <div className="flex gap-4 md:gap-6 items-center w-full">
                 <div className="bg-lilas rounded-full p-1 xl:p-0 xl:bg-transparent">
                   <img
-                    src={selectedChild.photo}
-                    alt={`Foto de ${selectedChild.child_name}`}
+                    src={selectedChild?.photo != "" ? selectedChild?.photo : childrenPhoto}
+                    alt={`Foto de ${selectedChild?.child_name}`}
                     className="w-11 h-11 md:w-14 md:h-14 xl:w-12 xl:h-12 rounded-full object-cover"
                   />
                 </div>
                 <div className="flex flex-col justify-center flex-1">
                   <p className="font-poppins font-bold text-white xl:text-primary-text text-base md:text-xl xl:text-lg leading-tight">
-                    {selectedChild.child_name}
+                    {selectedChild?.child_name}
                   </p>
                   <span className="font-poppins text-sm md:text-base xl:text-sm text-lilas-medium xl:text-primary-text/70">
-                    {Date.subYearsFormated(selectedChild.birth_data)}
+                    {yearsChildren}
                   </span>
                 </div>
                 <div className="hidden xl:flex text-gray-500 hover:text-primary transition-colors cursor-pointer p-2">
@@ -459,17 +466,17 @@ export function Home() {
 
               {/* List */}
               <div className="flex flex-col gap-3 max-h-[60vh] overflow-y-auto [&::-webkit-scrollbar]:hidden">
-                {childrenData!!.map((child) => (
+                {childrenData!!.response.map((child: Children) => (
                   <div
                     key={child.id_child}
                     onClick={() => {
-                      // setSelectedChild(child);
+                      setSelectedChild(child);
                       setIsModalOpen(false);
                     }}
                     className="w-full bg-white border border-lilas md:py-3 py-2 px-4 rounded-xl flex items-center gap-4 cursor-pointer hover:bg-lilas/20 transition-colors"
                   >
                     <img
-                      src={child.photo}
+                      src={child.photo != "" ? child.photo : childrenPhoto}
                       alt={`Foto de ${child.child_name}`}
                       className="w-11 h-11 md:w-12 md:h-12 rounded-full object-cover"
                     />

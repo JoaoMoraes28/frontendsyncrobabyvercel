@@ -161,7 +161,7 @@ function Header() {
     const handleResize = (e: MediaQueryListEvent) => {
       setWindowWidth(e.matches);
     };
-
+    console.log(localStorage.getItem("@App:token"))
     mediaQuery.addEventListener("change", handleResize);
 
     return () => mediaQuery.removeEventListener("change", handleResize);
@@ -230,7 +230,7 @@ function Header() {
         >
           Olá
           <br />
-          <span className="text-primary font-bold">GABRYEL!</span>
+          <span className="text-primary font-bold">{localStorage.getItem("user_name")}</span>
         </span>
         <div className="flex gap-4">
           <div className="relative">
