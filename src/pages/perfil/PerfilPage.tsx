@@ -16,6 +16,9 @@ import backIcon from "../../assets/BackIcon.svg";
 
 import { inputClassName, labelClassName } from "../routines/RoutineFeeding";
 
+import { useUpdateUser } from "../../services/hooks/user/useUpdateUser";
+import type { UpdateUser } from "../../services/user/user.service";
+
 interface UserData {
   name: string;
   email: string;
@@ -23,6 +26,8 @@ interface UserData {
 }
 
 export function PerfilPage() {
+  const { mutate: onUpdateUser } = useUpdateUser()
+
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
 
@@ -30,15 +35,35 @@ export function PerfilPage() {
     register,
     handleSubmit,
     formState: { errors },
+    reset
   } = useForm<UserData>({
     defaultValues: {
-      name: "Pedro Henrique Araújo",
-      email: "pedroh.araujo67@gmail.com",
+      name: localStorage.getItem("user_name") ?? "",
+      email: localStorage.getItem("user_email") ?? "",
     },
   });
 
   function handleSave(data: UserData) {
-    console.log("Dados atualizados:", data);
+    const newData: UpdateUser = {
+      guardian_name: data.name,
+      email: data.email,
+      profile_picture: ""
+    }
+    onUpdateUser(
+      newData,
+      {
+        onSuccess: (response) => {
+          alert("Alterações salvas!")
+          reset({
+            name: response.guardian_name,
+            email: response.email
+          })
+          localStorage.setItem("user_name", response.guardian_name);
+          localStorage.setItem("user_email", response.email);
+          localStorage.setItem("user_photo", response.profile_picture);
+        }
+      }
+    )
     setIsEditing(false);
   }
 
@@ -90,7 +115,7 @@ export function PerfilPage() {
           <div className="flex justify-center xl:hidden mb-3">
             <div className="w-32 h-32 rounded-full border-2 border-purple-300 bg-white flex items-center justify-center relative overflow-hidden md:w-40 md:h-40 xl:w-60 xl:h-60">
               <img
-                src={cameraIcon}
+                src={localStorage.getItem("user_photo") == "null" || localStorage.getItem("user_photo") == "" ? cameraIcon : localStorage.getItem("user_photo")!}
                 alt="Mudar foto"
                 className="w-10 h-10 opacity-60 md:w-15 md:h-15 xl:w-25 xl:h-25"
               />
@@ -160,8 +185,13 @@ export function PerfilPage() {
                 placeholder="***********"
                 className={`${inputClassName} bg-white xl:py-4 xl:text-lg rounded-xl`}
                 disabled={!isEditing}
-                {...register("password")}
+                {...register("password", { required: "A senha é obrigatória" })}
               />
+              {errors.password && (
+                <span className="text-red-500 text-xs mt-1">
+                  {errors.password.message}
+                </span>
+              )}
             </div>
 
             {/* Container dos Botões */}

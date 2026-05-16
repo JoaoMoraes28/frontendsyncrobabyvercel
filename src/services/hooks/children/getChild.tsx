@@ -1,18 +1,9 @@
-import { useMutation } from "@tanstack/react-query";
-import { AxiosError } from "axios";
 import { getChild } from "../../children/children.service"
+import { useQuery } from "@tanstack/react-query";
 
-export const onGetChild = () => {
-    return useMutation({
-        mutationFn: (idChild: number) => getChild(idChild),
-
-        onSuccess: (data) => {
-            return data
-        },
-
-        onError: (error: AxiosError) => {
-            console.log("ERRO DA API:", error.response?.data);
-            console.log("ERRO COMPLETO:", error);
-        },
+export const useGetChild = (idChild: number) => {
+    return useQuery({
+       queryKey: ['child'],
+       queryFn: () => getChild(idChild)
     });
 }

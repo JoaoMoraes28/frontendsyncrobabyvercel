@@ -1,7 +1,7 @@
 import { api } from "../api";
 import type { LoginResponse } from "../auth/auth.service"
 
-interface UpdateData {
+export interface UpdateUser {
   guardian_name: string
   email: string
   profile_picture: string
@@ -38,7 +38,7 @@ export const getUser = async (): Promise<LoginResponse> => {
   return response.data;
 };
 
-export const updateUser = async (data: UpdateData): Promise<UpdateResponse> => {
+export const updateUser = async (data: UpdateUser): Promise<UpdateResponse> => {
   const response = await api.put<UpdateResponse>("/user", data);
   return response.data;
 };

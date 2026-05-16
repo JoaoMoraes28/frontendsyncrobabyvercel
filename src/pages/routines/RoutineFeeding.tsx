@@ -16,6 +16,9 @@ import Close from "../../assets/closeModal.svg";
 import setSelector from "../../assets/setExpandSelector.svg";
 import Trash from "../../assets/routines/trashPurple.svg"
 
+import { useRegisterFeeding } from "../../services/hooks/routines/useRegisterFeeding";
+import type { RegisterFeeding } from "../../services/routines/routines.service";
+
 interface DataFeeding {
   hour: string;
   food?: string
@@ -66,6 +69,8 @@ export const listProductsClass: string =
   "flex flex-col w-full min-h-34 border border-primary-darker bg-white rounded-lg px-4 py-3 gap-2 overflow-y-auto md:gap-4 xl:bg-white xl:min-h-24 xl:max-h-24 xl:px-6";
 
 function RoutineFeeding() {
+  const { mutate: onInsertFeeding } = useRegisterFeeding()
+
   const {
     register,
     handleSubmit,
