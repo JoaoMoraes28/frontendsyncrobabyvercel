@@ -18,16 +18,16 @@ function DataBar({
     <ul className="xl:flex xl:items-center xl:w-[85%] xl:h-[55%] xl:bg-white xl:rounded-xl">
       <li className={`${layoutLi}`}>
         <button
-          onClick={() => setGenderSelected?.("masculino")}
+          onClick={() => setGenderSelected?.("male")}
           type="button"
-          className={`flex justify-center items-center w-12 h-12 rounded-lg ${genderSelected == "masculino" && !readonly ? "bg-lilas/80 border border-primary" : ""} ${child?.gender == "masculino" || !readonly ? "flex" : "hidden"}`}
+          className={`flex justify-center items-center w-12 h-12 rounded-lg ${genderSelected == "male" && !readonly ? "bg-lilas/80 border border-primary" : ""} ${child?.gender == "male" || !readonly ? "flex" : "hidden"}`}
         >
           <img src={Male} alt="Gênero masculino." className="w-auto h-7" />
         </button>
         <button
-          onClick={() => setGenderSelected?.("feminino")}
+          onClick={() => setGenderSelected?.("female")}
           type="button"
-          className={`flex justify-center items-center w-12 h-12 rounded-lg ${genderSelected == "feminino" && !readonly ? "bg-lilas/80 border border-primary" : ""} ${child?.gender == "feminino" || !readonly ? "flex" : "hidden"}`}
+          className={`flex justify-center items-center w-12 h-12 rounded-lg ${genderSelected == "female" && !readonly ? "bg-lilas/80 border border-primary" : ""} ${child?.gender == "female" || !readonly ? "flex" : "hidden"}`}
         >
           <img src={Fem} alt="Gênero feminino." className="w-auto h-8.5" />
         </button>
@@ -35,10 +35,10 @@ function DataBar({
       <li className={`${layoutLi} xl:border-x xl:border-primary`}>
         <span
           className={`${layoutSpan}`}
-        >{`${Date.subYearsFormated(child?.date_birth)} anos`}</span>
+        >{`${Date.subYearsFormated(child?.birth_date)} anos`}</span>
       </li>
       <li className={`${layoutLi}`}>
-        <span className={`${layoutSpan}`}>{`IMC: ${child?.imc}`}</span>
+        <span className={`${layoutSpan}`}>{`IMC: ${child?.BMI}`}</span>
       </li>
     </ul>
   );

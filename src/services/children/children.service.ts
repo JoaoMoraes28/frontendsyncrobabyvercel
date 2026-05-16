@@ -5,7 +5,7 @@ export interface Children {
   child_name: string
   height: number
   weight: number
-  birth_data: string
+  birth_date: string
   BMI: null | number
   blood_type: string
   gender: string
@@ -16,7 +16,7 @@ export interface Children {
 
 export interface ResponseChild {
   status_code: number
-  response: Children[]
+  children: Children[]
 }
 
 export interface UpdateChild {
@@ -26,6 +26,12 @@ export interface UpdateChild {
   blood_type: string
   photo: string
   gender: string
+}
+
+export interface ResponseJSONUpdateChild {
+  status: boolean
+  status_code: number
+  response: ResponseUpdateChild
 }
 
 export interface ResponseUpdateChild {
@@ -84,8 +90,8 @@ export const insertChild = async (data: InsertChild): Promise<ResponseInsertChil
   return response.data;
 };
 
-export const updateChild = async (data: UpdateChild, childId: number): Promise<ResponseUpdateChild> => {
-  const response = await api.put<ResponseUpdateChild>(`/child/${childId}`, data);
+export const updateChild = async (data: UpdateChild, childId: number): Promise<ResponseJSONUpdateChild> => {
+  const response = await api.put<ResponseJSONUpdateChild>(`/child/${childId}`, data);
   return response.data;
 };
 

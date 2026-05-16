@@ -1,11 +1,11 @@
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import { updateChild } from "../../children/children.service"
-import type { UpdateChild } from "../../children/children.service"
+import { updateUser } from "../../user/user.service";
+import type { UpdateUser } from "../../user/user.service"
 
-export const useUpdateChild = () => {
+export const useUpdateUser = () => {
     return useMutation({
-        mutationFn: (data: UpdateChild) => updateChild(data, data.id_child),
+        mutationFn: (data: UpdateUser) => updateUser(data),
 
         onSuccess: (data) => {
             return data

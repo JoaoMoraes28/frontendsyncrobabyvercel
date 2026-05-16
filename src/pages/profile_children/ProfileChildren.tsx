@@ -27,6 +27,11 @@ import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import BtnPrimary from "../../components/BtnPrimary";
 
+import { useGetChild } from "../../services/hooks/children/getChild";
+import { useUpdateChild } from "../../services/hooks/children/updateChild";
+import type { Children } from "../../services/children/children.service";
+import type { UpdateChild } from "../../services/children/children.service";
+
 export interface ListDescription {
   title: string;
   img: string;
@@ -36,26 +41,33 @@ export interface ListDescription {
 }
 
 interface FormChild {
-  name: string;
-  genre: string;
-  date_birth: string;
+  child_name: string;
+  gender: string;
+  birth_date: string;
   blood_type: string;
 }
 
 export interface DataChild {
-  name: string;
-  gender: string;
-  age: number;
-  imc: number;
-  date_birth: string;
-  weight: number;
-  height: number;
-  vaccine: string;
-  sick: string | null;
-  blood_type: string;
+  id_child: number
+  child_name: string
+  height: number
+  weight: number
+  birth_date: string
+  BMI: null | number
+  blood_type: string
+  gender: string
+  photo: string
+  active: number
+  fk_id_guardian: number
+  vaccine?: string
+  sick?: string
 }
 
 function ProfileChildren() {
+  const idChild: number = Number(localStorage.getItem("select_child"))
+  const { data: childData } = useGetChild(idChild)
+  const { mutate: updateChild } = useUpdateChild()
+
   const refProfile = useRef<HTMLDivElement | null>(null)
 
   const [descriptionItems, setDescriptionItems] = useState<ListDescription[]>([
@@ -92,77 +104,117 @@ function ProfileChildren() {
       img: Blood,
     },
   ]);
-  const [dataChildren, setDataChildren] = useState<DataChild>({
-    name: "João Pedro",
-    gender: "masculino",
-    age: 1.2,
-    imc: 3.1,
-    date_birth: "2019-08-21",
-    weight: 7.1,
-    height: 123,
-    vaccine: "Hepatite B",
-    sick: null,
-    blood_type: "A",
+  const [dataChildren, setDataChildren] = useState<Children>({
+    child_name: "",
+    gender: "",
+    BMI: 0,
+    birth_date: "",
+    weight: 0,
+    height: 0,
+    blood_type: "",
+    active: 0,
+    fk_id_guardian: 0,
+    id_child: 0,
+    photo: ""
   });
   const [onlyRead, setOnlyRead] = useState<boolean>(true);
   const [genderSelected, setGenderSelected] = useState<string>(
-    dataChildren.gender,
+    dataChildren.gender
   );
 
-  function setArrayData(data: DataChild) {
+  const { register, handleSubmit, setValue, reset } = useForm<FormChild>({
+    defaultValues: {
+      child_name: "",
+      birth_date: "",
+      blood_type: "",
+    }
+  });
+
+  useEffect(() => {
+    if (childData?.children && childData.children.length > 0) {
+      const newData: Children = { ...childData.children[0], birth_date: childData.children[0].birth_date.split("T")[0] }
+
+      setGenderSelected(newData.gender);
+      setDataChildren(newData);
+      setArrayData(newData);
+
+      reset({
+        child_name: newData.child_name,
+        birth_date: newData.birth_date,
+        blood_type: newData.blood_type,
+      });
+    }
+  }, [childData, reset])
+
+  if (!childData?.children || childData.children.length === 0) {
+    return (
+      <div></div>
+    )
+  }
+
+  function setArrayData(data: Children) {
+    const newData: DataChild = data
     const newArray: ListDescription[] = descriptionItems.map((it) => {
       if (it.title == "Data de nascimento:") {
-        it.value = Date.formatedDate(data.date_birth);
+        it.value = Date.formatedDate(newData.birth_date);
       } else if (it.title == "Peso:") {
-        it.value = `${data.weight} Kg`;
+        it.value = `${newData.weight} Kg`;
       } else if (it.title == "Altura:") {
-        it.value = `${data.height} cm`;
+        it.value = `${newData.height} cm`;
       } else if (it.title == "Vacinação:") {
-        if (data.vaccine != null || data.vaccine != undefined) {
-          it.value = data.vaccine;
+        if (newData.vaccine != null || newData.vaccine != undefined) {
+          it.value = newData.vaccine;
         } else {
           it.value = "Nenhuma vacina aplicada";
         }
       } else if (it.title == "Enfermidades:") {
-        if (data.sick != null || data.sick != undefined) {
-          it.value = data.sick;
+        if (newData.sick != null || newData.sick != undefined) {
+          it.value = newData.sick;
         } else {
           it.value = "Nenhuma enfermidade";
         }
       } else if (it.title == "Tipo sanguíneo:") {
-        it.value = data.blood_type;
+        it.value = newData.blood_type;
       }
       return it;
     });
-
     setDescriptionItems(newArray);
   }
 
   function sendDatas(data: FormChild) {
-    console.log(data);
-    const newObject: DataChild = { ...dataChildren, gender: genderSelected };
-    setDataChildren(newObject);
+    const newObject: UpdateChild = { ...data, gender: genderSelected, id_child: idChild, photo: "" };
+    updateChild(
+      newObject,
+      {
+        onSuccess: (response) => {
+          alert("Alterações salvas!")
+          const newData: UpdateChild = response.response
+          const newChildren: Children = {
+            child_name: newData.child_name,
+            gender: newData.gender,
+            BMI: dataChildren.BMI,
+            birth_date: newData.birth_date,
+            weight: dataChildren.weight,
+            height: dataChildren.height,
+            blood_type: newData.blood_type,
+            active: dataChildren.active,
+            fk_id_guardian: dataChildren.fk_id_guardian,
+            id_child: newData.id_child,
+            photo: newData.photo
+          }
+          setDataChildren(newChildren)
+        }
+      }
+    )
   }
 
   function cancelChanges() {
-    setValue("name", dataChildren.name);
-    setValue("date_birth", dataChildren.date_birth);
+    setValue("child_name", dataChildren.child_name);
+    setValue("birth_date", dataChildren.birth_date);
     setValue("blood_type", dataChildren.blood_type);
     setGenderSelected(dataChildren.gender);
     setOnlyRead(true);
   }
-
-  useEffect(() => {
-    setArrayData(dataChildren);
-  }, []);
-
-  const { register, handleSubmit, setValue } = useForm<FormChild>({
-    defaultValues: {
-      name: dataChildren.name,
-      date_birth: dataChildren.date_birth,
-      blood_type: dataChildren.blood_type,
-    }
-  });
 
   return (
     <div
@@ -174,7 +226,7 @@ function ProfileChildren() {
         <Header />
       </div>
       <Perfil
-        register_name={register("name")}
+        register_name={register("child_name")}
         genderSelected={genderSelected}
         setGenderSelected={setGenderSelected}
         readonly={onlyRead}
@@ -234,16 +286,16 @@ function ProfileChildren() {
             <h3 className="flex justify-center items-center font-poppins text-primary-text font-bold text-3xl w-full h-20">
               <InputDefault
                 readOnly={onlyRead}
-                {...register("name")}
+                {...register("child_name")}
                 className={`w-[75%] text-center ${onlyRead ? "" : "border-2 border-primary rounded-lg"}`}
               />
             </h3>
             <section className="flex items-center w-full h-20 font-poppins font-semibold text-primary-text border rounded-lg bg-white border-primary shadow-purple-sm">
               <div className="flex justify-center items-center gap-3 w-1/3 h-[70%]">
                 <button
-                  onClick={() => setGenderSelected("masculino")}
+                  onClick={() => setGenderSelected("male")}
                   type="button"
-                  className={`flex justify-center items-center w-12 h-12 rounded-lg ${genderSelected == "masculino" && !onlyRead ? "bg-lilas/80 border border-primary" : ""} ${dataChildren.gender == "masculino" || !onlyRead ? "flex" : "hidden"}`}
+                  className={`flex justify-center items-center w-12 h-12 rounded-lg ${genderSelected == "male" && !onlyRead ? "bg-lilas/80 border border-primary" : ""} ${dataChildren.gender == "male" || !onlyRead ? "flex" : "hidden"}`}
                 >
                   <img
                     src={Male}
@@ -252,9 +304,9 @@ function ProfileChildren() {
                   />
                 </button>
                 <button
-                  onClick={() => setGenderSelected("feminino")}
+                  onClick={() => setGenderSelected("female")}
                   type="button"
-                  className={`flex justify-center items-center w-12 h-12 rounded-lg ${genderSelected == "feminino" && !onlyRead ? "bg-lilas/80 border border-primary" : ""} ${dataChildren.gender == "feminino" || !onlyRead ? "flex" : "hidden"}`}
+                  className={`flex justify-center items-center w-12 h-12 rounded-lg ${genderSelected == "female" && !onlyRead ? "bg-lilas/80 border border-primary" : ""} ${dataChildren.gender == "female" || !onlyRead ? "flex" : "hidden"}`}
                 >
                   <img
                     src={Fem}
@@ -263,9 +315,9 @@ function ProfileChildren() {
                   />
                 </button>
               </div>
-              <span className="flex justify-center items-center w-1/3 h-[70%] text-lg border-x border-primary">{`${Date.subYearsFormated(dataChildren.date_birth)} anos`}</span>
+              <span className="flex justify-center items-center w-1/3 h-[70%] text-lg border-x border-primary">{`${Date.subYearsFormated(dataChildren.birth_date)} anos`}</span>
               <span className="flex justify-center items-center w-1/3 h-[70%] text-lg">
-                IMC: {dataChildren.imc}
+                IMC: {dataChildren.BMI}
               </span>
             </section>
           </div>
@@ -273,7 +325,7 @@ function ProfileChildren() {
             {descriptionItems.map((it) => (
               <AtributesProfile
                 key={it.title}
-                date_birth={register("date_birth")}
+                date_birth={register("birth_date")}
                 blood_type={register("blood_type")}
                 listDescription={it}
                 onlyRead={onlyRead}

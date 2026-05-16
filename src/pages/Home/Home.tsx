@@ -15,7 +15,7 @@ import { CardPrincipal } from "../../components/CarouselCard";
 import { CarouselDots } from "../../components/CarouselDots";
 import { CategorySection } from "./components/CategorySection";
 import { useNavigate, Link } from "react-router-dom";
-import { onGetChildren } from "../../services/hooks/children/getChildren"
+import { useGetChildren } from "../../services/hooks/children/getChildren"
 import Date from "../../utils/Date"
 import type { ResponseChild, Children } from "../../services/children/children.service";
 
@@ -51,30 +51,6 @@ const categoriesData = [
   { id: 5, title: "Medidas", icon: MeasurementsIcon, path: "/measures" },
   { id: 6, title: "Pediatra", icon: PediatricianIcon, path: "/pediatrician" },
   { id: 7, title: "Saúde", icon: healthIcon, path: "/health" },
-];
-
-const childrenList = [
-  {
-    id: 1,
-    child_name: "João",
-    birth_data: "2026-02-07",
-    photo: childrenPhoto,
-    lastFeeding: "Há 2 Horas",
-  },
-  {
-    id: 2,
-    name: "Juliana",
-    age: "3 Meses",
-    photo: childrenPhoto,
-    lastFeeding: "Há 40 Minutos",
-  },
-  {
-    id: 3,
-    name: "Miguel",
-    age: "8 meses",
-    photo: childrenPhoto,
-    lastFeeding: "Há 1 Hora",
-  },
 ];
 
 const upcomingEventsData = [
@@ -137,9 +113,9 @@ const inventoryStatusData = [
 ];
 
 export function Home() {
-  const navigate = useNavigate();
+  const { data: childrenData } = useGetChildren();
 
-  const { data: childrenData } = onGetChildren();
+  const navigate = useNavigate();
 
   const handleCategoryNavigation = (path: string) => {
     if (path && path !== "") {
@@ -151,10 +127,8 @@ export function Home() {
 
   const [activeIndex, setActiveIndex] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedChild, setSelectedChild] = useState(childrenData?.response[0]);
-  
-  const [listC, setListC] = useState<ResponseChild>()
-  const [yearsChildren, setYearsChildren] = useState<string>("")
+  const [selectedChild, setSelectedChild] = useState<Children | undefined>();
+  const [listChildren, setListChildren] = useState<ResponseChild>()
   const carouselRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -172,14 +146,19 @@ export function Home() {
         }
       }
     }, 3000);
-    
+
     return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
-    setListC(childrenData!!)
+    setListChildren(childrenData)
+    const idChild: number = Number(localStorage.getItem("select_child"))
+    const child: Children[] | undefined = childrenData?.children.filter(it => it.id_child == idChild)
 
-  }, [])
+    if (child) {
+      setSelectedChild(child[0])
+    }
+  }, [childrenData])
 
   const handleScroll = () => {
     if (carouselRef.current) {
@@ -274,7 +253,7 @@ export function Home() {
                     {selectedChild?.child_name}
                   </p>
                   <span className="font-poppins text-sm md:text-base xl:text-sm text-lilas-medium xl:text-primary-text/70">
-                    {yearsChildren}
+                    {Date.subYearsFormated(selectedChild?.birth_date)} anos
                   </span>
                 </div>
                 <div className="hidden xl:flex text-gray-500 hover:text-primary transition-colors cursor-pointer p-2">
@@ -381,11 +360,10 @@ export function Home() {
               {inventoryStatusData.map((item) => (
                 <div
                   key={item.id}
-                  className={`flex flex-col items-center justify-center p-4 rounded-xl shadow-sm border text-center ${
-                    item.alert
-                      ? "bg-red-50 border-red-100"
-                      : "bg-white border-gray-100"
-                  }`}
+                  className={`flex flex-col items-center justify-center p-4 rounded-xl shadow-sm border text-center ${item.alert
+                    ? "bg-red-50 border-red-100"
+                    : "bg-white border-gray-100"
+                    }`}
                 >
                   <div
                     className={`w-10 h-10 mb-2 rounded-full flex items-center justify-center ${item.alert ? "bg-red-100 text-red-500" : "bg-gray-50 text-gray-500"}`}
@@ -466,11 +444,12 @@ export function Home() {
 
               {/* List */}
               <div className="flex flex-col gap-3 max-h-[60vh] overflow-y-auto [&::-webkit-scrollbar]:hidden">
-                {childrenData!!.response.map((child: Children) => (
+                {listChildren?.children.map((child: Children) => (
                   <div
                     key={child.id_child}
                     onClick={() => {
                       setSelectedChild(child);
+                      localStorage.setItem("select_child", child.id_child.toString())
                       setIsModalOpen(false);
                     }}
                     className="w-full bg-white border border-lilas md:py-3 py-2 px-4 rounded-xl flex items-center gap-4 cursor-pointer hover:bg-lilas/20 transition-colors"

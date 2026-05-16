@@ -23,7 +23,7 @@ interface ProductId {
     quantity_product: number
 }
 
-interface RegisterDiaper {
+export interface RegisterDiaper {
     date_time: string
     type: string
     description: string | null
@@ -31,7 +31,7 @@ interface RegisterDiaper {
     product_id: ProductId[]
 }
 
-interface RegisterBath {
+export interface RegisterBath {
     start_time: string
     end_time: string
     description: string | null
@@ -39,14 +39,14 @@ interface RegisterBath {
     product_id: ProductId[]
 }
 
-interface RegisterMedication {
+export interface RegisterMedication {
     date_time: string
     description: string | null
     fk_id_child: number
     product_id: ProductId[]
 }
-
-interface RegisterFeeding {
+ 
+export interface RegisterFeeding {
     date_time: string
     description: string | null
     fk_id_child: number
@@ -101,5 +101,10 @@ export const deleteRegisterMedication = async (idRegister: number): Promise<any>
 
 export const insertRegisterFeeding = async (data: RegisterFeeding): Promise<RegisterFeeding> => {
   const response = await api.post<RegisterFeeding>("/routines/feeding", data);
+  return response.data;
+};
+
+export const deleteRegisterFeeding = async (idRegister: number): Promise<any> => {
+  const response = await api.delete<any>(`/routines/feeding/${idRegister}`);
   return response.data;
 };

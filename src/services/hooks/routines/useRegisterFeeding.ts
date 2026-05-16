@@ -1,11 +1,11 @@
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import { updateChild } from "../../children/children.service"
-import type { UpdateChild } from "../../children/children.service"
+import { insertRegisterFeeding } from "../../routines/routines.service";
+import type { RegisterFeeding } from "../../routines/routines.service";
 
-export const useUpdateChild = () => {
+export const useRegisterFeeding = () => {
     return useMutation({
-        mutationFn: (data: UpdateChild) => updateChild(data, data.id_child),
+        mutationFn: (data: RegisterFeeding) => insertRegisterFeeding(data),
 
         onSuccess: (data) => {
             return data

@@ -6,10 +6,7 @@ export interface LoginData {
 }
 
 export interface LoginResponse {
-  development: string;
-  api_description: string;
-  request_date: string;
-  response: {
+    status_code: number
     user: Array<{
       id_guardian: number;
       guardian_name: string;
@@ -18,9 +15,6 @@ export interface LoginResponse {
       active: number;
       token: string;
     }>;
-  };
-  status: boolean;
-  status_code: number;
 }
 
 export interface RegisterData {
