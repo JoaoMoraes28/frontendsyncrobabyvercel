@@ -15,21 +15,29 @@ import {
 import Close from "../../../assets/closeModal.svg"
 import setSelector from "../../../assets/setExpandSelector.svg";
 
-interface IllnessData {
-  name: string;
-  type: string;
-  start_date: string;
-  end_date?: string;
-  medication: string;
-  description?: string;
-}
+import Date from "../../../utils/Date";
+
+import type { InsertIllness } from "../../../services/illness/illness.service";
+import { useInsertIllness } from "../../../services/hooks/illness/useInsertIllness";
+
+// interface IllnessData {
+//   illness_name: string;
+//   illness_type: string;
+//   start_time: string;
+//   end_time?: string;
+//   medication: string;
+//   description?: string;
+// }
 
 interface IllnessType {
   id: number;
   name: string;
+  insert: string
 }
 
 export function AddIllness() {
+  const { mutate: onRegisterIllness } = useInsertIllness()
+
   const navigate = useNavigate();
 
   const [typeExpand, setTypeExpand] = useState<boolean>(false);
@@ -39,21 +47,36 @@ export function AddIllness() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<IllnessData>();
+  } = useForm<InsertIllness>();
 
   const illnessTypes: IllnessType[] = [
-    { id: 1, name: "Aguda (não crônica)" },
-    { id: 2, name: "Crônica" },
-    { id: 3, name: "Infecciosa" },
-    { id: 4, name: "Alergia" },
+    { id: 1, name: "Aguda", insert: "acute" },
+    { id: 2, name: "Crônica", insert: "chronic" }
   ];
 
-  async function sendDatas(data: IllnessData) {
-    console.log("Dados da enfermidade a serem registrados:", data);
-    navigate(-1);
+  function sendDatas(data: InsertIllness) {
+    const newData: InsertIllness = { ...data, 
+      start_date: Date.convertHourISO(data.start_date),
+      end_date: Date.convertHourISO(data.end_date!),
+      fk_id_child: Number(localStorage.getItem("select_child")),
+      illness_type: data.illness_type == "Aguda" ? "acute" : "chronic"
+     }
+
+    onRegisterIllness(
+      newData,
+      {
+        onSuccess: (response) => {
+          console.log(response)
+          alert("Enfermidade registrada!")
+        },
+        onError: (error) => {
+          alert(error)
+        }
+      }
+    )
   }
 
-  const { onChange: formOnChange, ...restRegister } = register("type", {
+  const { onChange: formOnChange, ...restRegister } = register("illness_type", {
     required: "O tipo da enfermidade é obrigatório!",
   });
 
@@ -92,11 +115,11 @@ export function AddIllness() {
             type="text"
             placeholder="Infecção Urinária"
             className={`${inputClassName} caret-primary-darker bg-white`}
-            {...register("name", { required: "O nome é obrigatório!" })}
+            {...register("illness_name", { required: "O nome é obrigatório!" })}
           />
-          {errors.name && (
+          {errors.illness_name && (
             <p className="text-red-600/70 text-sm font-nunito mt-1">
-              {errors.name.message}
+              {errors.illness_name.message}
             </p>
           )}
         </div>
@@ -152,9 +175,9 @@ export function AddIllness() {
               </div>
             ))}
           </fieldset>
-          {errors.type && (
+          {errors.illness_type && (
             <p className="text-red-600/70 text-sm font-nunito mt-1">
-              {errors.type.message}
+              {errors.illness_type.message}
             </p>
           )}
         </div>

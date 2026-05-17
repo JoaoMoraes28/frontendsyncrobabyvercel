@@ -46,9 +46,9 @@ function Perfil({
         )}
       </h3>
       <img
-        src={ProfilePicture}
+        src={child?.photo == "" ? ProfilePicture : child?.photo}
         alt="Foto do perfil do usuário logado."
-        className="xl:w-84 xl:h-84 xl:mt-10 xl:rounded-full xl:border-5 xl:border-lilas"
+        className="xl:w-84 xl:h-84 xl:mt-10 xl:rounded-full xl:border-5 xl:object-cover xl:object-center xl:border-lilas-dark"
       />
       <div
         className={`${location.pathname == "/profile-children" ? "xl:flex" : "xl:hidden"} xl:flex xl:justify-center xl:items-center xl:w-full xl:h-42 xl:mt-4`}

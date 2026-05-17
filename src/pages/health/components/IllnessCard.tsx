@@ -1,8 +1,11 @@
 import { useNavigate } from "react-router-dom";
-import type { HealthRecord } from "../Health";
+
+import Date from "../../../utils/Date";
+
+import type { Illness } from "../../../services/illness/illness.service";
 
 interface IllnessCardProps {
-  item: HealthRecord;
+  item: Illness;
   expandedCardId: number | null;
   toggleCard: (id: number) => void;
   onDelete: (id: number) => void
@@ -15,50 +18,94 @@ export function IllnessCard({
   onDelete
 }: IllnessCardProps) {
   const borderColorDesktop =
-    item.tipo === "Crônica" ? "border-[#8A56E2]" : "border-[#4A90E2]";
+    item.illness_type === "Crônica" ? "border-[#8A56E2]" : "border-[#4A90E2]";
   const badgeColorDesktop =
-    item.tipo === "Crônica" ? "bg-[#8A56E2]" : "bg-[#64C3D1]";
+    item.illness_type === "Crônica" ? "bg-[#8A56E2]" : "bg-[#64C3D1]";
 
   const navigate = useNavigate();
 
   return (
     <>
       <div
-        className="block md:hidden bg-lilas/80 cursor-pointer overflow-hidden p-4 border-2 border-primary-darker text-center text-dark-purple"
-        onClick={() => toggleCard(item.id)}
+        className="relative block md:hidden bg-lilas/80 cursor-pointer overflow-hidden p-4 border-2 border-primary-darker text-center text-dark-purple"
+        onClick={() => toggleCard(item.id_illness)}
       >
-        <h2 className="font-bold font-poppins text-lg">{item.nome}</h2>
+        <h2 className="font-bold font-poppins text-lg">{item.illness_name}</h2>
         <span className="font-poppins text-md">
-          Registrado em: {item.dataRegistro}
+          Início em: {Date.formatedDate(item.start_date)}
         </span>
-
+        <button
+          className="absolute top-1 right-1 text-accent hover:bg-gray-100 p-1.5 rounded-full transition-colors"
+          onClick={() => navigate(`/edit-illness/${item.id_illness}`)}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" />
+            <path d="m15 5 4 4" />
+          </svg>
+        </button>
         <div
-          className={`grid transition-all duration-300 ease-in-out overflow-hidden ${expandedCardId === item.id
-              ? "grid-rows-[1fr] opacity-100 mt-4"
-              : "grid-rows-[0fr] opacity-0"
+          className={`grid transition-all duration-300 ease-in-out overflow-hidden ${expandedCardId === item.id_illness
+            ? "grid-rows-[1fr] opacity-100 mt-4"
+            : "grid-rows-[0fr] opacity-0"
             }`}
         >
           <div className="min-h-0 flex flex-col gap-2 ">
             <span className="flex gap-1 text-primary-darker">
               <p className="font-semibold text-dark-purple">Tipo:</p>
-              {item.tipo}
+              {item.illness_type == "acute" ? "Aguda" : "Crônica"}
             </span>
             <span className="flex gap-1 text-primary-darker">
               <p className="font-semibold text-dark-purple">Data de início:</p>{" "}
-              {item.dataInicio}
+              {Date.formatedDate(item.start_date)}
             </span>
-            {item.dataTermino && (
+            {item.end_date && (
               <span className="flex gap-1 text-primary-darker">
                 <p className="font-semibold text-dark-purple">
                   Data de término:
                 </p>{" "}
-                {item.dataTermino}
+                {Date.formatedDate(item.end_date)}
               </span>
             )}
-            <span className="flex gap-1 text-primary-darker">
-              <p className="font-semibold text-dark-purple">Medicação:</p>
-              {item.medicacao}
-            </span>
+            <div className="flex justify-between">
+              <span className="flex gap-1 text-primary-darker">
+                <p className="font-semibold text-dark-purple">Medicação:</p>
+                {item.medication}
+              </span>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDelete(item.id_illness)
+                }}
+                className="top-4 right-4 text-red-500 hover:bg-red-50 p-1.5 rounded-md"
+                title="Excluir enfermidade"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M3 6h18" />
+                  <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                  <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -69,7 +116,7 @@ export function IllnessCard({
         <button
           onClick={(e) => {
             e.stopPropagation();
-            onDelete(item.id)
+            onDelete(item.id_illness)
           }}
           className="absolute top-4 right-4 text-red-500 hover:bg-red-50 p-1.5 rounded-md opacity-0 group-hover:opacity-100 transition-all duration-300"
           title="Excluir enfermidade"
@@ -92,7 +139,7 @@ export function IllnessCard({
         </button>
 
         <h2 className="font-bold text-gray-800 text-lg mb-4 w-[90%]">
-          {item.nome}
+          {item.illness_name}
         </h2>
 
         <div className="flex flex-col gap-4 grow">
@@ -119,8 +166,8 @@ export function IllnessCard({
                 Período
               </p>
               <p className="text-sm font-bold text-gray-700">
-                Desde {item.dataInicio.substring(3)}
-                {item.dataTermino && ` até ${item.dataTermino}`}
+                Desde {Date.formatedDate(item.start_date)}
+                {item.end_date && ` até ${Date.formatedDate(item.end_date)}`}
               </p>
             </div>
           </div>
@@ -146,7 +193,7 @@ export function IllnessCard({
                 Medicação Contínua
               </p>
               <p className="text-sm font-bold text-gray-700">
-                {item.medicacao}
+                {item.medication}
               </p>
             </div>
           </div>
@@ -176,7 +223,7 @@ export function IllnessCard({
                 Observações
               </p>
               <p className="text-sm text-gray-500 leading-tight">
-                {item.descricao}
+                {item.description}
               </p>
             </div>
           </div>
@@ -186,12 +233,12 @@ export function IllnessCard({
           <span
             className={`${badgeColorDesktop} text-white text-[10px] uppercase font-bold px-3 py-1 rounded-full`}
           >
-            {item.tipo}
+            {item.illness_type == "acute" ? "Aguda" : "Crônica"}
           </span>
 
           <button
             className="text-accent hover:bg-gray-100 p-1.5 rounded-full transition-colors"
-            onClick={() => navigate(`/edit-illness/${item.id}`)}
+            onClick={() => navigate(`/edit-illness/${item.id_illness}`)}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

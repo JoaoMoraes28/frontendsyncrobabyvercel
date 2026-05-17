@@ -96,11 +96,11 @@ export const updateChild = async (data: UpdateChild, childId: number): Promise<R
 };
 
 export const deactivateChild = async (childId: number, data: VerifyDesactivate): Promise<any> => {
-  const response = await api.post<any>(`/child/deactivate/${childId}`, data);
+  const response = await api.patch<any>(`http://localhost:5173/syncrobaby/child/deactivate/${childId}`, data);
   return response.data;
 };
 
 export const reactivateChild = async (childId: number): Promise<any> => {
-  const response = await api.post<any>(`/child/reactivate/${childId}`);
+  const response = await api.patch<any>(`/child/reactivate/${childId}`);
   return response.data;
 };

@@ -20,6 +20,18 @@ function getDateUTC() {
   return date.toISOString();
 }
 
+function convertISO(hour: string) {
+  const day: string = getDateUTC().split("T")[0]
+  const formatedDate: string = `${day}T${hour}:00.000`
+  return formatedDate
+}
+
+function convertHourISO(date: string) {
+  const formatedDate: string = `${date}T00:00:00.000`
+
+  return formatedDate
+}
+
 function getTodayFormated() {
   return getDateUTC().split("T")[0]
 }
@@ -114,5 +126,7 @@ export default {
   subDaysFormated,
   formatedDayYear,
   getTodayFormated,
+  convertISO,
+  convertHourISO,
   date,
 };

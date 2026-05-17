@@ -14,15 +14,11 @@ import {
 
 import Close from "../../../assets/closeModal.svg"
 import setSelector from "../../../assets/setExpandSelector.svg";
+import { useQueryClient } from "@tanstack/react-query";
 
-interface IllnessData {
-  name: string;
-  type: string;
-  start_date: string;
-  end_date?: string;
-  medication: string;
-  description?: string;
-}
+import { useGetIllnessID } from "../../../services/hooks/illness/useGetIllnessId";
+import { useUpdateIllness } from "../../../services/hooks/illness/useUpdateIllness";
+import type { Illness } from "../../../services/illness/illness.service";
 
 interface IllnessType {
   id: number;
@@ -30,8 +26,12 @@ interface IllnessType {
 }
 
 export function EditIllness() {
-  const navigate = useNavigate();
   const { id } = useParams();
+  const { data: onIllnessId } = useGetIllnessID(Number(id))
+  const { mutate: onUpdateIllness } = useUpdateIllness()
+  const queryClient = useQueryClient();
+
+  const navigate = useNavigate();
 
   const [typeExpand, setTypeExpand] = useState<boolean>(false);
   const [typeLabel, setTypeLabel] = useState<string>("Selecione o tipo...");
@@ -41,44 +41,46 @@ export function EditIllness() {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<IllnessData>();
+  } = useForm<Illness>();
 
   const illnessTypes: IllnessType[] = [
-    { id: 1, name: "Aguda (não crônica)" },
+    { id: 1, name: "Aguda" },
     { id: 2, name: "Crônica" },
-    { id: 3, name: "Infecciosa" },
-    { id: 4, name: "Alergia" },
   ];
 
   useEffect(() => {
-    async function fetchIllness() {
-      if (id) {
-        const data = await new Promise<IllnessData>((resolve) => {
-          setTimeout(() => {
-            resolve({
-              name: "Gripe",
-              type: "Aguda (não crônica)",
-              start_date: "2026-03-10",
-              end_date: "2026-03-15",
-              medication: "Antigripal comum",
-              description: "Sintomas leves de resfriado.",
-            });
-          }, 100);
-        });
+    if (typeof onIllnessId === 'string' || !onIllnessId) {
+      return
 
-        reset(data);
-        setTypeLabel(data.type);
+    } else if (onIllnessId && onIllnessId.illness) {
+      const illness: Illness = onIllnessId.illness[0]
+      const newData: Illness = {
+        ...illness,
+        start_date: illness.start_date ? illness.start_date.split("T")[0] : "",
+        end_date: illness.end_date ? illness.end_date.split("T")[0] : "",
       }
+      reset(newData)
+      setTypeLabel(illness.illness_type == 'acute' ? "Aguda" : "Crônica")
     }
+  }, [onIllnessId, reset]);
 
-    fetchIllness();
-  }, [id, reset]);
-
-  async function updateDatas() {
-    navigate(-1);
+  async function updateDatas(data: Illness) {
+    const newData: Illness = { ...data, illness_type: data.illness_type == "Aguda" ? "acute" : "chronic" }
+    onUpdateIllness(
+      newData,
+      {
+        onSuccess: () => {
+          alert("Alterações salvas!")
+          queryClient.invalidateQueries({ queryKey: ['illness'] });
+        },
+        onError: (error) => {
+          alert(error)
+        }
+      }
+    )
   }
 
-  const { onChange: formOnChange, ...restRegister } = register("type", {
+  const { onChange: formOnChange, ...restRegister } = register("illness_type", {
     required: "O tipo da enfermidade é obrigatório!",
   });
 
@@ -118,11 +120,11 @@ export function EditIllness() {
             type="text"
             placeholder="Infecção Urinária"
             className={`${inputClassName} bg-white  caret-primary-darker`}
-            {...register("name", { required: "O nome é obrigatório!" })}
+            {...register("illness_name", { required: "O nome é obrigatório!" })}
           />
-          {errors.name && (
+          {errors.illness_name && (
             <p className="text-red-600/70 text-sm font-nunito mt-1">
-              {errors.name.message}
+              {errors.illness_name.message}
             </p>
           )}
         </div>
@@ -180,9 +182,9 @@ export function EditIllness() {
               </div>
             ))}
           </fieldset>
-          {errors.type && (
+          {errors.illness_type && (
             <p className="text-red-600/70 text-sm font-nunito mt-1">
-              {errors.type.message}
+              {errors.illness_type.message}
             </p>
           )}
         </div>

@@ -7,6 +7,7 @@ export async function DownloadElement(element: HTMLDivElement, page: string) {
             link.download = page == 'storage' ? 'lista-compras.png' : 'perfil-filho.png'
             link.href = dataUrl
             link.click()
+
         })
         .catch((e) => {
             console.log(e)

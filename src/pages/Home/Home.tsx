@@ -151,14 +151,39 @@ export function Home() {
   }, []);
 
   useEffect(() => {
-    setListChildren(childrenData)
-    const idChild: number = Number(localStorage.getItem("select_child"))
-    const child: Children[] | undefined = childrenData?.children.filter(it => it.id_child == idChild)
-
-    if (child) {
-      setSelectedChild(child[0])
+    if (!childrenData) {
+      return
     }
-  }, [childrenData])
+
+    if (typeof childrenData === 'string') {
+      setSelectedChild({
+        id_child: 0,
+        child_name: "Selecione um filho",
+        height: 0,
+        weight: 0,
+        birth_date: "",
+        BMI: null,
+        blood_type: "",
+        gender: "",
+        photo: "",
+        active: 1,
+        fk_id_guardian: 0
+      });
+      return
+    }
+
+    if (Array.isArray(childrenData.children)) {
+      setListChildren(childrenData);
+
+      const idChild: number = Number(localStorage.getItem("select_child"));
+
+      const child: Children[] = childrenData.children.filter(it => it.id_child === idChild);
+
+      if (child.length > 0) {
+        setSelectedChild(child[0]);
+      }
+    }
+  }, [childrenData]);
 
   const handleScroll = () => {
     if (carouselRef.current) {
