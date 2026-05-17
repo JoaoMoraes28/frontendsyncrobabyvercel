@@ -20,12 +20,12 @@ import { useRegisterFeeding } from "../../services/hooks/routines/useRegisterFee
 import type { RegisterFeeding } from "../../services/routines/routines.service";
 
 interface DataFeeding {
-  hour: string;
+  date_time: string;
   food?: string
-  typeFood: number;
+  fk_id_product_type: number;
   product_id: {
-    id_food: number;
-    quantity: number;
+    id: number;
+    quantity_product: number;
   };
   description: string | null;
 }
@@ -45,10 +45,10 @@ interface Food {
 
 interface ListFood {
   id: number;
-  type_id: number;
+  type_id?: number;
   food_name?: string;
   measure?: string;
-  food_quantity: number;
+  quantity_product: number;
 }
 
 export const inputClassName: string =
@@ -77,7 +77,7 @@ function RoutineFeeding() {
     formState: { errors },
   } = useForm<DataFeeding>({
     defaultValues: {
-      hour: Date.getHourFormated(),
+      date_time: Date.getHourFormated(),
     },
   });
 
@@ -163,7 +163,7 @@ function RoutineFeeding() {
         type_id: typeFood,
         food_name: food.food,
         measure: food.measure,
-        food_quantity: 0,
+        quantity_product: 0,
       };
 
       setListFood([...listFood, newFood]);
@@ -184,7 +184,7 @@ function RoutineFeeding() {
   function changeQuantityFood(id: number, quantity: string) {
     const newListFood: ListFood[] = listFood.map((food) => {
       if (food.id == id) {
-        return { ...food, food_quantity: parseInt(quantity) };
+        return { ...food, quantity_product: parseInt(quantity) };
       } else {
         return food;
       }
@@ -196,7 +196,7 @@ function RoutineFeeding() {
   function sendDatas(datas: DataFeeding) {
     let newListFood: ListFood[] = []
 
-    if (listFood.length > 0 && !listFood.some((it) => it.food_quantity == 0)) {
+    if (listFood.length > 0 && !listFood.some((it) => it.quantity_product == 0)) {
       newListFood = listFood.map((food) => {
         const { food_name, measure, ...newFood } = food;
         return newFood;
@@ -204,16 +204,27 @@ function RoutineFeeding() {
 
     }
 
-
     if (typeFood != 0) {
-      const fullDatas = {
-        hour: dateUTC,
-        typeFood: typeFood,
+      const fullDatas: RegisterFeeding = {
+        fk_id_child: Number(localStorage.getItem("select_child")),
+        date_time: Date.convertISO(datas.date_time),
+        fk_id_product_type: typeFood,
         description: datas.description,
         product_id: newListFood,
       };
 
-      console.log(fullDatas);
+      onInsertFeeding(
+        fullDatas,
+        {
+          onSuccess: (response) => {
+            alert("Deu certo")
+          },
+          onError: (error) => {
+            alert("Ih deu errado hein...")
+          }
+        }
+      )
+
     } else {
 
       alert("Selecione o tipo d registro!")
@@ -276,14 +287,14 @@ function RoutineFeeding() {
             Horário
           </label>
           <InputDefault
-            {...register("hour", { required: "Hora obrigatória" })}
+            {...register("date_time", { required: "Hora obrigatória" })}
             id="hour"
             type="time"
             className={inputClassName}
           />
-          {errors.hour && (
+          {errors.date_time && (
             <p className="text-red-600/70 text-sm font-nunito">
-              {errors.hour.message}
+              {errors.date_time.message}
             </p>
           )}
         </div>
@@ -431,7 +442,7 @@ function RoutineFeeding() {
                   <InputDefault
                     onChange={(e) => changeQuantityFood(food.id, e.target.value)}
                     type="number"
-                    value={`${food.food_quantity}`}
+                    value={`${food.quantity_product}`}
                     className="w-2/3 pl-2 text-center"
                   />
                   <span className="w-1/3">{`${food.measure}`}</span>

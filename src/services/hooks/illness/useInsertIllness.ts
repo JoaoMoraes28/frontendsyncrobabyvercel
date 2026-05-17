@@ -1,13 +1,14 @@
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import { deactivateChild } from "../../children/children.service"
-import type { VerifyDesactivate } from "../../children/children.service"
+import { insertIllness } from "../../illness/illness.service";
+import type { InsertIllness } from "../../illness/illness.service";
 import { useNavigate } from "react-router-dom";
 
-export const useDeactivateChild = () => {
+export const useInsertIllness = () => {
     const navigate = useNavigate()
+
     return useMutation({
-        mutationFn: (data: VerifyDesactivate) => deactivateChild(data.id_child, data),
+        mutationFn: (data: InsertIllness) => insertIllness(data),
 
         onSuccess: (data) => {
             navigate(-1)

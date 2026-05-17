@@ -8,15 +8,19 @@ import BtnPrimary from "../../components/BtnPrimary";
 import { IllnessCard } from "./components/IllnessCard";
 import ChildrenSelect from "../../layouts/ChildrenSelect";
 
+import { useGetIllness } from "../../services/hooks/illness/useGetIllness";
+import { useDeleteIllness } from "../../services/hooks/illness/useDeleteIllness";
+import type { Illness } from "../../services/illness/illness.service";
+
 export interface HealthRecord {
-  id: number;
-  nome: string;
-  tipo: "Aguda" | "Crônica";
-  dataRegistro: string;
-  dataInicio: string;
-  dataTermino?: string;
-  medicacao: string;
-  descricao: string;
+  id_illness: number;
+  illness_name: string;
+  illness_type: string;
+  start_date: string;
+  end_date: string;
+  medication: string;
+  description: string;
+  fk_id_child: number
 }
 
 const filterOptions: FilterOption[] = [
@@ -26,62 +30,32 @@ const filterOptions: FilterOption[] = [
 ];
 
 export function Health() {
+  const { data: onGetIllness } = useGetIllness(Number(localStorage.getItem("select_child")))
+  const { mutate: onDeleteIllness } = useDeleteIllness()
+
   const navigate = useNavigate();
   const [selectedFilter, setSelectedFilter] = useState("Todas");
   const [expandedCardId, setExpandedCardId] = useState<number | null>(null);
   const [childSelected, setChildSelected] = useState<number>(1)
-  const [items, setItems] = useState<HealthRecord[]>([
-    {
-      id: 1,
-      nome: "Gripe",
-      tipo: "Aguda",
-      dataRegistro: "01/06/2025",
-      dataInicio: "01/06/2025",
-      dataTermino: "05/06/2025",
-      medicacao: "Dipirona",
-      descricao: "Congestão nasal, dor de garganta, cansaço extremo.",
-    },
-    {
-      id: 2,
-      nome: "Infecção de Ouvido",
-      tipo: "Aguda",
-      dataRegistro: "07/07/2025",
-      dataInicio: "05/07/2025",
-      dataTermino: "12/07/2025",
-      medicacao: "Amoxicilina",
-      descricao: "Dor intensa no canal auditivo e febre leve.",
-    },
-    {
-      id: 3,
-      nome: "Conjuntivite Alérgica",
-      tipo: "Crônica",
-      dataRegistro: "05/04/2024",
-      dataInicio: "01/04/2024",
-      medicacao: "Colírio Antihistamínico",
-      descricao: "Irritação ocular sazonal devido a pólen.",
-    },
-    {
-      id: 4,
-      nome: "Gripe",
-      tipo: "Aguda",
-      dataRegistro: "11/03/2026",
-      dataInicio: "10/03/2026",
-      dataTermino: "15/03/2026",
-      medicacao: "Antigripal comum",
-      descricao: "Sintomas leves de resfriado.",
-    },
-    {
-      id: 5,
-      nome: "Gripe",
-      tipo: "Aguda",
-      dataRegistro: "18/09/2026",
-      dataInicio: "15/09/2026",
-      dataTermino: "22/09/2026",
-      medicacao: "Repouso e hidratação",
-      descricao: "Dores no corpo e coriza.",
-    },
-  ]);
-  const [itemsHealth, setItemsHealth] = useState<HealthRecord[]>([])
+  const [items, setItems] = useState<Illness[]>([]);
+  const [itemsHealth, setItemsHealth] = useState<Illness[]>([])
+
+  useEffect(() => {
+    const isObject = onGetIllness && typeof onGetIllness === "object" && !Array.isArray(onGetIllness);
+    
+    if (isObject) {
+      if (onGetIllness.illness) {
+        setItemsHealth(onGetIllness.illness);
+        setItems(onGetIllness.illness);
+      }
+    }
+  }, [onGetIllness]);
+
+  if (!onGetIllness) {
+    return (
+      <div></div>
+    )
+  }
 
   const toggleCard = (id: number) => {
     setExpandedCardId((prev) => (prev === id ? null : id));
@@ -89,12 +63,12 @@ export function Health() {
 
   function filteredItems(opt: string) {
     setSelectedFilter(opt)
-
+    const compareOpt: string = opt == "Aguda" ? 'acute' : "chronic"
     if (opt === "Todas") {
       setItemsHealth(items)
 
     } else {
-      const newData: HealthRecord[] = items.filter(it => it.tipo === opt)
+      const newData: Illness[] = items.filter(it => it.illness_type === compareOpt)
       setItemsHealth(newData)
 
     }
@@ -102,14 +76,21 @@ export function Health() {
   }
 
   function deleteItem(id: number) {
-    const newData: HealthRecord[] = items.filter(it => it.id != id)
-    setItems(newData)
-    setItemsHealth(newData)
+    onDeleteIllness(
+      id,
+      {
+        onSuccess: () => {
+          const newData: Illness[] = items.filter(it => it.id_illness != id && it.illness_type == (selectedFilter == "Aguda" ? "acute" : "chronic"))
+          setItemsHealth(newData)
+          const newDataDelete: Illness[] = items.filter(it => it.id_illness != id)
+          setItems(newDataDelete)
+        },
+        onError: (error) => {
+          console.log(error)
+        }
+      }
+    )
   }
-
-  useEffect(() => {
-    setItemsHealth(items)
-  }, [])
 
   return (
     <div className="flex w-full flex-col gap-6">
@@ -118,7 +99,7 @@ export function Health() {
           <DropdownFilter
             options={filterOptions}
             selectedFilter={selectedFilter}
-            onSelect={setSelectedFilter}
+            onSelect={filteredItems}
           />
           <BtnPrimary
             text="Registrar Enfermidade"
@@ -164,7 +145,7 @@ export function Health() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 overflow-y-auto max-h-[75vh] md:max-h-full pr-2 pb-4">
         {itemsHealth.map((item) => (
           <IllnessCard
-            key={item.id}
+            key={item.id_illness}
             item={item}
             expandedCardId={expandedCardId}
             toggleCard={toggleCard}
