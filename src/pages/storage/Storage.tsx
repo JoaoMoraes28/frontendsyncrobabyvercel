@@ -12,7 +12,7 @@ import { ProductCard } from "./components/ProductCard";
 
 import { Link } from "react-router-dom";
 
-import ConvertImg from "../../utils/DownloadImg"
+import ConvertImg from "../../utils/DownloadImg";
 
 export interface InventoryItem {
   id: number;
@@ -112,7 +112,7 @@ const getCategoryIcon = (category: string): React.ElementType => {
 };
 
 export function Storage() {
-  const refProducts = useRef<HTMLDivElement | null>(null)
+  const refProducts = useRef<HTMLDivElement | null>(null);
 
   const [selectedFilter, setSelectedFilter] = useState("Todas");
   const [inventoryItems, setInventoryItems] = useState<InventoryItem[]>(items);
@@ -121,8 +121,7 @@ export function Storage() {
 
   const getStatusColor = (quantity: number) => {
     if (quantity <= 1) return "var(--color-red-light)";
-    if (quantity <= 3)
-      return "var(--color-yellow-warning)";
+    if (quantity <= 3) return "var(--color-yellow-warning)";
     return "var(--color-green-success)";
   };
 
@@ -135,19 +134,13 @@ export function Storage() {
   const stats = useMemo(() => {
     return {
       healthy: inventoryItems.filter(
-        (i) =>
-          getStatusColor(i.quantity) ===
-          "var(--color-green-success)",
+        (i) => getStatusColor(i.quantity) === "var(--color-green-success)",
       ).length,
       warning: inventoryItems.filter(
-        (i) =>
-          getStatusColor(i.quantity) ===
-          "var(--color-yellow-warning)",
+        (i) => getStatusColor(i.quantity) === "var(--color-yellow-warning)",
       ).length,
       danger: inventoryItems.filter(
-        (i) =>
-          getStatusColor(i.quantity) ===
-          "var(--color-red-light)",
+        (i) => getStatusColor(i.quantity) === "var(--color-red-light)",
       ).length,
     };
   }, [inventoryItems]);
@@ -202,7 +195,7 @@ export function Storage() {
         <Link
           to="/add-storage"
           className="hidden lg:flex justify-center bg-accent text-white font-bold py-2 px-6 rounded-xl shadow-md hover:brightness-95 active:scale-95 transition-all cursor-pointer"
-          onClick={() => { }}
+          onClick={() => {}}
         >
           Adicionar item ao estoque
         </Link>
@@ -214,8 +207,16 @@ export function Storage() {
           selectedFilter={selectedFilter}
           onSelect={setSelectedFilter}
         />
-        <button onClick={() => ConvertImg.DownloadElement(refProducts.current!!, 'storage')}>
-          <img src={exportIcon} alt="Exportar lista de produtos para pdf." className="w-5 cursor-pointer" />
+        <button
+          onClick={() =>
+            ConvertImg.DownloadElement(refProducts.current!, "storage")
+          }
+        >
+          <img
+            src={exportIcon}
+            alt="Exportar lista de produtos para pdf."
+            className="w-5 cursor-pointer"
+          />
         </button>
       </div>
 
@@ -240,7 +241,10 @@ export function Storage() {
         />
       </div>
 
-      <div ref={refProducts} className="flex flex-col gap-4 lg:grid lg:grid-cols-3 lg:gap-6 lg:items-start overflow-y-auto flex-1 min-h-0 lg:max-h-none lg:overflow-visible p-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+      <div
+        ref={refProducts}
+        className="flex flex-col gap-4 lg:grid lg:grid-cols-3 lg:gap-6 lg:items-start overflow-y-auto flex-1 min-h-0 lg:max-h-none lg:overflow-visible p-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+      >
         {filteredItems.map((item) => (
           <ProductCard
             key={item.id}
