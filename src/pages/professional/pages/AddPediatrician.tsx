@@ -13,6 +13,8 @@ import {
 } from "../../routines/RoutineFeeding";
 
 import setSelector from "../../../assets/setExpandSelector.svg";
+import { useInsertProfessional } from "../../../services/hooks/professional/insertProfessional";
+import { useGetSpecialties } from "../../../services/hooks/specialty/getSpecialty";
 
 interface PediatricianData {
   name: string;
@@ -23,13 +25,13 @@ interface PediatricianData {
   description?: string;
 }
 
-interface Profession {
-  id: number;
-  name: string;
-}
-
 export function AddPediatrician() {
   const navigate = useNavigate();
+  const childId = Number(localStorage.getItem("select_child"));
+
+  const { mutateAsync: insertProfessionalMutation } = useInsertProfessional();
+  const { data: specialtiesResponse } = useGetSpecialties();
+
   const {
     register,
     handleSubmit,
@@ -41,14 +43,31 @@ export function AddPediatrician() {
     "Selecione a profissão...",
   );
 
-  const professions: Profession[] = [
-    { id: 1, name: "Pediatra" },
-    { id: 2, name: "Nutricionista" },
-    { id: 3, name: "Fonoaudiólogo" },
-  ];
+  const specialtiesList = specialtiesResponse?.specialty || [];
 
-  function sendDatas(data: PediatricianData) {
-    console.log("Dados a serem enviados:", data);
+  async function sendDatas(data: PediatricianData) {
+    const selectedSpecialty = specialtiesList.find(
+      (spec) => spec.specialization_name === data.profession,
+    );
+    const specialtyId = selectedSpecialty
+      ? selectedSpecialty.id_specialization
+      : 1;
+
+    const payload = {
+      professional_name: data.name,
+      phone: data.phone,
+      last_consultation: data.last_appointment_date,
+      address: data.address,
+      fk_id_child: childId,
+      fk_id_specialization: specialtyId,
+    };
+
+    try {
+      await insertProfessionalMutation(payload);
+      navigate(-1);
+    } catch {
+      return;
+    }
   }
 
   const { onChange: formOnChange, ...restRegister } = register("profession", {
@@ -56,14 +75,10 @@ export function AddPediatrician() {
   });
 
   return (
-    <div
-      className="w-full flex flex-col
-    xl:flex xl:justify-center xl:items-center z-10"
-    >
+    <div className="w-full flex flex-col xl:flex xl:justify-center xl:items-center z-10">
       <form
         onSubmit={handleSubmit(sendDatas)}
-        className="flex flex-col gap-2 w-full justify-between h-full
-        xl:w-[90%] xl:px-14 xl:py-2 xl:rounded-2xl xl:mt-2 xl:gap-0 xl:shadow-purple-md xl:bg-lilas"
+        className="flex flex-col gap-2 w-full justify-between h-full xl:w-[90%] xl:px-14 xl:py-2 xl:rounded-2xl xl:mt-2 xl:gap-0 xl:shadow-purple-md xl:bg-lilas"
       >
         <div className="flex flex-col">
           <label htmlFor="name" className={labelClassName}>
@@ -112,29 +127,32 @@ export function AddPediatrician() {
           </div>
 
           <fieldset
-            className={`absolute top-20 md:top-22 xl:top-20 flex-col w-full rounded-bl-lg rounded-br-lg border-b border-l border-r border-primary-darker overflow-y-auto bg-white z-40 pt-2 pb-2 gap-2 shadow-purple-sm ${
+            className={`absolute top-20 md:top-22 xl:top-20 flex-col w-full rounded-bl-lg rounded-br-lg border-b border-l border-r border-primary-darker overflow-y-auto max-h-48 bg-white z-40 pt-2 pb-2 gap-2 shadow-purple-sm ${
               professionExpand ? "flex" : "hidden"
             }`}
           >
-            {professions.map((prof) => (
+            {specialtiesList.map((spec) => (
               <div
-                key={prof.id}
+                key={spec.id_specialization}
                 className="flex items-center w-full h-8 pl-4 gap-2"
               >
                 <InputDefault
                   type="radio"
-                  id={`prof${prof.id}`}
-                  value={prof.name}
+                  id={`spec${spec.id_specialization}`}
+                  value={spec.specialization_name}
                   className={radioButton}
                   {...restRegister}
                   onChange={(e) => {
                     formOnChange(e);
-                    setProfessionLabel(prof.name);
+                    setProfessionLabel(spec.specialization_name);
                     setProfessionExpand(false);
                   }}
                 />
-                <label htmlFor={`prof${prof.id}`} className={labelRadioButton}>
-                  {prof.name}
+                <label
+                  htmlFor={`spec${spec.id_specialization}`}
+                  className={labelRadioButton}
+                >
+                  {spec.specialization_name}
                 </label>
               </div>
             ))}
@@ -216,11 +234,7 @@ export function AddPediatrician() {
           />
         </div>
 
-        <div
-          className="flex justify-between w-full h-10 md:mb-10
-                        md:justify-center md:gap-10 md:h-12
-                        xl:h-10 xl:gap-20 xl:mb-0"
-        >
+        <div className="flex justify-between w-full h-10 md:mb-10 md:justify-center md:gap-10 md:h-12 xl:h-10 xl:gap-20 xl:mb-0">
           <BtnPrimary
             onClick={() => navigate(-1)}
             type="button"
