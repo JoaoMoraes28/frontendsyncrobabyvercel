@@ -203,16 +203,16 @@ function RoutineFeeding() {
       });
 
     }
-
+// 2026-05-19T14:04:00.000
     if (typeFood != 0) {
       const fullDatas: RegisterFeeding = {
         fk_id_child: Number(localStorage.getItem("select_child")),
         date_time: Date.convertISO(datas.date_time),
         fk_id_product_type: typeFood,
         description: datas.description,
-        product_id: newListFood,
+        product_id: newListFood
       };
-
+      console.log(fullDatas)
       onInsertFeeding(
         fullDatas,
         {

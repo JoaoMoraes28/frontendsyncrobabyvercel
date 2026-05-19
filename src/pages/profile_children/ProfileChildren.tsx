@@ -142,11 +142,11 @@ function ProfileChildren() {
   });
 
   useEffect(() => {
-    if (childData?.children && childData.children.length > 0) {
+    if (childData?.child && childData.child.length > 0) {
       const newData: Children = {
-        ...childData.children[0],
-        birth_date: childData.children[0].birth_date.split("T")[0],
-        height: Math.round(childData.children[0].height)
+        ...childData.child[0],
+        birth_date: childData.child[0].birth_date.split("T")[0],
+        height: Math.round(childData.child[0].height)
       }
 
       setGenderSelected(newData.gender);
@@ -162,7 +162,7 @@ function ProfileChildren() {
     }
   }, [childData, reset])
 
-  if (!childData?.children || childData.children.length === 0) {
+  if (!childData?.child || childData.child.length === 0) {
     return (
       <div></div>
     )
@@ -247,6 +247,7 @@ function ProfileChildren() {
         { child_name: data.child_name, id_child: idChild },
         {
           onSuccess: (response) => {
+            localStorage.setItem("select_child", "0")
             alert("Criança desativada!")
           },
           onError: (error) => {

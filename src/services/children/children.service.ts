@@ -19,6 +19,11 @@ export interface ResponseChild {
   children: Children[]
 }
 
+export interface ResponseChildId {
+  status_code: number
+  child: Children[]
+}
+
 export interface UpdateChild {
   id_child: number
   child_name: string
@@ -70,8 +75,8 @@ export interface VerifyDesactivate {
   child_name: string
 }
 
-export const getChild = async (id: number): Promise<ResponseChild> => {
-  const response = await api.get<ResponseChild>(`/child/${id}`);
+export const getChild = async (id: number): Promise<ResponseChildId> => {
+  const response = await api.get<ResponseChildId>(`/child/${id}`);
   return response.data;
 };
 
