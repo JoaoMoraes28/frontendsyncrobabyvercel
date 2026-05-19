@@ -21,6 +21,10 @@ export interface Notification {
 
 function Header() {
   const [DateHour, setDateHour] = useState<string>(Date.getDateFormated())
+  const [photoUser] = useState<string | null>(
+    localStorage.getItem("user_photo") == "null"
+    || localStorage.getItem("user_photo") == null
+    || localStorage.getItem("user_photo") == "" ? Profile : localStorage.getItem("user_photo"))
   const [notifications, setNotifications] = useState<Notification[]>([
     {
       id: 1,
@@ -258,14 +262,14 @@ function Header() {
           </div>
           <Link
             to="/profile-user"
-            className={`w-auto h-7 -mt-px
+            className={`w-auto h-10 -mt-2.5 border-2 border-lilas-dark rounded-full
             md:h-8 md:mt-0
             xl:hidden ${location.pathname == "/profile-children" || location.pathname == "/profile-user" ? "hidden" : "block"}`}
           >
             <img
               src={Profile}
               alt="Icone de perfil de usuário que redireciona para página de usuário."
-              className="w-full h-full"
+              className="w-full h-full rounded-full object-cover object-center"
             />
           </Link>
         </div>

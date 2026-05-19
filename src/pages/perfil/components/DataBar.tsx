@@ -38,7 +38,7 @@ function DataBar({
         >{`${Date.subYearsFormated(child?.birth_date)} anos`}</span>
       </li>
       <li className={`${layoutLi}`}>
-        <span className={`${layoutSpan}`}>{`IMC: ${child?.BMI}`}</span>
+        <span className={`${layoutSpan}`}>{`IMC: ${child?.BMI == null ? 0 : child?.BMI}`}</span>
       </li>
     </ul>
   );
