@@ -131,8 +131,8 @@ export function AddChildPage() {
             ))}
           </ul>
           <div className="w-36 h-36 rounded-full border-[3px] border-primary bg-transparent flex items-center justify-center mb-8 xl:w-48 xl:h-48 cursor-pointer hover:bg-white/40 transition-colors">
-            <label htmlFor="fileImage" className="text-primary text-center w-full h-full flex justify-center items-center pb-4 text-6xl font-light xl:text-8xl">
-              +
+            <label htmlFor="fileImage" className={`text-primary text-center w-full h-full flex justify-center items-center rounded-full text-6xl font-light xl:text-8xl ${photo == "" ? "pb-4 xl:pb-8" : ""}`}>
+              {photo == "" ? (<span>+</span>) : (<img src={photo} alt="Foto selecionada." className="w-full h-full object-center object-cover rounded-full" />)}
             </label>
             <input onChange={(e) => generatePhoto(e)} type="file" id="fileImage" className="hidden" />
           </div>

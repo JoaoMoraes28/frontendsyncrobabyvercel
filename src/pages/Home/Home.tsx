@@ -127,7 +127,19 @@ export function Home() {
 
   const [activeIndex, setActiveIndex] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedChild, setSelectedChild] = useState<Children | undefined>();
+  const [selectedChild, setSelectedChild] = useState<Children>({
+    id_child: 0,
+    child_name: "Selecione um filho",
+    height: 0,
+    weight: 0,
+    birth_date: "",
+    BMI: null,
+    blood_type: "",
+    gender: "",
+    photo: "",
+    active: 1,
+    fk_id_guardian: 0
+  });
   const [listChildren, setListChildren] = useState<ResponseChild>()
   const carouselRef = useRef<HTMLDivElement>(null);
 
@@ -156,19 +168,6 @@ export function Home() {
     }
 
     if (typeof childrenData === 'string') {
-      setSelectedChild({
-        id_child: 0,
-        child_name: "Selecione um filho",
-        height: 0,
-        weight: 0,
-        birth_date: "",
-        BMI: null,
-        blood_type: "",
-        gender: "",
-        photo: "",
-        active: 1,
-        fk_id_guardian: 0
-      });
       return
     }
 
@@ -179,7 +178,7 @@ export function Home() {
 
       const child: Children[] = childrenData.children.filter(it => it.id_child === idChild);
 
-      if (child.length > 0) {
+      if (child.length > 0 && localStorage.getItem("select_child") != "0") {
         setSelectedChild(child[0]);
       }
     }
@@ -230,7 +229,10 @@ export function Home() {
         {/* children section */}
         <div className="flex flex-col gap-2 md:gap-6">
           <div className="flex justify-between items-end">
-            <h3 onClick={() => console.log(childrenData)} className="text-xl md:text-2xl font-bold font-poppins text-primary-text xl:text-2xl">
+            <h3 onClick={() => {
+              console.log(selectedChild)
+              console.log(localStorage.getItem("select_child"))
+            }} className="text-xl md:text-2xl font-bold font-poppins text-primary-text xl:text-2xl">
               <span className="xl:hidden">Filhos</span>
               <span className="hidden xl:inline">Meus Filhos</span>
             </h3>
@@ -262,7 +264,7 @@ export function Home() {
             </div>
 
             <Link
-              to="/profile-children"
+              to={selectedChild?.id_child == 0 && localStorage.getItem("select_child") == "0" ? "/home" : "/profile-children"}
               className="w-full xl:w-[320px] bg-primary xl:bg-white xl:border xl:border-gray-200 xl:border-t-4 xl:border-t-primary py-1 md:py-4 xl:py-4 px-6 md:px-8 xl:px-6 rounded-sm shadow-purple-md xl:shadow-sm flex flex-col cursor-pointer hover:opacity-90 transition-all"
             >
               <div className="flex gap-4 md:gap-6 items-center w-full">
