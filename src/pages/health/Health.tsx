@@ -11,6 +11,8 @@ import ChildrenSelect from "../../layouts/ChildrenSelect";
 import { useGetIllness } from "../../services/hooks/illness/useGetIllness";
 import { useDeleteIllness } from "../../services/hooks/illness/useDeleteIllness";
 import type { Illness } from "../../services/illness/illness.service";
+import { LoadingBaby } from "../../components/LoadingBaby";
+import { EmptyState } from "../../components/EmptyState";
 
 export interface HealthRecord {
   id_illness: number;
@@ -30,7 +32,7 @@ const filterOptions: FilterOption[] = [
 ];
 
 export function Health() {
-  const { data: onGetIllness } = useGetIllness(Number(localStorage.getItem("select_child")))
+  const { data: onGetIllness, isLoading, isError } = useGetIllness(Number(localStorage.getItem("select_child")))
   const { mutate: onDeleteIllness } = useDeleteIllness()
 
   const navigate = useNavigate();
@@ -39,10 +41,16 @@ export function Health() {
   const [childSelected, setChildSelected] = useState<number>(1)
   const [items, setItems] = useState<Illness[]>([]);
   const [itemsHealth, setItemsHealth] = useState<Illness[]>([])
+  const emptyStateTitle: string =
+    selectedFilter == "Todas" ? "Eba! Nenhuma doença registrada" 
+    : `Eba! Nenhuma doença ${selectedFilter.toLowerCase()} registrada`
+
+  const emptyStateDescription: string = selectedFilter == "Todas" ? "Mas você vai ter que resgistrar?"
+  : `Mas você vai ter que registrar alguma doença ${selectedFilter.toLowerCase()}?`
 
   useEffect(() => {
     const isObject = onGetIllness && typeof onGetIllness === "object" && !Array.isArray(onGetIllness);
-    
+
     if (isObject) {
       if (onGetIllness.illness) {
         setItemsHealth(onGetIllness.illness);
@@ -143,20 +151,38 @@ export function Health() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 overflow-y-auto max-h-[75vh] md:max-h-full pr-2 pb-4">
-        {itemsHealth.map((item) => (
-          <IllnessCard
-            key={item.id_illness}
-            item={item}
-            expandedCardId={expandedCardId}
-            toggleCard={toggleCard}
-            onDelete={deleteItem}
-          />
-        ))}
-        {itemsHealth.length === 0 && (
-          <p className="text-center text-primary-darker font-nunito mt-10 md:col-span-full">
-            Nenhuma enfermidade encontrada para este filtro.
+        {isLoading &&
+          <LoadingBaby />
+        }
+
+        {!isLoading && isError && (
+          <p className="text-red-500 font-poppins col-span-full text-center mt-4">
+            Erro ao buscar a rede de apoio. Tente novamente mais tarde.
           </p>
         )}
+
+        {!isLoading && !isError && itemsHealth.length === 0 && (
+          <EmptyState
+            isFullPage={false}
+            show404Background={false}
+            title={emptyStateTitle}
+            description={emptyStateDescription}
+            buttonText="Adicionar enfermidade"
+            onButtonClick={() => navigate("/add-illness")}
+          />
+        )}
+
+        {!isLoading && !isError && itemsHealth.map((item) => {
+          return (
+            <IllnessCard
+              key={item.id_illness}
+              item={item}
+              expandedCardId={expandedCardId}
+              toggleCard={toggleCard}
+              onDelete={deleteItem}
+            />
+          )
+        })}
       </div>
     </div>
   );

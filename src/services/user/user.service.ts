@@ -8,10 +8,13 @@ export interface UpdateUser {
 }
 
 interface UpdateResponse {
-  guardian_name: string
-  email: string
-  profile_picture: string
-  id_guardian: number
+  status_code: number
+  user: {
+    guardian_name: string
+    email: string
+    profile_picture: string
+    id_guardian: number
+  }
 }
 
 interface VerifyPassword {

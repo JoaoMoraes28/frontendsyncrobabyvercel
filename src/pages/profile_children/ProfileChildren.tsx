@@ -388,7 +388,7 @@ function ProfileChildren() {
                 </div>
                 <span className="flex justify-center items-center w-1/3 h-[70%] text-lg border-x border-primary">{`${Date.subYearsFormated(dataChildren.birth_date)} anos`}</span>
                 <span className="flex justify-center items-center w-1/3 h-[70%] text-lg">
-                  IMC: {dataChildren.BMI}
+                  IMC: {dataChildren.BMI == null ? 0 : dataChildren.BMI}
                 </span>
               </section>
             </div>

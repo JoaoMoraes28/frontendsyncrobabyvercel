@@ -31,6 +31,8 @@ export function PerfilPage() {
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
 
+  const [preview, setPreview] = useState<string>(localStorage.getItem("user_photo")!)
+
   const {
     register,
     handleSubmit,
@@ -47,20 +49,22 @@ export function PerfilPage() {
     const newData: UpdateUser = {
       guardian_name: data.name,
       email: data.email,
-      profile_picture: ""
+      profile_picture: preview
     }
     onUpdateUser(
       newData,
       {
         onSuccess: (response) => {
           alert("Alterações salvas!")
+          console.log(response)
           reset({
-            name: response.guardian_name,
-            email: response.email
+            name: response.user.guardian_name,
+            email: response.user.email
           })
-          localStorage.setItem("user_name", response.guardian_name);
-          localStorage.setItem("user_email", response.email);
-          localStorage.setItem("user_photo", response.profile_picture);
+          setPreview(response.user.profile_picture)
+          localStorage.setItem("user_name", response.user.guardian_name);
+          localStorage.setItem("user_email", response.user.email);
+          localStorage.setItem("user_photo", response.user.profile_picture);
         }
       }
     )
@@ -74,12 +78,18 @@ export function PerfilPage() {
     }
   };
 
+  function onChangePreview(e: React.ChangeEvent<HTMLInputElement>) {
+    if (e.target.files) {
+      setPreview(URL.createObjectURL(e.target.files[0]))
+    }
+  }
+
   return (
     <div className="flex flex-col xl:flex-row w-full min-h-screen bg-light">
       <div className="xl:hidden w-full">
         <Header />
       </div>
-      <PerfilHeader user_name="Pedro" />
+      <PerfilHeader />
 
       <main className="flex-1 flex flex-col items-center justify-center w-full relative py-8 xl:py-0 font-nunito">
         <div className="hidden xl:flex justify-between items-center w-full absolute top-10 left-0 px-16">
@@ -113,12 +123,15 @@ export function PerfilPage() {
           </button>
 
           <div className="flex justify-center xl:hidden mb-3">
-            <div className="w-32 h-32 rounded-full border-2 border-purple-300 bg-white flex items-center justify-center relative overflow-hidden md:w-40 md:h-40 xl:w-60 xl:h-60">
-              <img
-                src={localStorage.getItem("user_photo") == "null" || localStorage.getItem("user_photo") == "" ? cameraIcon : localStorage.getItem("user_photo")!}
-                alt="Mudar foto"
-                className="w-10 h-10 opacity-60 md:w-15 md:h-15 xl:w-25 xl:h-25"
-              />
+            <div className="w-32 h-32 rounded-full border-2 border-purple-300 bg-white relative overflow-hidden md:w-40 md:h-40 xl:w-60 xl:h-60">
+              <label htmlFor={isEditing ? "imgUser" : ""} className="w-full h-full rounded-full flex items-center justify-center">
+                <img
+                  src={preview == "null" || preview == "" ? cameraIcon : preview}
+                  alt="Mudar foto"
+                  className={`object-cover object-center md:w-15 md:h-15 xl:w-25 xl:h-25 ${preview == "null" || preview == "" ? "w-10 h-10 opacity-60 " : "w-full h-full"}`}
+                />
+              </label>
+              <input onChange={(e) => onChangePreview(e)} id="imgUser" type="file" className="hidden" />
             </div>
           </div>
 

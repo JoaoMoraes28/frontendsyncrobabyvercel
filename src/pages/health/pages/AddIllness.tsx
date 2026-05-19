@@ -129,7 +129,7 @@ export function AddIllness() {
             Tipo
           </label>
           <div
-            className={`flex justify-between items-center z-30 cursor-pointer bg-white ${inputClassName}`}
+            className={`flex justify-between items-center z-50 cursor-pointer bg-white ${inputClassName}`}
             onClick={() => setTypeExpand(!typeExpand)}
           >
             <InputDefault
@@ -149,7 +149,7 @@ export function AddIllness() {
           </div>
 
           <fieldset
-            className={`absolute top-20 md:top-22 xl:top-20 flex-col w-full rounded-bl-lg rounded-br-lg border-b border-l border-r border-primary-darker overflow-y-auto bg-white z-40 pt-2 pb-2 gap-2 shadow-purple-sm ${typeExpand ? "flex" : "hidden"
+            className={`absolute top-16 md:top-22 xl:top-20 flex-col w-full rounded-bl-lg rounded-br-lg border-b border-l border-r border-primary-darker overflow-y-auto bg-white z-40 pt-4 pb-2 gap-2 shadow-purple-sm ${typeExpand ? "flex" : "hidden"
               }`}
           >
             {illnessTypes.map((type) => (

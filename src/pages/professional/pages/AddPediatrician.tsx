@@ -103,14 +103,14 @@ export function AddPediatrician() {
             Profissão
           </label>
           <div
-            className={`flex justify-between items-center z-30 cursor-pointer ${inputClassName}`}
+            className={`flex justify-between items-center z-50 cursor-pointer ${inputClassName}`}
             onClick={() => setProfessionExpand(!professionExpand)}
           >
             <InputDefault
               id="profession-selector"
               readOnly
               value={professionLabel}
-              className="w-full h-full bg-transparent outline-none cursor-pointer"
+              className="w-full h-full bg-white outline-none cursor-pointer"
             />
             <button
               type="button"
@@ -127,7 +127,7 @@ export function AddPediatrician() {
           </div>
 
           <fieldset
-            className={`absolute top-20 md:top-22 xl:top-20 flex-col w-full rounded-bl-lg rounded-br-lg border-b border-l border-r border-primary-darker overflow-y-auto max-h-48 bg-white z-40 pt-2 pb-2 gap-2 shadow-purple-sm ${
+            className={`absolute top-20 md:top-22 xl:top-18 flex-col w-full rounded-bl-lg rounded-br-lg border-b border-l border-r border-primary-darker overflow-y-auto max-h-48 bg-white z-40 pt-2 pb-2 gap-2 shadow-purple-sm ${
               professionExpand ? "flex" : "hidden"
             }`}
           >
