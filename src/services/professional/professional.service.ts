@@ -1,3 +1,4 @@
+import { isAxiosError } from "axios";
 import { api } from "../api";
 
 export interface Professional {
@@ -51,20 +52,36 @@ export interface ResponseSpecialty {
 export const getProfessionals = async (
   childId: number,
 ): Promise<ResponseProfessional> => {
-  const response = await api.get<ResponseProfessional>(
-    `/professional/child/${childId}`,
-  );
-  return response.data;
+  try {
+    const response = await api.get<ResponseProfessional>(
+      `/professional/child/${childId}`,
+    );
+    return response.data;
+  } catch (error: unknown) {
+    if (isAxiosError(error) && error.response?.status === 404) {
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      return { status_code: 200, professional: [] };
+    }
+    throw error;
+  }
 };
 
 export const getProfessionalBySpecialization = async (
   specializationId: number,
   childId: number,
 ): Promise<ResponseProfessional> => {
-  const response = await api.get<ResponseProfessional>(
-    `/professional/specialty/?specialty=${specializationId}&child=${childId}`,
-  );
-  return response.data;
+  try {
+    const response = await api.get<ResponseProfessional>(
+      `/professional/specialty/?specialty=${specializationId}&child=${childId}`,
+    );
+    return response.data;
+  } catch (error: unknown) {
+    if (isAxiosError(error) && error.response?.status === 404) {
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      return { status_code: 200, professional: [] };
+    }
+    throw error;
+  }
 };
 
 export const insertProfessional = async (
@@ -85,6 +102,7 @@ export const updateProfessional = async (
     `/professional/${idProfessional}`,
     data,
   );
+  console.log(response.data);
   return response.data;
 };
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import BtnPrimary from "../../components/BtnPrimary";
@@ -10,8 +10,11 @@ import { SupportNetworkCard } from "./components/SupportNetworkCard";
 import { ProfessionalCard } from "./components/ProfessionalCard";
 import { DesktopFilterTabs } from "./components/DesktopFilterTabs";
 import { MobileSearchBar } from "./components/MobileSearchBar";
+import { EmptyState } from "../../components/EmptyState";
+import { LoadingBaby } from "../../components/LoadingBaby";
 
 import { useGetProfessionalBySpecialty } from "../../services/hooks/professional/getProfessionalBySpecialty";
+import { useGetProfessionalsByChild } from "../../services/hooks/professional/getProfessionalByChild";
 import { useGetSpecialties } from "../../services/hooks/specialty/getSpecialty";
 
 export function Professional() {
@@ -20,16 +23,44 @@ export function Professional() {
   const childId = Number(localStorage.getItem("select_child"));
 
   const [userInput, setUserInput] = useState("");
+  const [debouncedInput, setDebouncedInput] = useState("");
 
   const [selectedFilter, setSelectedFilter] = useState("Todas");
   const [selectedSpecialtyId, setSelectedSpecialtyId] = useState<number>(0);
 
   const { data: specialtiesResponse } = useGetSpecialties();
 
-  const { data, isLoading, isError } = useGetProfessionalBySpecialty(
+  const isFetchingAll = selectedSpecialtyId === 0;
+
+  const {
+    data: dataAll,
+    isLoading: isLoadingAll,
+    isError: isErrorAll,
+  } = useGetProfessionalsByChild(childId, isFetchingAll);
+
+  const {
+    data: dataSpecialty,
+    isLoading: isLoadingSpecialty,
+    isError: isErrorSpecialty,
+  } = useGetProfessionalBySpecialty(
     selectedSpecialtyId,
     childId,
+    !isFetchingAll,
   );
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedInput(userInput);
+    }, 600);
+
+    return () => clearTimeout(handler);
+  }, [userInput]);
+
+  const isSearching = userInput !== debouncedInput;
+
+  const data = isFetchingAll ? dataAll : dataSpecialty;
+  const isLoading = isFetchingAll ? isLoadingAll : isLoadingSpecialty;
+  const isError = isFetchingAll ? isErrorAll : isErrorSpecialty;
 
   const specialtiesList = specialtiesResponse?.specialty || [];
   const professionalsList = data?.professional || [];
@@ -65,8 +96,18 @@ export function Professional() {
     item.professional_name
       .trim()
       .toLowerCase()
-      .includes(userInput.toLowerCase()),
+      .includes(debouncedInput.toLowerCase()),
   );
+
+  const emptyStateTitle =
+    selectedSpecialtyId === 0
+      ? "Ops! Nenhum especialista encontrado."
+      : `Ops! Nenhum profissional de ${selectedFilter.toLowerCase()} encontrado.`;
+
+  const emptyStateDescription =
+    selectedSpecialtyId === 0
+      ? "Sua rede de apoio ainda não tem profissionais cadastrados. Que tal adicionar o primeiro?"
+      : "Parece que essa especialidade foi parar na caixa de brinquedos. Que tal adicionar um novo profissional?";
 
   return (
     <div className="w-full flex flex-col gap-6 overflow-hidden bg-transparent">
@@ -100,25 +141,30 @@ export function Professional() {
       </div>
 
       <div className="w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 overflow-y-auto max-h-145 md:max-h-[65vh] pr-2">
-        {isLoading && (
-          <p className="text-gray-500 font-poppins col-span-full text-center mt-4">
-            Carregando profissionais...
-          </p>
-        )}
+        {(isLoading || isSearching) && <LoadingBaby />}
 
-        {isError && (
+        {!isLoading && !isSearching && isError && (
           <p className="text-red-500 font-poppins col-span-full text-center mt-4">
             Erro ao buscar a rede de apoio. Tente novamente mais tarde.
           </p>
         )}
 
-        {!isLoading && !isError && filteredItems.length === 0 && (
-          <p className="text-gray-500 font-poppins col-span-full text-center mt-4">
-            Nenhum profissional encontrado.
-          </p>
-        )}
+        {!isLoading &&
+          !isSearching &&
+          !isError &&
+          filteredItems.length === 0 && (
+            <EmptyState
+              isFullPage={false}
+              show404Background={false}
+              title={emptyStateTitle}
+              description={emptyStateDescription}
+              buttonText="Adicionar profissional"
+              onButtonClick={() => navigate("/add-pediatrician")}
+            />
+          )}
 
         {!isLoading &&
+          !isSearching &&
           !isError &&
           filteredItems.map((professional) => {
             const specialtyName =
