@@ -1,8 +1,8 @@
 import editIcon from "../../../assets/editIcon.svg";
 
 export interface IProfessional {
-  id: number;
-  name: string;
+  id_professional: number;
+  professional_name: string;
   address: string;
   phone: string;
   specialty: string;
@@ -23,7 +23,7 @@ export function ProfessionalCard({
         <div className="flex gap-3 items-center">
           <div className="w-12 h-12 bg-gray-200 rounded-full shrink-0"></div>
           <p className="font-semibold font-poppins text-primary text-[16px] leading-tight">
-            {professional.name}
+            {professional.professional_name}
           </p>
         </div>
         <img
