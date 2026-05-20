@@ -24,13 +24,13 @@ export function DropdownFilter({
     <div className="relative">
       <BtnPrimary
         text={selectedFilter}
-        className="shadow-purple-md bg-white px-6 text-primary-text font-poppins font-semibold cursor-pointer"
+        className="shadow-purple-md bg-white text-[85%] h-10 max-w-full text-primary-text font-poppins font-semibold cursor-pointer"
         onClick={() => setActiveFilter(!activeFilter)}
       />
 
       {activeFilter && (
         <fieldset className="absolute bg-lilas/90 border border-primary-text -mt-3 rounded-2xl flex flex-col p-4 gap-2 z-10 min-w-max left-8">
-          <legend className="text-primary-text font-poppins text-sm sr-only">
+          <legend className="text-primary-text font-poppins text-[10px] sr-only">
             Filtros
           </legend>
 

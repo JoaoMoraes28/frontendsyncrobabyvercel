@@ -1,4 +1,4 @@
-import logoAside from "../../assets/logoAside.svg";
+import logoPurple from "../../assets/logoPurple.svg";
 import infoIcon from "../../assets/infoIcon.svg";
 import playStoreIcon from "../../assets/playStoreIcon.svg";
 import appleStoreIcon from "../../assets/appleStoreIcon.svg";
@@ -23,8 +23,11 @@ export function Presentaion() {
     <main className=" flex flex-col h-screen w-screen gap-4 p-6 md:p-8 md:pb-16 md:justify-start lg:justify-start lg:gap-20">
       <div className=" flex items-center justify-between w-full h-20">
         <div className=" flex items-center gap-2">
-          <img src={logoAside} alt="logo-syncrobaby" className="w-10 h-13" />
-          <p className="text-dark-purple font-poppins font-bold">SYNCROBABY</p>
+          <img
+            src={logoPurple}
+            alt="logo-syncrobaby"
+            className="w-auto h-13 md:h-20 xl:h-24"
+          />
         </div>
         <div className="flex gap-4">
           <BtnPrimary

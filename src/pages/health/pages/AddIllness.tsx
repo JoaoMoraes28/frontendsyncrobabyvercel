@@ -12,7 +12,7 @@ import {
   labelRadioButton,
 } from "../../routines/RoutineFeeding";
 
-import Close from "../../../assets/closeModal.svg"
+import Close from "../../../assets/closeModal.svg";
 import setSelector from "../../../assets/setExpandSelector.svg";
 
 import Date from "../../../utils/Date";
@@ -32,11 +32,11 @@ import { useInsertIllness } from "../../../services/hooks/illness/useInsertIllne
 interface IllnessType {
   id: number;
   name: string;
-  insert: string
+  insert: string;
 }
 
 export function AddIllness() {
-  const { mutate: onRegisterIllness } = useInsertIllness()
+  const { mutate: onRegisterIllness } = useInsertIllness();
 
   const navigate = useNavigate();
 
@@ -51,29 +51,27 @@ export function AddIllness() {
 
   const illnessTypes: IllnessType[] = [
     { id: 1, name: "Aguda", insert: "acute" },
-    { id: 2, name: "Crônica", insert: "chronic" }
+    { id: 2, name: "Crônica", insert: "chronic" },
   ];
 
   function sendDatas(data: InsertIllness) {
-    const newData: InsertIllness = { ...data, 
+    const newData: InsertIllness = {
+      ...data,
       start_date: Date.convertHourISO(data.start_date),
       end_date: Date.convertHourISO(data.end_date!),
       fk_id_child: Number(localStorage.getItem("select_child")),
-      illness_type: data.illness_type == "Aguda" ? "acute" : "chronic"
-     }
+      illness_type: data.illness_type == "Aguda" ? "acute" : "chronic",
+    };
 
-    onRegisterIllness(
-      newData,
-      {
-        onSuccess: (response) => {
-          console.log(response)
-          alert("Enfermidade registrada!")
-        },
-        onError: (error) => {
-          alert(error)
-        }
-      }
-    )
+    onRegisterIllness(newData, {
+      onSuccess: (response) => {
+        console.log(response);
+        alert("Enfermidade registrada!");
+      },
+      onError: (error) => {
+        alert(error);
+      },
+    });
   }
 
   const { onChange: formOnChange, ...restRegister } = register("illness_type", {
@@ -142,15 +140,17 @@ export function AddIllness() {
               <img
                 src={setSelector}
                 alt=""
-                className={`w-6 h-6 transition-transform ${typeExpand ? "rotate-180" : ""
-                  }`}
+                className={`w-6 h-6 transition-transform ${
+                  typeExpand ? "rotate-180" : ""
+                }`}
               />
             </button>
           </div>
 
           <fieldset
-            className={`absolute top-16 md:top-22 xl:top-20 flex-col w-full rounded-bl-lg rounded-br-lg border-b border-l border-r border-primary-darker overflow-y-auto bg-white z-40 pt-4 pb-2 gap-2 shadow-purple-sm ${typeExpand ? "flex" : "hidden"
-              }`}
+            className={`absolute top-16 md:top-22 xl:top-18 flex-col w-full rounded-bl-lg rounded-br-lg border-b border-l border-r border-primary-darker overflow-y-auto bg-white z-40 pt-4 pb-2 gap-2 shadow-purple-sm ${
+              typeExpand ? "flex" : "hidden"
+            }`}
           >
             {illnessTypes.map((type) => (
               <div

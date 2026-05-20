@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   DropdownFilter,
@@ -10,10 +10,10 @@ import ChildrenSelect from "../../layouts/ChildrenSelect";
 
 import { useGetIllness } from "../../services/hooks/illness/useGetIllness";
 import { useDeleteIllness } from "../../services/hooks/illness/useDeleteIllness";
-import type { Illness } from "../../services/illness/illness.service";
 import { LoadingBaby } from "../../components/LoadingBaby";
 import { EmptyState } from "../../components/EmptyState";
 
+// Mantive a interface aqui caso precise, mas recomendo importar direto do service
 export interface HealthRecord {
   id_illness: number;
   illness_name: string;
@@ -22,7 +22,7 @@ export interface HealthRecord {
   end_date: string;
   medication: string;
   description: string;
-  fk_id_child: number
+  fk_id_child: number;
 }
 
 const filterOptions: FilterOption[] = [
@@ -32,73 +32,58 @@ const filterOptions: FilterOption[] = [
 ];
 
 export function Health() {
-  const { data: onGetIllness, isLoading, isError } = useGetIllness(Number(localStorage.getItem("select_child")))
-  const { mutate: onDeleteIllness } = useDeleteIllness()
-
   const navigate = useNavigate();
+  const childId = Number(localStorage.getItem("select_child"));
+
+  const {
+    data: onGetIllness,
+    isLoading,
+    isError,
+    refetch, // Pegamos o refetch do React Query para atualizar a lista após deletar
+  } = useGetIllness(childId, true);
+
+  const { mutate: onDeleteIllness } = useDeleteIllness();
+
   const [selectedFilter, setSelectedFilter] = useState("Todas");
   const [expandedCardId, setExpandedCardId] = useState<number | null>(null);
-  const [childSelected, setChildSelected] = useState<number>(1)
-  const [items, setItems] = useState<Illness[]>([]);
-  const [itemsHealth, setItemsHealth] = useState<Illness[]>([])
+  const [childSelected, setChildSelected] = useState<number>(childId || 1);
+
+  const illnessList = onGetIllness?.illness || [];
+
+  const filteredItems = illnessList.filter((item) => {
+    if (selectedFilter === "Todas") return true;
+    const compareOpt = selectedFilter === "Aguda" ? "acute" : "chronic";
+    return item.illness_type === compareOpt;
+  });
+
   const emptyStateTitle: string =
-    selectedFilter == "Todas" ? "Eba! Nenhuma doença registrada" 
-    : `Eba! Nenhuma doença ${selectedFilter.toLowerCase()} registrada`
+    selectedFilter === "Todas"
+      ? "Eba! Nenhuma doença registrada"
+      : `Eba! Nenhuma doença ${selectedFilter.toLowerCase()} registrada`;
 
-  const emptyStateDescription: string = selectedFilter == "Todas" ? "Mas você vai ter que resgistrar?"
-  : `Mas você vai ter que registrar alguma doença ${selectedFilter.toLowerCase()}?`
-
-  useEffect(() => {
-    const isObject = onGetIllness && typeof onGetIllness === "object" && !Array.isArray(onGetIllness);
-
-    if (isObject) {
-      if (onGetIllness.illness) {
-        setItemsHealth(onGetIllness.illness);
-        setItems(onGetIllness.illness);
-      }
-    }
-  }, [onGetIllness]);
-
-  if (!onGetIllness) {
-    return (
-      <div></div>
-    )
-  }
+  const emptyStateDescription: string =
+    selectedFilter === "Todas"
+      ? "Mas você vai ter que registrar?"
+      : `Mas você vai ter que registrar alguma doença ${selectedFilter.toLowerCase()}?`;
 
   const toggleCard = (id: number) => {
     setExpandedCardId((prev) => (prev === id ? null : id));
   };
 
-  function filteredItems(opt: string) {
-    setSelectedFilter(opt)
-    const compareOpt: string = opt == "Aguda" ? 'acute' : "chronic"
-    if (opt === "Todas") {
-      setItemsHealth(items)
+  const handleFilterSelect = (opt: string) => {
+    setSelectedFilter(opt);
+  };
 
-    } else {
-      const newData: Illness[] = items.filter(it => it.illness_type === compareOpt)
-      setItemsHealth(newData)
-
-    }
-
-  }
-
-  function deleteItem(id: number) {
-    onDeleteIllness(
-      id,
-      {
-        onSuccess: () => {
-          const newData: Illness[] = items.filter(it => it.id_illness != id && it.illness_type == (selectedFilter == "Aguda" ? "acute" : "chronic"))
-          setItemsHealth(newData)
-          const newDataDelete: Illness[] = items.filter(it => it.id_illness != id)
-          setItems(newDataDelete)
-        },
-        onError: (error) => {
-          console.log(error)
-        }
-      }
-    )
-  }
+  const deleteItem = (id: number) => {
+    onDeleteIllness(id, {
+      onSuccess: () => {
+        refetch();
+      },
+      onError: (error) => {
+        console.log(error);
+      },
+    });
+  };
 
   return (
     <div className="flex w-full flex-col gap-6">
@@ -107,7 +92,7 @@ export function Health() {
           <DropdownFilter
             options={filterOptions}
             selectedFilter={selectedFilter}
-            onSelect={filteredItems}
+            onSelect={handleFilterSelect}
           />
           <BtnPrimary
             text="Registrar Enfermidade"
@@ -120,18 +105,22 @@ export function Health() {
       <div className="hidden md:flex flex-col gap-6 w-full">
         <div className="flex flex-row items-center gap-6">
           <div className="flex">
-            <ChildrenSelect idChild={childSelected} setChild={setChildSelected} />
+            <ChildrenSelect
+              idChild={childSelected}
+              setChild={setChildSelected}
+            />
           </div>
 
           <div className="flex items-center gap-3">
             {filterOptions.map((opt) => (
               <button
                 key={opt.id}
-                onClick={() => filteredItems(opt.label)}
-                className={`px-4 py-1.5 rounded-lg text-sm font-semibold border transition-all ${selectedFilter === opt.label
-                  ? "bg-accent text-white border-accent shadow-sm"
-                  : "bg-white text-gray-500 border-gray-200 hover:border-accent hover:text-accent"
-                  }`}
+                onClick={() => handleFilterSelect(opt.label)}
+                className={`px-4 py-1.5 rounded-lg text-sm font-semibold border transition-all ${
+                  selectedFilter === opt.label
+                    ? "bg-accent text-white border-accent shadow-sm"
+                    : "bg-white text-gray-500 border-gray-200 hover:border-accent hover:text-accent"
+                }`}
               >
                 {opt.label}
               </button>
@@ -151,17 +140,17 @@ export function Health() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 overflow-y-auto max-h-[75vh] md:max-h-full pr-2 pb-4">
-        {isLoading &&
-          <LoadingBaby />
-        }
+        {/* Lógica corrigida: se isLoading for true, mostra o bebê */}
+        {isLoading && <LoadingBaby />}
 
         {!isLoading && isError && (
           <p className="text-red-500 font-poppins col-span-full text-center mt-4">
-            Erro ao buscar a rede de apoio. Tente novamente mais tarde.
+            Erro ao buscar histórico. Tente novamente mais tarde.
           </p>
         )}
 
-        {!isLoading && !isError && itemsHealth.length === 0 && (
+        {/* Lógica corrigida: só mostra vazio se não estiver carregando e a lista filtrada for 0 */}
+        {!isLoading && !isError && filteredItems.length === 0 && (
           <EmptyState
             isFullPage={false}
             show404Background={false}
@@ -172,17 +161,20 @@ export function Health() {
           />
         )}
 
-        {!isLoading && !isError && itemsHealth.map((item) => {
-          return (
-            <IllnessCard
-              key={item.id_illness}
-              item={item}
-              expandedCardId={expandedCardId}
-              toggleCard={toggleCard}
-              onDelete={deleteItem}
-            />
-          )
-        })}
+        {/* Mapeando a lista filtrada (filteredItems) em vez da resposta bruta da API */}
+        {!isLoading &&
+          !isError &&
+          filteredItems.map((item) => {
+            return (
+              <IllnessCard
+                key={item.id_illness}
+                item={item}
+                expandedCardId={expandedCardId}
+                toggleCard={toggleCard}
+                onDelete={deleteItem}
+              />
+            );
+          })}
       </div>
     </div>
   );

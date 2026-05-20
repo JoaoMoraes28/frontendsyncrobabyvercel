@@ -127,7 +127,7 @@ export function AddPediatrician() {
           </div>
 
           <fieldset
-            className={`absolute top-20 md:top-22 xl:top-18 flex-col w-full rounded-bl-lg rounded-br-lg border-b border-l border-r border-primary-darker overflow-y-auto max-h-48 bg-white z-40 pt-2 pb-2 gap-2 shadow-purple-sm ${
+            className={`absolute top-16 md:top-22 xl:top-18 flex-col w-full rounded-bl-lg rounded-br-lg border-b border-l border-r border-primary-darker overflow-y-auto max-h-48 bg-white z-40 pt-2 pb-2 gap-2 shadow-purple-sm ${
               professionExpand ? "flex" : "hidden"
             }`}
           >

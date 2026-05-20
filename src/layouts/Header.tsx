@@ -20,11 +20,14 @@ export interface Notification {
 }
 
 function Header() {
-  const [DateHour, setDateHour] = useState<string>(Date.getDateFormated())
+  const [DateHour, setDateHour] = useState<string>(Date.getDateFormated());
   const [photoUser] = useState<string | null>(
-    localStorage.getItem("user_photo") == "null"
-    || localStorage.getItem("user_photo") == null
-    || localStorage.getItem("user_photo") == "" ? Profile : localStorage.getItem("user_photo"))
+    localStorage.getItem("user_photo") == "null" ||
+      localStorage.getItem("user_photo") == null ||
+      localStorage.getItem("user_photo") == ""
+      ? Profile
+      : localStorage.getItem("user_photo"),
+  );
   const [notifications, setNotifications] = useState<Notification[]>([
     {
       id: 1,
@@ -113,7 +116,7 @@ function Header() {
     } else if (path == "/storage") {
       return "Estoque";
     } else if (path == "/add-storage") {
-      return "Adicionar produto"
+      return "Adicionar produto";
     } else if (path == "/sleep") {
       return "Sono";
     } else if (path == "/health") {
@@ -142,20 +145,18 @@ function Header() {
       return "Adicionar Enfermidade";
     } else if (path == "/measures") {
       return "Medidas";
-    } else if (path == '/update-measures') {
+    } else if (path == "/update-measures") {
       return "Atualizar medidas";
     } else if (path == "/profile-user") {
       return "Perfil";
-    } else if (path == "/add-child") {
-      return "Adicionar Filho(a)";
     } else if (path.includes("/edit-illness/")) {
       return "Editar enfermidade";
     } else if (path == "/diary") {
       return "Diário";
     } else if (path.includes("/anotation-diary/")) {
-      return "Anotação"
+      return "Anotação";
     } else if (path == "/new-anotation") {
-      return "Nova lembrança"
+      return "Nova lembrança";
     }
   }
 
@@ -173,17 +174,17 @@ function Header() {
 
   useEffect(() => {
     const handleTime = setInterval(() => {
-      setDateHour(Date.getDateFormated())
+      setDateHour(Date.getDateFormated());
     }, 60000);
 
-    return () => clearInterval(handleTime)
-  }, [])
+    return () => clearInterval(handleTime);
+  }, []);
 
   return (
     <header
       className={`fixed top-0 flex flex-col justify-between items-center w-screen px-6 pt-6 z-90 bg-light ${setTitleHeader(location.pathname) != "Home" ? "h-24" : "h-32"}
       md:px-14
-      xl:h-24 xl:flex-row xl:px-20 xl:pt-8 xl:items-start xl:right-0 ${location.pathname == '/profile-children' || location.pathname == '/profile-user' ? 'xl:w-[calc(100%-20%)]' : 'xl:w-[calc(100%-15%)] xl:max-w-[calc(100%-200px)]'}`}
+      xl:h-24 xl:flex-row xl:px-20 xl:pt-8 xl:items-start xl:right-0 ${location.pathname == "/profile-children" || location.pathname == "/profile-user" ? "xl:w-[calc(100%-20%)]" : "xl:w-[calc(100%-15%)] xl:max-w-[calc(100%-200px)]"}`}
     >
       <div
         onClick={moveNoticationsBar}
@@ -234,7 +235,9 @@ function Header() {
         >
           Olá
           <br />
-          <span className="text-primary font-bold">{localStorage.getItem("user_name")} !</span>
+          <span className="text-primary font-bold">
+            {localStorage.getItem("user_name")} !
+          </span>
         </span>
         <div className="flex gap-4">
           <div className="relative">

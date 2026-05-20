@@ -1,8 +1,8 @@
 import { Link, useLocation } from "react-router-dom";
 
-import Logo from "../assets/navigation/logoHeader.png";
+import Logo from "../assets/logoAside.svg";
 import arrowIcon from "../assets/navigation/ArrowIcon.svg";
-import Profile from "../assets/navigation/profileHeader.svg"
+import Profile from "../assets/navigation/profileHeader.svg";
 
 import type { IconsNavigation } from "../layouts/MainLayout";
 
@@ -30,6 +30,7 @@ function NavigationBar({ listIcons }: Props) {
           <img
             src={Logo}
             alt="Logo principal do web-site, representada por uma mãe segurando seu filho so colo"
+            className="w-auto h-24"
           />
         </header>
 
@@ -56,7 +57,6 @@ function NavigationBar({ listIcons }: Props) {
               xl:flex-row xl:w-full xl:h-full xl:gap-4 xl:rounded-lg xl:p-2
               ${location.pathname == icon.path && "xl:bg-white/40"}`}
               >
-
                 <picture>
                   <source media="(min-width: 1280px)" srcSet={icon.iconDesk} />
                   <img
@@ -118,7 +118,8 @@ function NavigationBar({ listIcons }: Props) {
 
       <Link
         to="/profile-user"
-        className="hidden xl:flex xl:w-full xl:h-22 xl:justify-between xl:items-center xl:px-4 xl:border-t xl:border-white">
+        className="hidden xl:flex xl:w-full xl:h-22 xl:justify-between xl:items-center xl:px-4 xl:border-t xl:border-white"
+      >
         <div className="xl:flex xl:items-top xl:gap-2">
           <img
             src={Profile}
@@ -130,9 +131,11 @@ function NavigationBar({ listIcons }: Props) {
             <span className="xl:text-[10px] xl:font">Pedro Henrique</span>
           </div>
         </div>
-        <img src={arrowIcon}
+        <img
+          src={arrowIcon}
           alt="Redirecionamento para o perfil de usuário"
-          className="xl:w-4 xl:h-4" />
+          className="xl:w-4 xl:h-4"
+        />
       </Link>
     </nav>
   );
