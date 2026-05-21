@@ -78,11 +78,11 @@ function calculateDaysFormated(dayInitial: Date, operator: "more" | "less") {
 function subHoursFormated(startTime: string, endTime: string) {
   const startTimeFormated: string = `2026-04-27T${startTime}:00.000Z`;
   const endTimeFormated: string = `2026-04-27T${endTime}:00.000Z`;
-
+    console.log(endTime, startTime)
   const dateStart: Date = parseISO(startTimeFormated);
   const dateEnd: Date = parseISO(endTimeFormated);
 
-  if (!isAfter(dateStart, dateEnd)) {
+  if (!isAfter(startTimeFormated, endTimeFormated)) {
     const totalSeconds: number = Math.abs(
       differenceInSeconds(dateEnd, dateStart),
     );

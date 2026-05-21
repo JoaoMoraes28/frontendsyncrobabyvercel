@@ -1,14 +1,14 @@
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import { insertRegisterFeeding } from "../../routines/routines.service";
-import type { RegisterFeeding } from "../../routines/routines.service";
+import { insertRegisterSleep } from "../../routines/routines.service";
+import type { RegisterSleep } from "../../routines/routines.service";
 import { useNavigate } from "react-router-dom";
 
-export const useRegisterFeeding = () => {
+export const useRegisterSleep = () => {
     const navigate = useNavigate()
 
     return useMutation({
-        mutationFn: (data: RegisterFeeding) => insertRegisterFeeding(data),
+        mutationFn: (data: RegisterSleep) => insertRegisterSleep(data),
 
         onSuccess: (data) => {
             alert("Registro feito!")
