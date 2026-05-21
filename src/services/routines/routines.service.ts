@@ -11,7 +11,7 @@ interface ResponseRoutines {
     id: number
 }
 
-interface RegisterSleep {
+export interface RegisterSleep {
     start_time: string
     end_time: string
     description: string | null
@@ -54,6 +54,11 @@ export interface RegisterFeeding {
     product_id: ProductId[]
 }
 
+export interface DeleteRoutine {
+  status_code: number
+  message: string
+}
+
 export const getRoutines = async (childId: number, date: string): Promise<ResponseRoutines[]> => {
   const response = await api.get<ResponseRoutines[]>(`/routines?child=${childId}&date=${date}`);
   return response.data;
@@ -64,8 +69,8 @@ export const insertRegisterSleep = async (data: RegisterSleep): Promise<Register
   return response.data;
 };
 
-export const deleteRegisterSleep = async (idRegister: number): Promise<any> => {
-  const response = await api.delete<any>(`/routines/sleep/${idRegister}`);
+export const deleteRegisterSleep = async (idRegister: number): Promise<DeleteRoutine> => {
+  const response = await api.delete<DeleteRoutine>(`/routines/sleep/${idRegister}`);
   return response.data;
 };
 
@@ -74,8 +79,8 @@ export const insertRegisterDiaper = async (data: RegisterDiaper): Promise<Regist
   return response.data;
 };
 
-export const deleteRegisterDiaper = async (idRegister: number): Promise<any> => {
-  const response = await api.delete<any>(`/routines/diaper/${idRegister}`);
+export const deleteRegisterDiaper = async (idRegister: number): Promise<DeleteRoutine> => {
+  const response = await api.delete<DeleteRoutine>(`/routines/diaper/${idRegister}`);
   return response.data;
 };
 
@@ -84,8 +89,8 @@ export const insertRegisterBath = async (data: RegisterBath): Promise<RegisterBa
   return response.data;
 };
 
-export const deleteRegisterBath = async (idRegister: number): Promise<any> => {
-  const response = await api.delete<any>(`/routines/bath/${idRegister}`);
+export const deleteRegisterBath = async (idRegister: number): Promise<DeleteRoutine> => {
+  const response = await api.delete<DeleteRoutine>(`/routines/bath/${idRegister}`);
   return response.data;
 };
 
@@ -94,8 +99,8 @@ export const insertRegisterMedication = async (data: RegisterMedication): Promis
   return response.data;
 };
 
-export const deleteRegisterMedication = async (idRegister: number): Promise<any> => {
-  const response = await api.delete<any>(`/routines/medication/${idRegister}`);
+export const deleteRegisterMedication = async (idRegister: number): Promise<DeleteRoutine> => {
+  const response = await api.delete<DeleteRoutine>(`/routines/medication/${idRegister}`);
   return response.data;
 };
 
@@ -104,7 +109,7 @@ export const insertRegisterFeeding = async (data: RegisterFeeding): Promise<Regi
   return response.data;
 };
 
-export const deleteRegisterFeeding = async (idRegister: number): Promise<any> => {
-  const response = await api.delete<any>(`/routines/feeding/${idRegister}`);
+export const deleteRegisterFeeding = async (idRegister: number): Promise<DeleteRoutine> => {
+  const response = await api.delete<DeleteRoutine>(`/routines/feeding/${idRegister}`);
   return response.data;
 };

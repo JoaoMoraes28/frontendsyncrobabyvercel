@@ -11,25 +11,23 @@ import { useForm } from "react-hook-form"
 
 import Close from "../../assets/closeModal.svg"
 
-interface SleepData {
-    date: string
-    start_time: string
-    end_time: string
-    time: string
-    description?: string
-}
+import { useRegisterSleep } from "../../services/hooks/routines/useRegisterSleep";
+import type { RegisterSleep } from "../../services/routines/routines.service";
 
 function RoutineSleep() {
+    const idChild: number = Number(localStorage.getItem("select_child"))
+    const { mutate: onRegisterSleep } = useRegisterSleep()
+
     const {
         register,
         handleSubmit,
         getValues,
-        setValue,
         formState: { errors }
-    } = useForm<SleepData>()
+    } = useForm<RegisterSleep>()
 
     const navigate = useNavigate()
     const [childrenSelected, setChildSelected] = useState<number>(1)
+    const [timeSleep, setTimeSleep] = useState<string>("")
 
     function setSleepTimeInput() {
         const { start_time, end_time } = getValues()
@@ -37,17 +35,34 @@ function RoutineSleep() {
         const resultTime: string | boolean = Date.subHoursFormated(start_time, end_time)
 
         if (resultTime != 'NaNh:NaNmin' && resultTime != false) {
-            setValue('time', resultTime)
+            setTimeSleep(resultTime)
 
         } else {
-            setValue('time', "Datas inválidas!")
+            setTimeSleep("Datas inválidas!")
 
         }
 
     }
 
-    function sendDatas(datas: SleepData) {
-        console.log(datas)
+    function sendDatas(datas: RegisterSleep) {
+        const fullDatas: RegisterSleep = {
+            start_time: Date.convertISO(datas.start_time),
+            end_time: Date.convertISO(datas.end_time),
+            fk_id_child: idChild,
+            description: datas.description == undefined ? null : datas.description
+        }
+        console.log(fullDatas)
+        onRegisterSleep(
+            fullDatas,
+            {
+                onSuccess: () => {
+
+                },
+                onError: () => {
+
+                }
+            }
+        )
     }
 
     return (
@@ -78,11 +93,11 @@ function RoutineSleep() {
                 </div>
                 <div className="flex flex-col">
                     <label htmlFor="sleepTime" className={labelClassName}>Tempo de soneca</label>
-                    <InputDefault {...register('time')} readOnly id="sleepTime" type="text" className={inputClassName} />
+                    <InputDefault readOnly id="sleepTime" type="text" className={inputClassName} value={timeSleep} />
                 </div>
                 <div className="flex flex-col">
                     <label htmlFor="description" className={labelClassName}>Descrição</label>
-                    <textarea id="description" className={`h-40 md:h-80 ${inputClassName} outline-0`} />
+                    <textarea {...register("description")} id="description" className={`h-40 md:h-80 ${inputClassName} outline-0`} />
                 </div>
                 <div className="flex justify-between w-full h-10 mb-1
                         md:justify-center md:gap-10 md:h-12
