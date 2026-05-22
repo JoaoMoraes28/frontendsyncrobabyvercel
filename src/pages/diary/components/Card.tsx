@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom"
 import SetPurple from "../../../assets/setPupleDirection.svg"
 import Edit from "../../../assets/editIcon.svg"
 
-import Date from "../../../utils/Date"
+import Date from "../../../utils/Date.ts"
 import { useState } from "react"
 
 interface Props {

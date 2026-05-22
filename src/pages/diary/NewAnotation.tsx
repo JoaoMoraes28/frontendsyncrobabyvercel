@@ -8,7 +8,7 @@ import CloudPurple from "../../assets/cloudPurple.svg"
 
 import { useState } from "react"
 
-import Date from "../../utils/Date"
+import Date from "../../utils/Date.ts"
 
 import { InputDefault } from "../../components/InputDefault"
 import BtnPrimary from "../../components/BtnPrimary"

@@ -16,7 +16,7 @@ import { CarouselDots } from "../../components/CarouselDots";
 import { CategorySection } from "./components/CategorySection";
 import { useNavigate, Link } from "react-router-dom";
 import { useGetChildren } from "../../services/hooks/children/getChildren"
-import Date from "../../utils/Date"
+import Date from "../../utils/Date.ts"
 import type { ResponseChild, Children } from "../../services/children/children.service";
 
 const articlesData = [
@@ -163,6 +163,10 @@ export function Home() {
   }, []);
 
   useEffect(() => {
+    if (localStorage.getItem("select_child") == null) {
+      localStorage.setItem("select_child", "0")
+    }
+
     if (!childrenData) {
       return
     }

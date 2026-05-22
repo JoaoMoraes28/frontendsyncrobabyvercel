@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-import Date from "../../../utils/Date";
+import Date from "../../../utils/Date.ts";
 
 import type { Illness } from "../../../services/illness/illness.service";
 

@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom";
 
-import Date from "../../utils/Date"
+import Date from "../../utils/Date.ts"
 
 import BtnPrimary from "../../components/BtnPrimary"
 import ChildrenSelect from "../../layouts/ChildrenSelect";

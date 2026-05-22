@@ -1,6 +1,6 @@
 import type { ArticleModel } from "../Articles"
 
-import Date from "../../../utils/Date"
+import Date from "../../../utils/Date.ts"
 
 import { Link } from "react-router-dom";
 

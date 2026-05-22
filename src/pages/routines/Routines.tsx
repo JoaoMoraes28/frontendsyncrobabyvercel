@@ -3,7 +3,7 @@ import { addDays, isSameDay, subDays } from 'date-fns';
 import { useEffect, useState } from "react"
 
 import Card from './components/HourCard'
-import Date from '../../utils/Date'
+import Date from '../../utils/Date.ts'
 
 import ChildrenSelect from "../../layouts/ChildrenSelect"
 import IconFeeding from '../../assets/routines/iconRoutineFood.svg'
