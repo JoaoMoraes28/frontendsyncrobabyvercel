@@ -12,7 +12,7 @@ import { ProductCard } from "./components/ProductCard";
 
 import { Link } from "react-router-dom";
 
-import ConvertImg from "../../utils/DownloadImg";
+import ConvertImg from "../../utils/DownloadImg.ts";
 
 export interface InventoryItem {
   id: number;

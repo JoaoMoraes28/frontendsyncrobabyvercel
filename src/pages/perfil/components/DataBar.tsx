@@ -1,5 +1,5 @@
 import type { Props } from "../../../layouts/Perfil";
-import Date from "../../../utils/Date";
+import Date from "../../../utils/Date.ts";
 
 import Male from "../../../assets/profileChildren/male.svg";
 import Fem from "../../../assets/profileChildren/fem.svg";

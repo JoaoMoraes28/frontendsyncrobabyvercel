@@ -3,8 +3,8 @@ import { InputDefault } from "../../components/InputDefault";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 
-import Date from "../../utils/Date";
-import CloseElement from "../../utils/CloseElementClick"
+import Date from "../../utils/Date.ts";
+import CloseElement from "../../utils/CloseElementClick.ts"
 
 import ChildrenSelect from "../../layouts/ChildrenSelect";
 
@@ -203,7 +203,7 @@ function RoutineFeeding() {
       });
 
     }
-// 2026-05-19T14:04:00.000
+
     if (typeFood != 0) {
       const fullDatas: RegisterFeeding = {
         fk_id_child: Number(localStorage.getItem("select_child")),

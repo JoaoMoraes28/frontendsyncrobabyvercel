@@ -4,8 +4,8 @@ import ChildrenSelect from "../../layouts/ChildrenSelect";
 
 import { buttonCancel, buttonSubmit, radioButton, labelRadioButton, inputClassName, labelClassName } from "./RoutineFeeding"
 
-import Date from "../../utils/Date"
-import CloseElement from "../../utils/CloseElementClick"
+import Date from "../../utils/Date.ts"
+import CloseElement from "../../utils/CloseElementClick.ts"
 
 import { useEffect, useState, useRef } from "react"
 import { useForm } from "react-hook-form"
@@ -15,13 +15,19 @@ import Close from "../../assets/closeModal.svg"
 
 import type { Products } from "./RoutineDiaper"
 
+import { useRegisterMedication } from "../../services/hooks/routines/useRegisterMedication.ts";
+import type { RegisterMedication } from "../../services/routines/routines.service.ts";
+
 interface DataMedicine {
-    hour: string,
+    date_time: string,
     product_id: Products,
-    description?: string
+    description: string | null
 }
 
 function RoutineMedicine() {
+    const { mutate: onRegisterMedication } = useRegisterMedication()
+    const idChild: number = Number(localStorage.getItem("select_child"))
+
     const {
         register,
         handleSubmit,
@@ -45,19 +51,22 @@ function RoutineMedicine() {
             "id": 1,
             "type": "Medicamentos",
             "product": "Dipirona(100ml)",
-            "measure": "ml"
+            "measure": "ml",
+            "quantity_product": 0
         },
         {
             "id": 2,
             "type": "Medicamentos",
             "product": "Dipirona(comprimido)",
-            "measure": "u"
+            "measure": "u",
+            "quantity_product": 0
         },
         {
             "id": 3,
             "type": "Medicamentos",
             "product": "Xarope(100ml)",
-            "measure": "ml"
+            "measure": "ml",
+            "quantity_product": 0
         }
     ]
     const [remedy, setRemedy] = useState<Products[]>([
@@ -65,19 +74,22 @@ function RoutineMedicine() {
             "id": 1,
             "type": "Medicamentos",
             "product": "Dipirona(100ml)",
-            "measure": "ml"
+            "measure": "ml",
+            "quantity_product": 0
         },
         {
             "id": 2,
             "type": "Medicamentos",
             "product": "Dipirona(comprimido)",
-            "measure": "u"
+            "measure": "u",
+            "quantity_product": 0
         },
         {
             "id": 3,
             "type": "Medicamentos",
             "product": "Xarope(100ml)",
-            "measure": "ml"
+            "measure": "ml",
+            "quantity_product": 0
         }
     ])
 
@@ -93,16 +105,28 @@ function RoutineMedicine() {
     }
 
     function sendDatas(data: DataMedicine) {
-        const fullData: DataMedicine = {
-            'hour': data.hour,
-            'product_id': {
-                'id': idRemedySelected,
-                'quantity_product': Number(data.product_id.quantity_product)
-            },
-            'description': data.description
+        const fullData: RegisterMedication = {
+            'date_time': Date.convertISO(data.date_time),
+            'product_id': [
+                {
+                    'id': idRemedySelected,
+                    'quantity_product': Number(data.product_id.quantity_product)
+                }
+            ],
+            'description': data.description,
+            'fk_id_child': idChild
         }
-
         console.log(fullData)
+        onRegisterMedication(
+            fullData,
+            {
+                onSuccess: (response) => {
+                    console.log(response)
+                }, onError: () => {
+
+                }
+            }
+        )
     }
 
     function filterRemedy(text: string) {
@@ -111,14 +135,14 @@ function RoutineMedicine() {
     }
 
     useEffect(() => {
-        setValue("hour", Date.getHourFormated())
+        setValue("date_time", Date.getHourFormated())
         setRemedy(remedyMain)
     }, [])
 
     return (
         <div onClick={(e) => CloseElement.CloseElement(refChild, setExpandRemedy, e)}
-        ref={refDiv}
-        className="w-screen min-h-full
+            ref={refDiv}
+            className="w-screen min-h-full
         md:flex md:items-center
         xl:flex xl:flex-col xl:items-center xl:h-[calc(100%-85px)]">
             <div className="flex w-full">
@@ -135,17 +159,17 @@ function RoutineMedicine() {
                 </header>
                 <div className="flex flex-col">
                     <label htmlFor="hour" className={labelClassName}>Horário</label>
-                    <InputDefault {...register("hour", { required: "Selecione a hora!" })} type="time" id="hour" className={inputClassName} />
-                    {errors.hour && <p className="text-red-600/70 text-sm font-nunito">{errors.hour.message}</p>}
+                    <InputDefault {...register("date_time", { required: "Selecione a hora!" })} type="time" id="hour" className={inputClassName} />
+                    {errors.date_time && <p className="text-red-600/70 text-sm font-nunito">{errors.date_time.message}</p>}
                 </div>
                 <div className="relative flex flex-col">
                     <label htmlFor="medicine" className={labelClassName}>Medicação</label>
-                    <input 
-                    ref={refChild}
-                    onClick={() => setExpandRemedy(true)} onChange={(e) => {
-                        setRemedyListSelected(e.target.value)
-                        filterRemedy(e.target.value)
-                    }} aria-label="Clique aqui para visualizar os medicamentos para registro." type="text" id="medicine" value={remedyListSelected} placeholder="Selecione um medicamento" className={`z-50 ${inputClassName}`} />
+                    <input
+                        ref={refChild}
+                        onClick={() => setExpandRemedy(true)} onChange={(e) => {
+                            setRemedyListSelected(e.target.value)
+                            filterRemedy(e.target.value)
+                        }} aria-label="Clique aqui para visualizar os medicamentos para registro." type="text" id="medicine" value={remedyListSelected} placeholder="Selecione um medicamento" className={`z-50 ${inputClassName}`} />
 
                     <fieldset className={`absolute flex-col w-full h-68 top-16 md:top-18 overflow-y-scroll bg-lightest pt-4 gap-2 rounded-bl-lg rounded-br-lg border-b border-l border-r border-primary-darker z-40 ${expandRemedy ? 'flex' : 'hidden'}
                     xl:h-46`}>

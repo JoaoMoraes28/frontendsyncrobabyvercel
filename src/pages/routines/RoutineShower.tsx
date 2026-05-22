@@ -4,8 +4,8 @@ import ChildrenSelect from "../../layouts/ChildrenSelect";
 
 import { buttonCancel, buttonSubmit, radioButton, labelRadioButton, inputMeasureClass, listProductsClass, inputClassName, labelClassName } from "./RoutineFeeding"
 
-import Date from "../../utils/Date"
-import CloseElement from "../../utils/CloseElementClick"
+import Date from "../../utils/Date.ts"
+import CloseElement from "../../utils/CloseElementClick.ts"
 
 import { useEffect, useState, useRef } from "react"
 import { useForm } from "react-hook-form"
@@ -16,16 +16,21 @@ import Trash from "../../assets/routines/trashPurple.svg"
 
 import type { Products } from "./RoutineDiaper"
 
+import { useRegisterBath } from "../../services/hooks/routines/useRegisterBath.ts";
+import type { RegisterBath } from "../../services/routines/routines.service.ts";
+
 interface DataShower {
-    log_date?: string
     start_time: string
     end_time: string
     time: string
     product_id: Products[]
-    description?: string
+    description: string | null
 }
 
 function RoutineShower() {
+    const idChild: number = Number(localStorage.getItem("select_child"))
+    const { mutate: onRegisterBath } = useRegisterBath()
+
     const {
         register,
         handleSubmit,
@@ -48,19 +53,22 @@ function RoutineShower() {
             "id": 1,
             "type": "Higiene",
             "product": "Fraldas(M)",
-            "measure": "un"
+            "measure": "un",
+            "quantity_product": 0
         },
         {
             "id": 2,
             "type": "Higiene",
             "product": "Sabonete neutro",
-            "measure": "un"
+            "measure": "un",
+            "quantity_product": 0
         },
         {
             "id": 3,
             "type": "Higiene",
             "product": "Xampu",
-            "measure": "un"
+            "measure": "un",
+            "quantity_product": 0
         }
     ]
     const [products, setProducts] = useState<Products[]>([
@@ -68,19 +76,22 @@ function RoutineShower() {
             "id": 1,
             "type": "Higiene",
             "product": "Fraldas(M)",
-            "measure": "un"
+            "measure": "un",
+            "quantity_product": 0
         },
         {
             "id": 2,
             "type": "Higiene",
             "product": "Sabonete neutro",
-            "measure": "un"
+            "measure": "un",
+            "quantity_product": 0
         },
         {
             "id": 3,
             "type": "Higiene",
             "product": "Xampu",
-            "measure": "un"
+            "measure": "un",
+            "quantity_product": 0
         }
     ])
 
@@ -140,15 +151,24 @@ function RoutineShower() {
         })
 
         if (getValues("time") != "Datas inválidas!") {
-            const fullDatas: DataShower = {
-                "start_time": data.start_time,
-                "end_time": data.end_time,
-                "time": data.time,
+            const fullDatas: RegisterBath = {
+                "start_time": Date.convertISO(data.start_time),
+                "end_time": Date.convertISO(data.end_time),
                 "product_id": newListProduct,
-                "description": data.description
+                "description": data.description,
+                "fk_id_child": idChild
             }
-
             console.log(fullDatas)
+            onRegisterBath(
+                fullDatas,
+                {
+                    onSuccess: () => {
+
+                    }, onError: () => {
+
+                    }
+                }
+            )
 
         } else {
             alert("Data inválida!")
@@ -168,8 +188,8 @@ function RoutineShower() {
 
     return (
         <div onClick={(e) => CloseElement.CloseElement(refChild, setExpandSelectorProduct, e)}
-        ref={refDiv}
-        className="w-screen min-h-full
+            ref={refDiv}
+            className="w-screen min-h-full
         md:flex md:items-center
         xl:flex xl:flex-col xl:items-center xl:h-[calc(100%-85px)]">
             <div className="flex w-full">
@@ -200,12 +220,12 @@ function RoutineShower() {
                 </div>
                 <div className="relative flex flex-col">
                     <label htmlFor="products" className={labelClassName}>Produtos utilizados <span className="italic text-[12px]">(Registre apenas items que esgotaram por completo!)</span></label>
-                    <input 
-                    ref={refChild}
-                    aria-label="Clique para visualizar os produtos para selecionar no registro." onChange={(e) => {
-                        setProductSelected(e.target.value)
-                        filterProducts(e.target.value)
-                    }} onClick={() => setExpandSelectorProduct(true)} placeholder="Selecione produtos utilizados" id="products" value={productSelected} className={`z-50 ${inputClassName}`} />
+                    <input
+                        ref={refChild}
+                        aria-label="Clique para visualizar os produtos para selecionar no registro." onChange={(e) => {
+                            setProductSelected(e.target.value)
+                            filterProducts(e.target.value)
+                        }} onClick={() => setExpandSelectorProduct(true)} placeholder="Selecione produtos utilizados" id="products" value={productSelected} className={`z-50 ${inputClassName}`} />
 
                     <fieldset className={`absolute flex-col w-full h-68 top-21 overflow-y-scroll bg-lightest pt-4 gap-2 rounded-bl-lg rounded-br-lg border-b border-l border-r border-primary-darker z-40 ${expandSelectorProduct ? 'flex' : 'hidden'}
                     xl:h-46`}>

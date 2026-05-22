@@ -3,8 +3,8 @@ import Perfil from "../../layouts/Perfil";
 
 import { InputDefault } from "../../components/InputDefault";
 
-import Date from "../../utils/Date";
-import ConvertImg from "../../utils/DownloadImg"
+import Date from "../../utils/Date.ts";
+import ConvertImg from "../../utils/DownloadImg.ts"
 
 import ProfilePicture from "../../assets/profileChildren/profilePicture.svg";
 import EditIcon from "../../assets/editIcon.svg";

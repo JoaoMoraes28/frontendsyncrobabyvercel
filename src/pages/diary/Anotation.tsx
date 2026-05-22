@@ -7,7 +7,7 @@ import BtnPrimary from "../../components/BtnPrimary"
 
 import type { Register } from "./components/Card"
 
-import Date from "../../utils/Date"
+import Date from "../../utils/Date.ts"
 
 import Image from "../../assets/imageExDiary.png"
 import Trash from "../../assets/routines/trashPurple.svg"

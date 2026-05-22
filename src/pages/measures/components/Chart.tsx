@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-import Date from "../../../utils/Date"
+import Date from "../../../utils/Date.ts"
 
 import {
     LineChart,

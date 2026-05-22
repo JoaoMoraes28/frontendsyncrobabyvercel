@@ -2,7 +2,7 @@ import { InputDefault } from "../components/InputDefault";
 import { useEffect, useState } from "react";
 
 import NotificationsPage from "../pages/notifications/Notifications";
-import Date from "../utils/Date";
+import Date from "../utils/Date.ts";
 
 import Search from "../assets/search.svg";
 import Notifications from "../assets/notifications.svg";

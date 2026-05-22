@@ -4,8 +4,8 @@ import ChildrenSelect from "../../layouts/ChildrenSelect";
 
 import { buttonCancel, buttonSubmit, radioButton, labelRadioButton, inputMeasureClass, listProductsClass, inputClassName, labelClassName } from "./RoutineFeeding"
 
-import Date from "../../utils/Date"
-import CloseElement from "../../utils/CloseElementClick"
+import Date from "../../utils/Date.ts"
+import CloseElement from "../../utils/CloseElementClick.ts"
 
 import { useEffect, useState, useRef } from "react"
 import { useForm } from "react-hook-form"
@@ -17,15 +17,18 @@ import Close from "../../assets/closeModal.svg"
 import setSelector from "../../assets/setExpandSelector.svg"
 import Trash from "../../assets/routines/trashPurple.svg"
 
+import { useRegisterDiaper } from "../../services/hooks/routines/useRegisterDiaper.ts";
+import type { RegisterDiaper } from "../../services/routines/routines.service.ts";
+
 interface DataDiaper {
-    hour: string
+    date_time: string
     type: number
     product_id: Products[]
-    descripition?: string
+    descripition: string | null
 }
 
 interface TypeDiaper {
-    id: number
+    id: string
     type: string
     img: string
 }
@@ -34,17 +37,20 @@ export interface Products {
     id: number
     type?: string
     product?: string
-    quantity_product?: number
+    quantity_product: number
     measure?: string
 }
 
 function RoutineDiaper() {
+    const { mutate: onRegisterDiaper } = useRegisterDiaper()
+    const idChild: number = Number(localStorage.getItem("select_child"))
+
     const {
         register,
         handleSubmit,
         setValue,
         formState: { errors }
-    } = useForm<DataDiaper>()
+    } = useForm<RegisterDiaper>()
 
     const refDiv = useRef<HTMLDivElement | null>(null)
     const refChild = useRef<HTMLInputElement | null>(null)
@@ -54,17 +60,17 @@ function RoutineDiaper() {
     const [expandSelectorProduct, setExpandSelectorProduct] = useState<boolean>(false)
     const [valueProduct, setValueProduct] = useState<string>("")
     const [productSelected, setProductSelected] = useState<Products[]>([])
-    const [typeSelected, setTypeSelected] = useState<number>(0)
+    const [typeSelected, setTypeSelected] = useState<string>("")
     const [expandTypeSelector, setExpandTypeSelector] = useState<boolean>(false)
     const [valueInputType, setValueInputType] = useState<string>("Selecione o tipo de registro!")
     const type_diaper: TypeDiaper[] = [
         {
-            "id": 1,
+            "id": "stool",
             "type": "Fezes",
             "img": Poop
         },
         {
-            "id": 2,
+            "id": "urine",
             "type": "Urina",
             "img": Pee
         }
@@ -74,19 +80,22 @@ function RoutineDiaper() {
             "id": 1,
             "type": "Higiene",
             "product": "Fraldas(M)",
-            "measure": "un"
+            "measure": "un",
+            quantity_product: 0
         },
         {
             "id": 2,
             "type": "Higiene",
             "product": "Sabonete neutro",
-            "measure": "un"
+            "measure": "un",
+            quantity_product: 0
         },
         {
             "id": 3,
             "type": "Higiene",
             "product": "Talco",
-            "measure": "un"
+            "measure": "un",
+            quantity_product: 0
         }
     ]
     const [products, setProducts] = useState<Products[]>([
@@ -94,22 +103,24 @@ function RoutineDiaper() {
             "id": 1,
             "type": "Higiene",
             "product": "Fraldas(M)",
-            "measure": "un"
+            "measure": "un",
+            quantity_product: 0
         },
         {
             "id": 2,
             "type": "Higiene",
             "product": "Sabonete neutro",
-            "measure": "un"
+            "measure": "un",
+            quantity_product: 0
         },
         {
             "id": 3,
             "type": "Higiene",
             "product": "Talco",
-            "measure": "un"
+            "measure": "un",
+            quantity_product: 0
         }
     ])
-
 
     function addProductList(product: Products) {
         setExpandSelectorProduct(false)
@@ -143,22 +154,33 @@ function RoutineDiaper() {
         setProductSelected(newData)
     }
 
-    function sendDatas(datas: DataDiaper) {
-        if (typeSelected != 0) {
+    function sendDatas(datas: RegisterDiaper) {
+        if (typeSelected != "") {
 
             const newProductList: Products[] = productSelected.map((it) => {
                 const { type, product, measure, ...newProduct } = it
                 return newProduct
             })
 
-            const fullDatas: DataDiaper = {
-                "hour": datas.hour,
+            const fullDatas: RegisterDiaper = {
+                "date_time": Date.convertISO(datas.date_time),
                 "type": typeSelected,
                 "product_id": newProductList,
-                "descripition": datas.descripition
+                "description": datas.description,
+                fk_id_child: idChild
             }
-            console.log(fullDatas)
-            alert("Registro feito com sucesso!")
+
+            onRegisterDiaper(
+                fullDatas,
+                {
+                    onSuccess: () => {
+
+                    }, onError: () => {
+
+                    }
+                }
+            )
+
 
         } else {
             alert("Selecione o tipo de registro!")
@@ -173,15 +195,15 @@ function RoutineDiaper() {
     }
 
     useEffect(() => {
-        setValue("hour", Date.getHourFormated())
+        setValue("date_time", Date.getHourFormated())
         setProducts(productsMain)
     }, [])
 
     return (
         <div
-        ref={refDiv}
-        onClick={(e) => CloseElement.CloseElement(refChild, setExpandSelectorProduct, e)}
-        className="w-full min-h-full
+            ref={refDiv}
+            onClick={(e) => CloseElement.CloseElement(refChild, setExpandSelectorProduct, e)}
+            className="w-full min-h-full
         xl:flex xl:flex-col xl:items-center xl:h-[calc(100%-85px)]">
             <div className="flex w-full">
                 <ChildrenSelect idChild={childrenSelected} setChild={setChildSelected} />
@@ -196,8 +218,8 @@ function RoutineDiaper() {
                 </header>
                 <div className="flex flex-col">
                     <label htmlFor="hour" className={labelClassName}>Horário</label>
-                    <InputDefault {...register("hour", { required: "Hora obrigatória!" })} id="hour" type="time" className={inputClassName} />
-                    {errors.hour && <p className="text-red-600/70 text-sm font-nunito">{errors.hour.message}</p>}
+                    <InputDefault {...register("date_time", { required: "Hora obrigatória!" })} id="hour" type="time" className={inputClassName} />
+                    {errors.date_time && <p className="text-red-600/70 text-sm font-nunito">{errors.date_time.message}</p>}
                 </div>
                 <div className="flex flex-col
                 xl:hidden">
@@ -238,11 +260,11 @@ function RoutineDiaper() {
                 <div className="relative flex flex-col">
                     <label htmlFor="product" className={labelClassName}>Produtos utilizados <span className="italic text-[12px]">(Registre apenas items que esgotaram por completo!)</span></label>
                     <input
-                    ref={refChild}
-                    aria-label="Clique para visualizar os produtos para selecionar no registro." onChange={(e) => {
-                        setValueProduct(e.target.value)
-                        filterProducts(e.target.value)
-                    }} onClick={() => setExpandSelectorProduct(true)} id="prodict" placeholder="Selecione os produtos desejados" value={valueProduct} className={`z-50 ${inputClassName}`} />
+                        ref={refChild}
+                        aria-label="Clique para visualizar os produtos para selecionar no registro." onChange={(e) => {
+                            setValueProduct(e.target.value)
+                            filterProducts(e.target.value)
+                        }} onClick={() => setExpandSelectorProduct(true)} id="prodict" placeholder="Selecione os produtos desejados" value={valueProduct} className={`z-50 ${inputClassName}`} />
 
                     <fieldset className={`absolute flex-col w-full h-70 top-21 overflow-y-scroll bg-lightest pt-4 gap-2 rounded-bl-lg rounded-br-lg border-b border-l border-r border-primary-darker z-40 ${expandSelectorProduct ? 'flex' : 'hidden'}`}>
                         {products.map((product) => (
@@ -274,8 +296,8 @@ function RoutineDiaper() {
                 </ul>
                 <div className="flex flex-col">
                     <label htmlFor="description" className={labelClassName}>Descrição</label>
-                    <InputDefault {...register("descripition")} className={inputClassName} />
-                    {errors.descripition && <p className="text-red-600/70 text-sm font-nunito">{errors.descripition.message}</p>}
+                    <InputDefault {...register("description")} className={inputClassName} />
+                    {errors.description && <p className="text-red-600/70 text-sm font-nunito">{errors.description.message}</p>}
                 </div>
                 <div className="flex justify-between w-full h-10 mb-1 mt-4
                         md:justify-center md:gap-10 md:h-12

@@ -15,7 +15,7 @@ import {
 import Close from "../../../assets/closeModal.svg";
 import setSelector from "../../../assets/setExpandSelector.svg";
 
-import Date from "../../../utils/Date";
+import Date from "../../../utils/Date.ts";
 
 import type { InsertIllness } from "../../../services/illness/illness.service";
 import { useInsertIllness } from "../../../services/hooks/illness/useInsertIllness";

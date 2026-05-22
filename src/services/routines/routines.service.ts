@@ -85,7 +85,7 @@ export const deleteRegisterDiaper = async (idRegister: number): Promise<DeleteRo
 };
 
 export const insertRegisterBath = async (data: RegisterBath): Promise<RegisterBath> => {
-  const response = await api.post<RegisterBath>("/routines/diaper", data);
+  const response = await api.post<RegisterBath>("/routines/bath", data);
   return response.data;
 };
 
