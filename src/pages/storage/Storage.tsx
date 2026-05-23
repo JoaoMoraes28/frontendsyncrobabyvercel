@@ -1,5 +1,5 @@
 import exportIcon from "../../assets/exportIcon.svg";
-import React, { useState, useMemo, useRef } from "react";
+import React, { useState, useMemo, useRef, useEffect } from "react";
 import {
   DropdownFilter,
   type FilterOption,
@@ -13,6 +13,11 @@ import { ProductCard } from "./components/ProductCard";
 import { Link } from "react-router-dom";
 
 import ConvertImg from "../../utils/DownloadImg.ts";
+
+import { useGetStorage } from "../../services/hooks/storage/useGetStorage.ts";
+import type { ResponseGetStorage } from "../../services/storage/storage.service.ts";
+import { LoadingBaby } from "../../components/LoadingBaby.tsx";
+import { EmptyState } from "../../components/EmptyState.tsx";
 
 export interface InventoryItem {
   id: number;
@@ -112,6 +117,9 @@ const getCategoryIcon = (category: string): React.ElementType => {
 };
 
 export function Storage() {
+  const idChild: number = Number(localStorage.getItem("select_child"))
+  const { data: onGetStorage, isError, isLoading } = useGetStorage(idChild)
+
   const refProducts = useRef<HTMLDivElement | null>(null);
 
   const [selectedFilter, setSelectedFilter] = useState("Todas");
@@ -179,6 +187,16 @@ export function Storage() {
     }
   };
 
+  useEffect(() => {
+    if (!onGetStorage) {
+      return
+    }
+
+    if (onGetStorage) {
+      console.log(onGetStorage)
+    }
+  }, [onGetStorage])
+
   return (
     <div className="w-full h-full flex flex-col gap-6 lg:p-8">
       <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
@@ -195,7 +213,7 @@ export function Storage() {
         <Link
           to="/add-storage"
           className="hidden lg:flex justify-center bg-accent text-white font-bold py-2 px-6 rounded-xl shadow-md hover:brightness-95 active:scale-95 transition-all cursor-pointer"
-          onClick={() => {}}
+          onClick={() => { }}
         >
           Adicionar item ao estoque
         </Link>
@@ -245,19 +263,40 @@ export function Storage() {
         ref={refProducts}
         className="flex flex-col gap-4 lg:grid lg:grid-cols-3 lg:gap-6 lg:items-start overflow-y-auto flex-1 min-h-0 lg:max-h-none lg:overflow-visible p-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
       >
-        {filteredItems.map((item) => (
-          <ProductCard
-            key={item.id}
-            item={item}
-            icon={getCategoryIcon(item.category)}
-            getStatusColor={getStatusColor}
-            getStatusLabel={getStatusLabel}
-            toggleCard={toggleCard}
-            expandedCardId={expandedCardId}
-            updateItemQuantity={updateItemQuantity}
-            handleDeleteItem={handleDeleteItem}
+        {isLoading && <LoadingBaby />}
+
+        {!isLoading && isError
+          && <p className="text-red-500 font-poppins col-span-full text-center mt-4"
+          >Erro ao carregar a API
+          </p>}
+
+        {!isLoading && !isError && filteredItems.length === 0 && (
+          <EmptyState
+            isFullPage={false}
+            show404Background={false}
+            title={"123"}
+            description={"234"}
+            buttonText="Adicionar enfermidade"
+            onButtonClick={() => { }}
           />
-        ))}
+        )}
+
+        {!isLoading && !isError && filteredItems.map((item) => {
+          return (
+            <ProductCard
+              key={item.id}
+              item={item}
+              icon={getCategoryIcon(item.category)}
+              getStatusColor={getStatusColor}
+              getStatusLabel={getStatusLabel}
+              toggleCard={toggleCard}
+              expandedCardId={expandedCardId}
+              updateItemQuantity={updateItemQuantity}
+              handleDeleteItem={handleDeleteItem}
+            />
+          )
+        })}
+
       </div>
 
       <div className="lg:hidden shrink-0 w-full flex justify-center pb-6 md:mt-0">
