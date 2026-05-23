@@ -4,7 +4,7 @@ import type { ResponseIllness } from "../../illness/illness.service";
 
 export const useGetIllnessID = (id_illness: number) => {
     return useQuery<ResponseIllness | string>({
-        queryKey: ['illness'],
+        queryKey: ['illness', id_illness],
         queryFn: async () => {
             try {
                 const response = await getIllnessId(id_illness)

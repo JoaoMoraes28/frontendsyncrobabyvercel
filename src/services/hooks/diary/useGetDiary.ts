@@ -4,7 +4,7 @@ import type { ResponseDiary } from "../../diary/diary.service";
 
 export const useGetDiary = (child_id: number) => {
     return useQuery<ResponseDiary | string>({
-        queryKey: ['diary'],
+        queryKey: ['diary', child_id],
         queryFn: async () => {
             try {
                 const response = await getDiary(child_id)

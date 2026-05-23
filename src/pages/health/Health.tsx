@@ -140,7 +140,6 @@ export function Health() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 overflow-y-auto max-h-[75vh] md:max-h-full pr-2 pb-4">
-        {/* Lógica corrigida: se isLoading for true, mostra o bebê */}
         {isLoading && <LoadingBaby />}
 
         {!isLoading && isError && (
@@ -149,7 +148,6 @@ export function Health() {
           </p>
         )}
 
-        {/* Lógica corrigida: só mostra vazio se não estiver carregando e a lista filtrada for 0 */}
         {!isLoading && !isError && filteredItems.length === 0 && (
           <EmptyState
             isFullPage={false}
@@ -161,7 +159,6 @@ export function Health() {
           />
         )}
 
-        {/* Mapeando a lista filtrada (filteredItems) em vez da resposta bruta da API */}
         {!isLoading &&
           !isError &&
           filteredItems.map((item) => {
