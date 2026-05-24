@@ -9,6 +9,8 @@ import Notifications from "../assets/notifications.svg";
 import SetBack from "../assets/navigation/setBack.svg";
 import Profile from "../assets/navigation/profileHeader.svg";
 import SetBackProfile from "../assets/profileChildren/setBackProfile.svg";
+import Moon from "../assets/moon.svg"
+import Sun from "../assets/sun.svg"
 
 import { useLocation, useNavigate, Link } from "react-router-dom";
 
@@ -21,6 +23,7 @@ export interface Notification {
 
 function Header() {
   const [DateHour, setDateHour] = useState<string>(Date.getDateFormated());
+  const [layoutColor, setLayoutColor] = useState<boolean>(true)
   const [photoUser] = useState<string | null>(
     localStorage.getItem("user_photo") == "null" ||
       localStorage.getItem("user_photo") == null ||
@@ -160,6 +163,24 @@ function Header() {
     }
   }
 
+  function changeLayout(light: boolean) {
+    const doc = document.documentElement.style
+    setLayoutColor(light)
+
+    if (light) {
+      doc.setProperty("--color-light", "#f9f5ff")
+      doc.setProperty("--color-primary", "#9d87d2")
+      doc.setProperty("--color-primary-text", "#41354c")
+
+    } else {
+      doc.setProperty("--color-light", "#000000")
+      doc.setProperty("--color-primary", "#30104b")
+      doc.setProperty("--color-primary-text", "white")
+
+    }
+
+  }
+
   useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 1279px)");
 
@@ -184,7 +205,7 @@ function Header() {
     <header
       className={`fixed top-0 flex flex-col justify-between items-center w-screen px-6 pt-6 z-90 bg-light ${setTitleHeader(location.pathname) != "Home" ? "h-24" : "h-32"}
       md:px-14
-      xl:h-24 xl:flex-row xl:px-20 xl:pt-8 xl:items-start xl:right-0 ${location.pathname == "/profile-children" || location.pathname == "/profile-user" ? "xl:w-[calc(100%-20%)]" : "xl:w-[calc(100%-15%)] xl:max-w-[calc(100%-200px)]"}`}
+      xl:h-24 xl:flex-row xl:px-20 xl:pt-8 xl:items-start xl:right-0 ${location.pathname == "/profile-children" || location.pathname == "/profile-user" ? "xl:w-[calc(100%-20%)]" : "xl:max-w-[calc(100%-200px)]"}`}
     >
       <div
         onClick={moveNoticationsBar}
@@ -196,13 +217,26 @@ function Header() {
       >
         <img src={SetBackProfile} alt="Retorna a tela anterior." />
       </button>
-      <div
-        className={`flex w-full h-9 rounded-2xl bg-lilas shadow-purple-sm px-2 ${(setTitleHeader(location.pathname) != "Home" && windowWidth) || location.pathname == "/profile-children" || location.pathname == "/profile-user" ? "hidden" : "block"}
-        md:h-11
-        xl:w-2/3`}
-      >
-        <img aria-hidden="true" src={Search} alt="" className="w-4 h-auto" />
-        <InputDefault className="w-full pl-2 font-poppins text-primary-text" />
+      <div className={`w-full flex justify-between items-center xl:justify-start xl:gap-6 ${(setTitleHeader(location.pathname) != "Home" && windowWidth) || location.pathname == "/profile-children" || location.pathname == "/profile-user" ? "hidden" : "block"}`}>
+        <div
+          className={`flex w-[calc(100%-90px)] h-9 rounded-2xl bg-lilas shadow-purple-sm px-2 ${(setTitleHeader(location.pathname) != "Home" && windowWidth) || location.pathname == "/profile-children" || location.pathname == "/profile-user" ? "hidden" : "block"}
+          md:h-11
+          xl:w-2/3`}
+        >
+          <img aria-hidden="true" src={Search} alt="" className="w-4 h-auto" />
+          <InputDefault className="w-full pl-2 font-poppins text-primary-text" />
+        </div>
+        <button onClick={() => changeLayout(!layoutColor)} className={`shadow-purple-sm relative w-20 h-8 bg-primary rounded-full gap-1 items-center font-poppins px-2 text-sm xl:w-23 xl: xl:h-10 xl:gap-4  ${location.pathname == '/home' ? 'flex' : 'hidden'}`}>
+          <div className={`absolute flex justify-center items-center rounded-full w-10 h-10 bg-lilas-bg z-40 transition duration-300 xl:w-12 xl:h-12 ${layoutColor ? '-translate-x-2' : 'translate-x-8 xl:translate-x-9.5'}`}>
+            <img aria-hidden="true" src={layoutColor ? Sun : Moon} alt="" className="w-auto h-7" />
+          </div>
+          <span className="text-white">
+            Dark
+          </span>
+          <span className="text-white">
+            Light
+          </span>
+        </button>
       </div>
       <div
         className="flex w-full justify-between items-center mt-4
