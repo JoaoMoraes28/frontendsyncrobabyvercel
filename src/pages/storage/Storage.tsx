@@ -7,15 +7,24 @@ import {
 import { InputDefault } from "../../components/InputDefault";
 import Search from "../../assets/search.svg";
 import HygieneIcon from "../../assets/hygieneIcon.svg?react";
+import SolidFood from "../../assets/appleBananaGB.svg?react"
+import Milk from "../../assets/milkGB.svg?react"
+import BabyFood from "../../assets/baby_foodGB.svg?react"
+import Remedy from "../../assets/iconRemedyGB.svg?react"
+import Acessory from "../../assets/iconAcessoryGB.svg?react"
 import { SummaryCard } from "./components/SummaryCard";
 import { ProductCard } from "./components/ProductCard";
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import ConvertImg from "../../utils/DownloadImg.ts";
 
 import { useGetStorage } from "../../services/hooks/storage/useGetStorage.ts";
-import type { ResponseGetStorage } from "../../services/storage/storage.service.ts";
+import { usePatchStorage } from "../../services/hooks/storage/usePatchQuantityStorage.ts";
+import { useDeleteStorage } from "../../services/hooks/storage/useDeleteProduct.ts";
+import type { PatchQuantity } from "../../services/storage/storage.service.ts";
+import type { ProductStorage } from "../../services/storage/storage.service.ts";
+
 import { LoadingBaby } from "../../components/LoadingBaby.tsx";
 import { EmptyState } from "../../components/EmptyState.tsx";
 
@@ -30,70 +39,6 @@ export interface InventoryItem {
   themeColor: string;
 }
 
-const items: InventoryItem[] = [
-  {
-    id: 1,
-    category: "Acessórios",
-    name: "Talco",
-    quantity: 1,
-    unitType: "unidade(s)",
-    daysRemaining: 2,
-    description: null,
-    themeColor: "#f28b82",
-  },
-  {
-    id: 2,
-    category: "Papinha ou purê",
-    name: "Papinha de Mandioquinha",
-    quantity: 6,
-    unitType: "unidade(s)",
-    daysRemaining: 3,
-    description:
-      "Papinha natural de mandioquinha, cenoura e frango desfiado. Sem adição de sal ou conservantes. Ideal para a introdução alimentar a partir dos 6 meses.",
-    themeColor: "#fde293",
-  },
-  {
-    id: 3,
-    category: "Higiene",
-    name: "Lenços Umedecidos",
-    quantity: 3,
-    unitType: "caixa(s)",
-    daysRemaining: 9,
-    description: null,
-    themeColor: "#e8eaed",
-  },
-  {
-    id: 4,
-    category: "Alimento sólido",
-    name: "Biscoito de Arroz",
-    quantity: 2,
-    unitType: "pacote(s)",
-    daysRemaining: 5,
-    description: "Biscoito de arroz integral orgânico para lanches rápidos.",
-    themeColor: "#b8e1dd",
-  },
-  {
-    id: 5,
-    category: "Leite e derivados",
-    name: "Fórmula Infantil",
-    quantity: 4,
-    unitType: "lata(s)",
-    daysRemaining: 12,
-    description: "Fórmula de seguimento para lactentes.",
-    themeColor: "#d7eef4",
-  },
-  {
-    id: 6,
-    category: "Medicamentos",
-    name: "Antitérmico",
-    quantity: 1,
-    unitType: "frasco(s)",
-    daysRemaining: 20,
-    description: "Solução oral para alívio de febre e dores.",
-    themeColor: "#f3e5f5",
-  },
-];
-
 const filterOptions: FilterOption[] = [
   { id: "todas", label: "Todas" },
   { id: "alimento-solido", label: "Alimento sólido" },
@@ -106,24 +51,29 @@ const filterOptions: FilterOption[] = [
 
 const getCategoryIcon = (category: string): React.ElementType => {
   const icons: Record<string, React.ElementType> = {
-    Acessórios: HygieneIcon,
-    "Papinha ou purê": HygieneIcon,
+    Acessórios: Acessory,
+    "Alimentação (Papinha ou purê)": BabyFood,
     Higiene: HygieneIcon,
-    "Alimento sólido": HygieneIcon,
-    "Leite e derivados": HygieneIcon,
-    Medicamentos: HygieneIcon,
+    "Alimentação (Alimento sólido)": SolidFood,
+    "Alimentação (Leite e derivados)": Milk,
+    Saúde: Remedy,
   };
   return icons[category] ?? HygieneIcon;
 };
 
 export function Storage() {
+  const navigate = useNavigate()
+
   const idChild: number = Number(localStorage.getItem("select_child"))
-  const { data: onGetStorage, isError, isLoading } = useGetStorage(idChild)
+  const { data: onGetStorage, isError, isLoading, refetch } = useGetStorage(idChild, true)
+  const { mutate: onPatchQuantity } = usePatchStorage()
+  const { mutate: onDeleteStorage } = useDeleteStorage()
 
   const refProducts = useRef<HTMLDivElement | null>(null);
 
   const [selectedFilter, setSelectedFilter] = useState("Todas");
-  const [inventoryItems, setInventoryItems] = useState<InventoryItem[]>(items);
+  const [inventoryItems, setInventoryItems] = useState<ProductStorage[] | undefined>([]);
+  const [inventoryItemsFilter, setInventoryItemsFilter] = useState<ProductStorage[] | undefined>([]);
   const [expandedCardId, setExpandedCardId] = useState<number | null>(null);
   const [userInput, setUserInput] = useState("");
 
@@ -133,58 +83,82 @@ export function Storage() {
     return "var(--color-green-success)";
   };
 
-  const getStatusLabel = (quantity: number, daysRemaining: number): string => {
-    if (quantity <= 1 || daysRemaining <= 3) return "Estoque baixo";
-    if (quantity <= 3 || daysRemaining <= 7) return "Estoque em alerta";
+  const getStatusLabel = (quantity: number): string => {
+    if (quantity <= 1) return "Estoque baixo";
+    if (quantity <= 3) return "Estoque em alerta";
     return "Estoque em dia";
   };
 
   const stats = useMemo(() => {
     return {
-      healthy: inventoryItems.filter(
+      healthy: inventoryItems!.filter(
         (i) => getStatusColor(i.quantity) === "var(--color-green-success)",
       ).length,
-      warning: inventoryItems.filter(
+      warning: inventoryItems!.filter(
         (i) => getStatusColor(i.quantity) === "var(--color-yellow-warning)",
       ).length,
-      danger: inventoryItems.filter(
+      danger: inventoryItems!.filter(
         (i) => getStatusColor(i.quantity) === "var(--color-red-light)",
       ).length,
     };
   }, [inventoryItems]);
 
-  const filteredItems = inventoryItems.filter((item) => {
-    const matchesCategory =
-      selectedFilter === "Todas" || item.category === selectedFilter;
-    const matchesSearch = item.name
-      .trim()
-      .toLowerCase()
-      .includes(userInput.toLowerCase());
-    return matchesCategory && matchesSearch;
-  });
+  function filteredItems(text: string) {
+    const productFilter: ProductStorage[] | undefined = inventoryItemsFilter?.filter(it => it.product_name.toLowerCase().includes(text.toLowerCase()))
+    setInventoryItems(productFilter)
+  }
 
   const updateItemQuantity = (id: number, delta: number) => {
-    setInventoryItems((prev) =>
-      prev.map((item) =>
-        item.id === id
-          ? { ...item, quantity: Math.max(0, item.quantity + delta) }
-          : item,
-      ),
-    );
+    const product: ProductStorage[] | undefined = inventoryItems?.filter(it => it.id == id)
+
+    if ((product![0].quantity > 0 || delta == 1) && product![0].quantity < 99) {
+      const newQuantity: PatchQuantity = {
+        new_quantity: product![0].quantity + delta
+      }
+
+      onPatchQuantity(
+        {
+          data: newQuantity,
+          id_product: id
+        },
+        {
+          onSuccess: () => {
+            const newData: ProductStorage[] | undefined = inventoryItems?.map((it) => {
+              if (it.id == id) {
+                return { ...it, quantity: newQuantity.new_quantity }
+              }
+              return it
+            })
+            setInventoryItems(newData)
+
+          }, onError: () => {
+
+          }
+        }
+      )
+    }
+
+    return
+
   };
 
   const toggleCard = (id: number) => {
     setExpandedCardId((prev) => (prev === id ? null : id));
   };
 
-  const handleDeleteItem = async (itemId: number) => {
-    try {
-      setInventoryItems((prevItems) =>
-        prevItems.filter((item) => item.id !== itemId),
-      );
-    } catch (error) {
-      console.error("Erro ao deletar o item", error);
-    }
+  const handleDeleteItem = (itemId: number) => {
+    onDeleteStorage(
+      itemId,
+      {
+        onSuccess: (response) => {
+          refetch()
+          const newProducts: ProductStorage[] = inventoryItems!.filter(it => it.id != itemId)
+          setInventoryItems(newProducts)
+        }, onError: () => {
+
+        }
+      }
+    )
   };
 
   useEffect(() => {
@@ -193,7 +167,8 @@ export function Storage() {
     }
 
     if (onGetStorage) {
-      console.log(onGetStorage)
+      setInventoryItems(onGetStorage.stock)
+      setInventoryItemsFilter(onGetStorage.stock)
     }
   }, [onGetStorage])
 
@@ -205,7 +180,10 @@ export function Storage() {
           <InputDefault
             className="w-full pl-2 bg-transparent outline-none border-none font-poppins text-text-primary"
             value={userInput}
-            onChange={(e) => setUserInput(e.target.value)}
+            onChange={(e) => {
+              setUserInput(e.target.value)
+              filteredItems(e.target.value)
+            }}
             placeholder="Buscar produto..."
           />
         </div>
@@ -261,32 +239,33 @@ export function Storage() {
 
       <div
         ref={refProducts}
-        className="flex flex-col gap-4 lg:grid lg:grid-cols-3 lg:gap-6 lg:items-start overflow-y-auto flex-1 min-h-0 lg:max-h-none lg:overflow-visible p-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+        className="flex flex-col gap-4 lg:grid lg:grid-cols-3 lg:gap-6 lg:items-start overflow-y-auto flex-1 min-h-0 lg:max-h-none lg:overflow-visible p-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]
+        xl:overflow-y-auto"
       >
-        {isLoading && <LoadingBaby />}
+        {isLoading && <LoadingBaby text="Buscando produtos" />}
 
         {!isLoading && isError
           && <p className="text-red-500 font-poppins col-span-full text-center mt-4"
           >Erro ao carregar a API
           </p>}
 
-        {!isLoading && !isError && filteredItems.length === 0 && (
+        {!isLoading && !isError && inventoryItems?.length === 0 && (
           <EmptyState
             isFullPage={false}
             show404Background={false}
-            title={"123"}
-            description={"234"}
-            buttonText="Adicionar enfermidade"
-            onButtonClick={() => { }}
+            title={"Nenhum produto encontrado!"}
+            description={"O que acha de adicionar algo no estoque?"}
+            buttonText="Adicionar Produto"
+            onButtonClick={() => navigate("/add-storage")}
           />
         )}
 
-        {!isLoading && !isError && filteredItems.map((item) => {
+        {!isLoading && !isError && inventoryItems?.map((item) => {
           return (
             <ProductCard
               key={item.id}
               item={item}
-              icon={getCategoryIcon(item.category)}
+              icon={getCategoryIcon(item.type)}
               getStatusColor={getStatusColor}
               getStatusLabel={getStatusLabel}
               toggleCard={toggleCard}
@@ -299,14 +278,16 @@ export function Storage() {
 
       </div>
 
-      <div className="lg:hidden shrink-0 w-full flex justify-center pb-6 md:mt-0">
-        <Link
-          to="/add-storage"
-          className="flex justify-center bg-accent text-white font-poppins font-bold text-lg w-[90%] max-w-87.5 py-3 rounded-xl shadow-md cursor-pointer hover:opacity-90 active:scale-95 transition-all"
-        >
-          Adicionar produto
-        </Link>
-      </div>
+      {!isLoading && !isError && inventoryItems!.length > 0 &&
+        <div className="lg:hidden shrink-0 w-full flex justify-center pb-6 md:mt-0">
+          <Link
+            to="/add-storage"
+            className="flex justify-center bg-accent text-white font-poppins font-bold text-lg w-[90%] max-w-87.5 py-3 rounded-xl shadow-md cursor-pointer hover:opacity-90 active:scale-95 transition-all"
+          >
+            Adicionar produto
+          </Link>
+        </div>}
+
     </div>
   );
 }

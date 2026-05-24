@@ -1,9 +1,9 @@
 import SolidFood from "../../assets/appleBanana.svg"
 import Milk from "../../assets/routines/milk.svg"
 import BabyFood from "../../assets/routines/baby_food.svg"
-import Hygiene from "../../assets/purpleHygiene.svg"
 import Remedy from "../../assets/iconRemedy.svg"
 import Acessory from "../../assets/iconAcessory.svg"
+import Hygiene from "../../assets/purpleHygiene.svg"
 import Close from "../../assets/closeModal.svg"
 
 import { useForm } from "react-hook-form"

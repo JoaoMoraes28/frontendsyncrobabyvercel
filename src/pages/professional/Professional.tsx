@@ -141,7 +141,7 @@ export function Professional() {
       </div>
 
       <div className="w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 overflow-y-auto max-h-145 md:max-h-[65vh] pr-2">
-        {(isLoading || isSearching) && <LoadingBaby />}
+        {(isLoading || isSearching) && <LoadingBaby text="Buscando profissionais" />}
 
         {!isLoading && !isSearching && isError && (
           <p className="text-red-500 font-poppins col-span-full text-center mt-4">

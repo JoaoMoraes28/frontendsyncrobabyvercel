@@ -6,9 +6,12 @@ export const useGetProfessionalsByChild = (
   childId: number,
   canExecute: boolean,
 ) => {
+  const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
+
   return useQuery<ResponseProfessional>({
     queryKey: ["professional", "child", childId],
     queryFn: async () => {
+      await delay(700);
       return await getProfessionals(childId);
     },
     enabled: canExecute,

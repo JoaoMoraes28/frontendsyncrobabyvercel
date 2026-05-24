@@ -16,7 +16,7 @@ function NavigationBar({ listIcons }: Props) {
   return (
     <nav
       className="fixed bottom-0 flex justify-center w-full h-22 md:h-28 z-100 bg-light backdrop-blur-sm 
-      xl:left-0 xl:w-[15%] xl:min-w-50 xl:h-screen xl:bg-primary xl:flex-col xl:justify-between"
+      xl:left-0 xl:w-50 xl:h-screen xl:bg-primary xl:flex-col xl:justify-between"
     >
       <div
         className="flex justify-center w-full items-center
@@ -118,7 +118,7 @@ function NavigationBar({ listIcons }: Props) {
 
       <Link
         to="/profile-user"
-        className="hidden xl:flex xl:w-full xl:h-22 xl:justify-between xl:items-center xl:px-4 xl:border-t xl:border-white"
+        className="hidden xl:flex xl:w-full xl:h-22 xl:justify-between xl:items-center xl:pl-4 xl:pr-2 xl:border-t xl:border-white"
       >
         <div className="xl:flex xl:items-top xl:gap-2">
           <img

@@ -39,7 +39,7 @@ export function Health() {
     data: onGetIllness,
     isLoading,
     isError,
-    refetch, // Pegamos o refetch do React Query para atualizar a lista após deletar
+    refetch
   } = useGetIllness(childId, true);
 
   const { mutate: onDeleteIllness } = useDeleteIllness();
@@ -140,7 +140,7 @@ export function Health() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 overflow-y-auto max-h-[75vh] md:max-h-full pr-2 pb-4">
-        {isLoading && <LoadingBaby />}
+        {isLoading && <LoadingBaby text="Buscando enfermidades" />}
 
         {!isLoading && isError && (
           <p className="text-red-500 font-poppins col-span-full text-center mt-4">

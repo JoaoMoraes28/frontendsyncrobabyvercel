@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { InputDefault } from "../../components/InputDefault";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 
 import Date from "../../utils/Date.ts";
@@ -18,6 +18,10 @@ import Trash from "../../assets/routines/trashPurple.svg"
 
 import { useRegisterFeeding } from "../../services/hooks/routines/useRegisterFeeding";
 import type { RegisterFeeding } from "../../services/routines/routines.service";
+import { useGetTypeProduct } from "../../services/hooks/product/useGetType.ts";
+import type { TypeProduct } from "../../services/storage/storage.service.ts";
+import { useGetProductByTypeStorage } from "../../services/hooks/storage/useGetProductByTypeStorage.ts";
+import type { ProductStorage } from "../../services/storage/storage.service.ts";
 
 interface DataFeeding {
   date_time: string;
@@ -69,6 +73,8 @@ export const listProductsClass: string =
   "flex flex-col w-full min-h-34 border border-primary-darker bg-white rounded-lg px-4 py-3 gap-2 overflow-y-auto md:gap-4 xl:bg-white xl:min-h-24 xl:max-h-24 xl:px-6";
 
 function RoutineFeeding() {
+  const idChild: number = Number(localStorage.getItem("select_child"))
+  const { data: onGetType } = useGetTypeProduct()
   const { mutate: onInsertFeeding } = useRegisterFeeding()
 
   const {
@@ -88,85 +94,57 @@ function RoutineFeeding() {
 
   const [childrenSelected, setChildSelected] = useState<number>(1);
   const [dateUTC, setDateUTC] = useState<string>("");
-  const [typeFood, setTypeFood] = useState<number>(0);
+  const [typeFood, setTypeFood] = useState<number | null>(null);
   const [foodSelected, setFoodSelected] = useState<string>("");
-  const [listFood, setListFood] = useState<ListFood[]>([]);
+  const [listFood, setListFood] = useState<ProductStorage[]>([]);
   const [foodExpandSelector, setFoodExpandSelector] = useState<boolean>(false);
   const [typeFoodExpandSelector, setTypeFoodExpandSelector] =
     useState<boolean>(false);
   const [valueInputTypeFood, setValueInputTypeFood] = useState<string>(
     "Escolha o tipo de alimento deste registro",
   );
-  const [food_type] = useState<FoodType[]>([
-    {
-      id: 1,
-      type: "Alimento Sólido",
-    },
-    {
-      id: 2,
-      type: "Leite e Derivados",
-    },
-    {
-      id: 3,
-      type: "Papinha ou Purê",
-    },
-  ]);
-  const foodsMain: Food[] = [
-    {
-      id: 1,
-      type: "Leite e Derivados",
-      food: "Leite",
-      measure: "ml",
-    },
-    {
-      id: 2,
-      type: "Leite e Derivados",
-      food: "Fórmula Z",
-      measure: "ml",
-    },
-    {
-      id: 3,
-      type: "Leite e Derivados",
-      food: "Fórmula X",
-      measure: "ml",
-    },
-  ];
-  const [foods, setFoods] = useState<Food[]>([])
+  const [food_type, setFoodType] = useState<TypeProduct[]>([]);
+  const [foodsMain, setFoodsMain] = useState<ProductStorage[]>([]);
+  const [foods, setFoods] = useState<ProductStorage[]>([])
+
+  const { data: onGetProduct } = useGetProductByTypeStorage(typeFood, idChild)
 
   function removeItemRegister(id: number) {
-    const newData: ListFood[] = listFood.filter(it => it.id != id)
+    const newData: ProductStorage[] = listFood.filter(it => it.id != id)
     setListFood(newData)
   }
 
+  function filterDataTypeProduct(data: TypeProduct[]) {
+    const finalData: TypeProduct[] = data.filter(it => it.product_type_name.includes("Alimentação"))
+
+    const formatNameType: TypeProduct[] = finalData.map((type) => {
+      const newName: string = type.product_type_name.split("(")[1].replace(")", "")
+      return { ...type, product_type_name: newName }
+    })
+    setFoodType(formatNameType)
+  }
+
   function addImageFoodType(type: string) {
-    if (type == "Leite e Derivados") {
+    if (type == "Leite e derivados") {
       return Milk;
-    } else if (type == "Alimento Sólido") {
+    } else if (type == "Alimento sólido") {
       return SolidFood;
-    } else if (type == "Papinha ou Purê") {
+    } else if (type == "Papinha ou purê") {
       return BabyFood;
     }
 
     return;
   }
 
-  function changeFoodSelected(food: Food) {
+  function changeFoodSelected(food: ProductStorage) {
     setFoodExpandSelector(false);
 
     if (listFood.some((it) => it.id == food.id)) {
       return;
     } else {
-      setFoodSelected(food.food);
+      setFoodSelected(food.product_name);
 
-      const newFood: ListFood = {
-        id: food.id,
-        type_id: typeFood,
-        food_name: food.food,
-        measure: food.measure,
-        quantity_product: 0,
-      };
-
-      setListFood([...listFood, newFood]);
+      setListFood([...listFood, food]);
     }
   }
 
@@ -174,7 +152,7 @@ function RoutineFeeding() {
     setTypeFood(food_id);
     setTypeFoodExpandSelector(false);
 
-    setValueInputTypeFood(food_type[food_id - 1].type);
+    setValueInputTypeFood(food_type[food_id - 1].product_type_name);
 
     if (food_id != typeFood) {
       setListFood([]);
@@ -182,9 +160,9 @@ function RoutineFeeding() {
   }
 
   function changeQuantityFood(id: number, quantity: string) {
-    const newListFood: ListFood[] = listFood.map((food) => {
+    const newListFood: ProductStorage[] = listFood.map((food) => {
       if (food.id == id) {
-        return { ...food, quantity_product: parseInt(quantity) };
+        return { ...food, quantity: parseInt(quantity) };
       } else {
         return food;
       }
@@ -196,10 +174,9 @@ function RoutineFeeding() {
   function sendDatas(datas: DataFeeding) {
     let newListFood: ListFood[] = []
 
-    if (listFood.length > 0 && !listFood.some((it) => it.quantity_product == 0)) {
+    if (listFood.length > 0 && !listFood.some((it) => it.quantity == 0)) {
       newListFood = listFood.map((food) => {
-        const { food_name, measure, ...newFood } = food;
-        return newFood;
+        return { id: food.id, quantity_product: food.quantity };
       });
 
     }
@@ -208,7 +185,7 @@ function RoutineFeeding() {
       const fullDatas: RegisterFeeding = {
         fk_id_child: Number(localStorage.getItem("select_child")),
         date_time: Date.convertISO(datas.date_time),
-        fk_id_product_type: typeFood,
+        fk_id_product_type: typeFood!,
         description: datas.description,
         product_id: newListFood
       };
@@ -217,7 +194,7 @@ function RoutineFeeding() {
         fullDatas,
         {
           onSuccess: (response) => {
-            
+
           },
           onError: (error) => {
             alert("Ih deu errado hein...")
@@ -234,7 +211,7 @@ function RoutineFeeding() {
   }
 
   function filterFood(text: string) {
-    const newData: Food[] = foodsMain.filter(it => it.food.toLowerCase().includes(text.toLowerCase()))
+    const newData: ProductStorage[] = foodsMain.filter(it => it.product_name.toLowerCase().includes(text.toLowerCase()))
     setFoods(newData)
   }
 
@@ -243,9 +220,29 @@ function RoutineFeeding() {
   }, [typeFood]);
 
   useEffect(() => {
-    setDateUTC(Date.getDateUTC());
-    setFoods(foodsMain)
-  }, []);
+    if (!onGetType) {
+      return
+
+    }
+
+    if (onGetType) {
+      filterDataTypeProduct(onGetType.type)
+    }
+  }, [onGetType])
+
+  useEffect(() => {
+    if (!onGetProduct) {
+      setFoodsMain([])
+      setFoods([])
+      return
+
+    }
+
+    if (onGetProduct) {
+      setFoodsMain(onGetProduct.stock)
+      setFoods(onGetProduct.stock)
+    }
+  }, [onGetProduct])
 
   return (
     <div
@@ -305,13 +302,13 @@ function RoutineFeeding() {
           <ul id="type-food" className="flex justify-between mt-2">
             {food_type.map((food) => (
               <li
-                key={food.id}
-                className={`w-28 h-26 rounded-lg bg-lilas border border-primary ${typeFood == food.id ? "shadow-purple-sm bg-lilas-dark/10" : ""}
+                key={food.id_product_type}
+                className={`w-28 h-26 rounded-lg bg-lilas border border-primary ${typeFood == food.id_product_type ? "shadow-purple-sm bg-lilas-dark/10" : ""}
                                                 md:w-42 md:h-42`}
               >
                 <button
                   onClick={() => {
-                    clearListFood(food.id);
+                    clearListFood(food.id_product_type);
                     setFoodExpandSelector(false);
                   }}
                   type="button"
@@ -320,7 +317,7 @@ function RoutineFeeding() {
                   <div className="w-full flex flex-col justify-center items-center">
                     <img
                       aria-hidden="true"
-                      src={addImageFoodType(food.type)}
+                      src={addImageFoodType(food.product_type_name)}
                       alt=""
                       className="w-15 h-15
                       md:w-23 md:h-23"
@@ -329,7 +326,7 @@ function RoutineFeeding() {
                       className="w-[90%] text-center font-nunito text-primary text-sm font-semibold
                                                 md:text-lg"
                     >
-                      {food.type}
+                      {food.product_type_name}
                     </span>
                   </div>
                 </button>
@@ -361,22 +358,22 @@ function RoutineFeeding() {
             >
               {food_type.map((food) => (
                 <div
-                  key={food.id}
+                  key={food.id_product_type}
                   className="xl:flex xl:justify-center xl:items-center xl:h-full xl:pl-2 xl:gap-2"
                 >
                   <InputDefault
-                    onChange={() => clearListFood(food.id)}
+                    onChange={() => clearListFood(food.id_product_type)}
                     type="radio"
-                    id={`TypeFood${food.id}`}
-                    value={food.id}
+                    id={`TypeFood${food.id_product_type}`}
+                    value={food.id_product_type}
                     name="food"
                     className={radioButton}
                   />
                   <label
-                    htmlFor={`TypeFood${food.id}`}
+                    htmlFor={`TypeFood${food.id_product_type}`}
                     className={labelRadioButton}
                   >
-                    {food.type}
+                    {food.product_type_name}
                   </label>
                 </div>
               ))}
@@ -389,13 +386,14 @@ function RoutineFeeding() {
           </label>
           <input
             ref={refChild}
+            readOnly={typeFood == null}
             onChange={(e) => {
               setFoodSelected(e.target.value)
               filterFood(e.target.value)
             }}
             aria-label="Clique aqui para exibir os alimentos cadastrados e selecioná-los."
             value={
-              typeFood == 0 ? "Selecione um tipo de alimento!" : foodSelected
+              typeFood == null ? "Selecione um tipo de alimento!" : foodSelected
             }
             onClick={() => setFoodExpandSelector(true)}
             id="food"
@@ -404,28 +402,39 @@ function RoutineFeeding() {
 
           <fieldset
             className={`absolute top-21 flex-col w-full h-70 rounded-bl-lg rounded-br-lg border-b border-l border-r border-primary-darker
-                        overflow-y-scroll bg-lightest pt-4 gap-2 ${foodExpandSelector && typeFood != 0 ? "flex" : "hidden"}
+                        overflow-y-scroll bg-lightest pt-4 gap-2 ${foodExpandSelector && typeFood != null ? "flex" : "hidden"}
                         md:top-20 md:h-76
                         xl:top-15 xl:h-54`}
           >
-            {foods.map((food) => (
-              <div
-                key={food.id}
-                className="flex items-center w-full h-8 pl-2 gap-2"
-              >
-                <InputDefault
-                  onChange={() => changeFoodSelected(food)}
-                  type="radio"
-                  id={`food${food.id}`}
-                  value={food.food}
-                  name="food"
-                  className={radioButton}
-                />
-                <label htmlFor={`food${food.id}`} className={labelRadioButton}>
-                  {food.food}
-                </label>
+            {foods.length == 0 &&
+              <div className="flex flex-col w-full h-full pt-10 gap-5 items-center">
+                <span className="text-[15px] font-semibold text-primary-text">Parece que não há nenhum produto deste tipo...</span>
+                <Link to="/add-storage"
+                  className="bg-accent rounded-md text-white font-semibold w-40 h-9 flex justify-center items-center"
+                >Registrar Produto</Link>
               </div>
-            ))}
+            }
+
+            {foods.length > 0 && foods.map((food) => {
+              return (
+                <div
+                  key={food.id}
+                  className="flex items-center w-full h-8 pl-2 gap-2"
+                >
+                  <InputDefault
+                    onChange={() => changeFoodSelected(food)}
+                    type="radio"
+                    id={`food${food.id}`}
+                    value={food.product_name}
+                    name="food"
+                    className={radioButton}
+                  />
+                  <label htmlFor={`food${food.id}`} className={labelRadioButton}>
+                    {food.product_name}
+                  </label>
+                </div>
+              )
+            })}
           </fieldset>
         </div>
         <ul className={listProductsClass}>
@@ -435,14 +444,14 @@ function RoutineFeeding() {
                 className="text-lilas-dark font-semibold text-lg
                                     md:text-xl"
               >
-                {food.food_name}
+                {food.product_name}
               </span>
               <div className="flex gap-10">
                 <div className={inputMeasureClass}>
                   <InputDefault
                     onChange={(e) => changeQuantityFood(food.id, e.target.value)}
                     type="number"
-                    value={`${food.quantity_product}`}
+                    value={`${food.quantity}`}
                     className="w-2/3 pl-2 text-center"
                   />
                   <span className="w-1/3">{`${food.measure}`}</span>

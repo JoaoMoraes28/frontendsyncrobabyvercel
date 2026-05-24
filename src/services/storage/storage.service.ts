@@ -1,12 +1,16 @@
 import { api } from "../api"
 
-export interface ProducStorage {
-    id_stock_register: number
-    description: string | null
+export interface ProductStorage {
+    id: number
+    id_product: number
+    fk_id_product_type: number
+    id_child: number
+    product_name: string
     quantity: number
+    type: string
     volume: number
-    fk_id_child: number
-    product: string
+    description: string | null
+    measure: string
 }
 
 export interface InsertProduct {
@@ -31,19 +35,40 @@ export interface TypeProduct {
 
 export interface ResponseGetStorage {
     status_code: number
-    stock: ProducStorage[]
+    stock: ProductStorage[]
 }
 
 interface ResponseInsertStorage {
     status_code: number
 }
 
-interface ResponseDeleteStorage {
+interface ResponseStatusCodeStorage {
     status_code: number
 }
 
+export interface PatchQuantity {
+    new_quantity: number
+}
+
 export const getProductsIdChild = async (childId: number): Promise<ResponseGetStorage> => {
-    const response = await api.get<ResponseGetStorage>(`/stock/child/${childId}`);
+    try {
+        const response = await api.get<ResponseGetStorage>(`/stock/child/${childId}`);
+        return response.data;
+
+    } catch (error: any) {
+        if (String(error).includes("404")) {
+            return {
+                status_code: 404,
+                stock: []
+            }
+        }
+        throw error
+    }
+};
+
+export const getProductsByType = async (childId: number, type_id: number): Promise<ResponseGetStorage> => {
+    const response = await api.get<ResponseGetStorage>(`/stock/type?child=${childId}&type=${type_id}`);
+    console.log(response.data)
     return response.data;
 };
 
@@ -52,7 +77,12 @@ export const insertProduct = async (data: InsertProduct): Promise<ResponseInsert
     return response.data;
 };
 
-export const deleteProduct = async (productId: number): Promise<ResponseDeleteStorage> => {
-    const response = await api.delete<ResponseDeleteStorage>(`/stock/${productId}`);
+export const updateQuantityProduct = async (productId: number, data: PatchQuantity): Promise<ResponseStatusCodeStorage> => {
+    const response = await api.patch<ResponseStatusCodeStorage>(`/stock/quantity/${productId}`, data);
+    return response.data;
+};
+
+export const deleteProduct = async (productId: number): Promise<ResponseStatusCodeStorage> => {
+    const response = await api.delete<ResponseStatusCodeStorage>(`/stock/${productId}`);
     return response.data;
 };
