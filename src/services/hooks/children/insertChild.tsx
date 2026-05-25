@@ -8,7 +8,7 @@ export const onInsertChild = () => {
     const navigate = useNavigate()
 
     return useMutation({
-        mutationFn: (data: InsertChild) => insertChild(data),
+        mutationFn: (data: FormData) => insertChild(data),
 
         onSuccess: () => {
             alert("Filho adiconado com sucesso!")

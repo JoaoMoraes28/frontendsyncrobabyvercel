@@ -77,6 +77,7 @@ function ProfileChildren() {
 
   const [deleteModal, setDeleteModal] = useState<boolean>(false)
   const [preview, setPreview] = useState<string>("")
+  const [photoFile, setPhotoFile] = useState<File | string>("")
   const [descriptionItems, setDescriptionItems] = useState<ListDescription[]>([
     {
       title: "Data de nascimento:",
@@ -148,7 +149,7 @@ function ProfileChildren() {
         birth_date: childData.child[0].birth_date.split("T")[0],
         height: Math.round(childData.child[0].height)
       }
-
+      console.log(childData.child[0].photo)
       setGenderSelected(newData.gender);
       setDataChildren(newData);
       setArrayData(newData);
@@ -198,34 +199,49 @@ function ProfileChildren() {
   }
 
   function sendDatas(data: FormChild) {
-    const newObject: UpdateChild = { ...data, gender: genderSelected, id_child: idChild, photo: preview };
-    updateChild(
-      newObject,
-      {
-        onSuccess: (response) => {
-          alert("Alterações salvas!")
-          const newData: UpdateChild = response.response
-          const newChildren: Children = {
-            child_name: newData.child_name,
-            gender: newData.gender,
-            BMI: dataChildren.BMI,
-            birth_date: newData.birth_date,
-            weight: dataChildren.weight,
-            height: dataChildren.height,
-            blood_type: newData.blood_type,
-            active: dataChildren.active,
-            fk_id_guardian: dataChildren.fk_id_guardian,
-            id_child: newData.id_child,
-            photo: preview
-          }
-          setDataChildren(newChildren)
-        }
-      }
-    )
+    const newObject: UpdateChild = {
+      ...data,
+      gender: genderSelected,
+      id_child: idChild,
+      photo: preview == "" ? "" : photoFile
+    };
+
+    const formData = new FormData()
+
+    Object.entries(newObject).forEach(([name, value]) => {
+      formData.append(name, value)
+    });
+
+    console.log(formData)
+
+    // updateChild(
+    //   newObject,
+    //   {
+    //     onSuccess: (response) => {
+    //       alert("Alterações salvas!")
+    //       const newData: UpdateChild = response.response
+    //       const newChildren: Children = {
+    //         child_name: newData.child_name,
+    //         gender: newData.gender,
+    //         BMI: dataChildren.BMI,
+    //         birth_date: newData.birth_date,
+    //         weight: dataChildren.weight,
+    //         height: dataChildren.height,
+    //         blood_type: newData.blood_type,
+    //         active: dataChildren.active,
+    //         fk_id_guardian: dataChildren.fk_id_guardian,
+    //         id_child: newData.id_child,
+    //         photo: preview
+    //       }
+    //       setDataChildren(newChildren)
+    //     }
+    //   }
+    // )
   }
 
   function previewImg(e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.files) {
+      setPhotoFile(e.target.files[0])
       setPreview(URL.createObjectURL(e.target.files[0]))
     }
   }
