@@ -29,7 +29,7 @@ export interface UpdateChild {
   child_name: string
   birth_date: string
   blood_type: string
-  photo: string
+  photo: string | File
   gender: string
 }
 
@@ -56,7 +56,7 @@ export interface InsertChild {
   birth_date: string
   blood_type: string | null
   gender: string
-  photo: string | null
+  photo: string | File
 }
 
 export interface ResponseInsertChild {
@@ -90,7 +90,7 @@ export const getChildDeactivate = async (): Promise<ResponseChild[]> => {
   return response.data;
 };
 
-export const insertChild = async (data: InsertChild): Promise<ResponseInsertChild> => {
+export const insertChild = async (data: FormData): Promise<ResponseInsertChild> => {
   const response = await api.post<ResponseInsertChild>(`/child`, data);
   return response.data;
 };

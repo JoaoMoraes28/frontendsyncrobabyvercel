@@ -169,13 +169,17 @@ function Header() {
 
     if (light) {
       doc.setProperty("--color-light", "#f9f5ff")
-      doc.setProperty("--color-primary", "#9d87d2")
+      doc.setProperty("--color-lilas", "#e5daff")
       doc.setProperty("--color-primary-text", "#41354c")
-
+      doc.setProperty("--color-white", "#ffffff")
+      doc.setProperty("--color-lilas-medium", "#d2beff")
+      
     } else {
-      doc.setProperty("--color-light", "#000000")
-      doc.setProperty("--color-primary", "#30104b")
-      doc.setProperty("--color-primary-text", "white")
+      doc.setProperty("--color-light", "#3C334F")
+      doc.setProperty("--color-lilas", "#73609F")
+      doc.setProperty("--color-primary-text", "#E5DAFF")
+      doc.setProperty("--color-white", "#352D48")
+      doc.setProperty("--color-lilas-medium", "#352D48")
 
     }
 
@@ -263,7 +267,7 @@ function Header() {
           </h2>
         </div>
         <span
-          className={`font-inter font-bold text-md ${setTitleHeader(location.pathname) != "Home" ? "hidden" : "block"}
+          className={`font-inter font-bold text-md text-primary-text ${setTitleHeader(location.pathname) != "Home" ? "hidden" : "block"}
           md:text-lg 
           xl:hidden`}
         >

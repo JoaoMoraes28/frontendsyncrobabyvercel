@@ -17,6 +17,7 @@ import { inputClassName } from "../../routines/RoutineFeeding";
 import Header from "../../../layouts/Header";
 
 import { onInsertChild } from "../../../services/hooks/children/insertChild";
+import type { InsertChild } from "../../../services/children/children.service";
 import { useState } from "react";
 
 interface ChildData {
@@ -53,6 +54,7 @@ export function AddChildPage() {
   const { mutate: handleRegisterAPI } = onInsertChild();
 
   const [photo, setPhoto] = useState<string>("")
+  const [photoFile, setPhotoFile] = useState<File | string>("")
 
   const {
     register,
@@ -64,22 +66,34 @@ export function AddChildPage() {
 
   function generatePhoto(e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.files) {
+      setPhotoFile(e.target.files[0])
       setPhoto(URL.createObjectURL(e.target.files[0]))
     }
   }
 
 
   function handleAddChild(data: ChildData) {
+    const newData: InsertChild = {
+      child_name: data.name,
+      height: Number(data.height),
+      weight: Number(data.weight),
+      blood_type: "",
+      gender: genderSelected,
+      photo: photo == "" ? "" : photoFile,
+      birth_date: data.birthDate
+    }
+
+    const formData = new FormData()
+
+    Object.entries(newData).forEach(([name, value]) => {
+      formData.append(name, value)
+      console.log(formData)
+    });
+
+    console.log(formData)
+
     handleRegisterAPI(
-      {
-        child_name: data.name,
-        height: Number(data.height),
-        weight: Number(data.weight),
-        blood_type: "",
-        gender: genderSelected,
-        photo: photo,
-        birth_date: data.birthDate
-      },
+      formData,
       {
         onError: (error: any) => {
           const message = error.response?.data?.message
@@ -95,7 +109,7 @@ export function AddChildPage() {
       <div className="xl:hidden w-full">
         <Header />
       </div>
-      <PerfilHeader user_name="Pedro" />
+      <PerfilHeader />
 
       <main className="flex-1 flex flex-col items-center justify-start w-full px-6 relative pt-5 pb-8">
         <div className="hidden xl:flex justify-between items-center w-full mb-1">
