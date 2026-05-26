@@ -34,19 +34,6 @@ interface DataFeeding {
   description: string | null;
 }
 
-interface FoodType {
-  id: number;
-  type: string;
-  image?: string;
-}
-
-interface Food {
-  id: number;
-  type: string;
-  food: string;
-  measure: string;
-}
-
 interface ListFood {
   id: number;
   type_id?: number;
@@ -444,7 +431,7 @@ function RoutineFeeding() {
                 className="text-lilas-dark font-semibold text-lg
                                     md:text-xl"
               >
-                {food.product_name}
+                {`${food.product_name} (${food.volume}${food.measure})`}
               </span>
               <div className="flex gap-10">
                 <div className={inputMeasureClass}>
@@ -454,7 +441,7 @@ function RoutineFeeding() {
                     value={`${food.quantity}`}
                     className="w-2/3 pl-2 text-center"
                   />
-                  <span className="w-1/3">{`${food.measure}`}</span>
+                  <span className="w-1/3">un</span>
                 </div>
                 <button onClick={() => removeItemRegister(food.id)} type="button">
                   <img src={Trash} alt="Exclui o item do registro." className="w-auto h-4" />

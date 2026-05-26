@@ -7,6 +7,7 @@ export interface ProductTypeId {
     id_type: number
     id_unity: number
     type: string
+    quantity?: number
 }
 
 export interface ResponseProductsType {
