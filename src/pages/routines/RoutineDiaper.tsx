@@ -19,13 +19,9 @@ import Trash from "../../assets/routines/trashPurple.svg"
 
 import { useRegisterDiaper } from "../../services/hooks/routines/useRegisterDiaper.ts";
 import type { RegisterDiaper } from "../../services/routines/routines.service.ts";
-
-interface DataDiaper {
-    date_time: string
-    type: number
-    product_id: Products[]
-    descripition: string | null
-}
+import { useGetProductByType } from "../../services/hooks/product/useGetProductType.ts";
+import type { ProductTypeId } from "../../services/product/product.service.ts";
+import type { ProductId } from "../../services/routines/routines.service.ts";
 
 interface TypeDiaper {
     id: string
@@ -44,6 +40,7 @@ export interface Products {
 function RoutineDiaper() {
     const { mutate: onRegisterDiaper } = useRegisterDiaper()
     const idChild: number = Number(localStorage.getItem("select_child"))
+    const { data: onGetProducts } = useGetProductByType(4)
 
     const {
         register,
@@ -59,7 +56,7 @@ function RoutineDiaper() {
     const [childrenSelected, setChildSelected] = useState<number>(1)
     const [expandSelectorProduct, setExpandSelectorProduct] = useState<boolean>(false)
     const [valueProduct, setValueProduct] = useState<string>("")
-    const [productSelected, setProductSelected] = useState<Products[]>([])
+    const [productSelected, setProductSelected] = useState<ProductTypeId[]>([])
     const [typeSelected, setTypeSelected] = useState<string>("")
     const [expandTypeSelector, setExpandTypeSelector] = useState<boolean>(false)
     const [valueInputType, setValueInputType] = useState<string>("Selecione o tipo de registro!")
@@ -75,69 +72,25 @@ function RoutineDiaper() {
             "img": Pee
         }
     ]
-    const productsMain: Products[] = [
-        {
-            "id": 1,
-            "type": "Higiene",
-            "product": "Fraldas(M)",
-            "measure": "un",
-            quantity_product: 0
-        },
-        {
-            "id": 2,
-            "type": "Higiene",
-            "product": "Sabonete neutro",
-            "measure": "un",
-            quantity_product: 0
-        },
-        {
-            "id": 3,
-            "type": "Higiene",
-            "product": "Talco",
-            "measure": "un",
-            quantity_product: 0
-        }
-    ]
-    const [products, setProducts] = useState<Products[]>([
-        {
-            "id": 1,
-            "type": "Higiene",
-            "product": "Fraldas(M)",
-            "measure": "un",
-            quantity_product: 0
-        },
-        {
-            "id": 2,
-            "type": "Higiene",
-            "product": "Sabonete neutro",
-            "measure": "un",
-            quantity_product: 0
-        },
-        {
-            "id": 3,
-            "type": "Higiene",
-            "product": "Talco",
-            "measure": "un",
-            quantity_product: 0
-        }
-    ])
+    const [productsMain, setProductsMain] = useState<ProductTypeId[]>([])
+    const [products, setProducts] = useState<ProductTypeId[]>([])
 
-    function addProductList(product: Products) {
+    function addProductList(product: ProductTypeId) {
         setExpandSelectorProduct(false)
         if (productSelected.some(it => it.id == product.id)) {
             return
 
-        } else if (product.product) {
-            setValueProduct(product.product)
+        } else if (product.name) {
+            setValueProduct(product.name)
             setProductSelected([...productSelected, product])
         }
 
     }
 
     function onHandleQuantity(id: number, quantity: string) {
-        const newList: Products[] = productSelected.map((it) => {
+        const newList: ProductTypeId[] = productSelected.map((it) => {
             if (it.id == id) {
-                it.quantity_product = Number(quantity)
+                it.quantity = Number(quantity)
                 return it
 
             } else {
@@ -150,31 +103,33 @@ function RoutineDiaper() {
     }
 
     function removeItemRegister(id: number) {
-        const newData: Products[] = productSelected.filter(it => it.id != id)
+        const newData: ProductTypeId[] = productSelected.filter(it => it.id != id)
         setProductSelected(newData)
     }
 
     function sendDatas(datas: RegisterDiaper) {
         if (typeSelected != "") {
-
-            const newProductList: Products[] = productSelected.map((it) => {
-                const { type, product, measure, ...newProduct } = it
-                return newProduct
+            const newProductList: ProductId[] = productSelected.map((it) => {
+                return {
+                    id: it.id,
+                    quantity_product: it.quantity!
+                }
             })
 
             const fullDatas: RegisterDiaper = {
-                "date_time": Date.convertISO(datas.date_time),
-                "type": typeSelected,
-                "product_id": newProductList,
-                "description": datas.description,
+                date_time: Date.convertISO(datas.date_time),
+                type: typeSelected,
+                product_id: newProductList,
+                description: datas.description,
                 fk_id_child: idChild
             }
+                    console.log(fullDatas)
 
             onRegisterDiaper(
                 fullDatas,
                 {
-                    onSuccess: () => {
-
+                    onSuccess: (response) => {
+                        console.log(response)
                     }, onError: () => {
 
                     }
@@ -190,7 +145,7 @@ function RoutineDiaper() {
     }
 
     function filterProducts(text: string) {
-        const newData: Products[] = productsMain.filter(it => it.product?.toLowerCase().includes(text.toLowerCase()))
+        const newData: ProductTypeId[] = productsMain.filter(it => it.name.toLowerCase().includes(text.toLowerCase()))
         setProducts(newData)
     }
 
@@ -198,6 +153,17 @@ function RoutineDiaper() {
         setValue("date_time", Date.getHourFormated())
         setProducts(productsMain)
     }, [])
+
+    useEffect(() => {
+        if (!onGetProducts) {
+            return
+        }
+
+        if (onGetProducts) {
+            setProductsMain(onGetProducts.product)
+            setProducts(onGetProducts.product)
+        }
+    }, [onGetProducts])
 
     return (
         <div
@@ -271,8 +237,8 @@ function RoutineDiaper() {
                             <div key={product.id} className="flex items-center w-full h-8 pl-2 gap-2">
                                 <InputDefault onChange={() => {
                                     addProductList(product)
-                                }} id={`item${product.id}`} type="radio" value={product.product} className={radioButton} name="product" />
-                                <label htmlFor={`item${product.id}`} className={labelRadioButton}>{product.product}</label>
+                                }} id={`item${product.id}`} type="radio" value={product.name} className={radioButton} name="product" />
+                                <label htmlFor={`item${product.id}`} className={labelRadioButton}>{product.name}</label>
                             </div>
                         ))}
                     </fieldset>
@@ -281,11 +247,11 @@ function RoutineDiaper() {
                     {productSelected.map((product) => (
                         <li key={product.id} className="flex items-center justify-between">
                             <span className="text-lilas-dark font-semibold text-lg
-                                    md:text-xl">{product.product}</span>
+                                    md:text-xl">{product.name}</span>
                             <div className="flex gap-10">
                                 <div className={inputMeasureClass}>
                                     <InputDefault onChange={(e) => onHandleQuantity(product.id, e.target.value)} type="number" className="w-2/3 pl-2 text-center" />
-                                    <span className="flex items-center w-1/3">{product.measure}</span>
+                                    <span className="flex items-center w-1/3">un</span>
                                 </div>
                                 <button onClick={() => removeItemRegister(product.id)} type="button">
                                     <img src={Trash} alt="Exclui produto do regiustro." className="w-auto h-4" />

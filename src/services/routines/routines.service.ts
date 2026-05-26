@@ -18,7 +18,7 @@ export interface RegisterSleep {
     fk_id_child: number
 }
 
-interface ProductId {
+export interface ProductId {
     id: number
     quantity_product: number
 }

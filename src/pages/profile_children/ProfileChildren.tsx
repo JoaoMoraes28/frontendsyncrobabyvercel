@@ -212,31 +212,29 @@ function ProfileChildren() {
       formData.append(name, value)
     });
 
-    console.log(formData)
-
-    // updateChild(
-    //   newObject,
-    //   {
-    //     onSuccess: (response) => {
-    //       alert("Alterações salvas!")
-    //       const newData: UpdateChild = response.response
-    //       const newChildren: Children = {
-    //         child_name: newData.child_name,
-    //         gender: newData.gender,
-    //         BMI: dataChildren.BMI,
-    //         birth_date: newData.birth_date,
-    //         weight: dataChildren.weight,
-    //         height: dataChildren.height,
-    //         blood_type: newData.blood_type,
-    //         active: dataChildren.active,
-    //         fk_id_guardian: dataChildren.fk_id_guardian,
-    //         id_child: newData.id_child,
-    //         photo: preview
-    //       }
-    //       setDataChildren(newChildren)
-    //     }
-    //   }
-    // )
+    updateChild(
+      newObject,
+      {
+        onSuccess: (response) => {
+          alert("Alterações salvas!")
+          const newData: UpdateChild = response.response
+          const newChildren: Children = {
+            child_name: newData.child_name,
+            gender: newData.gender,
+            BMI: dataChildren.BMI,
+            birth_date: newData.birth_date,
+            weight: dataChildren.weight,
+            height: dataChildren.height,
+            blood_type: newData.blood_type,
+            active: dataChildren.active,
+            fk_id_guardian: dataChildren.fk_id_guardian,
+            id_child: newData.id_child,
+            photo: preview
+          }
+          setDataChildren(newChildren)
+        }
+      }
+    )
   }
 
   function previewImg(e: React.ChangeEvent<HTMLInputElement>) {
