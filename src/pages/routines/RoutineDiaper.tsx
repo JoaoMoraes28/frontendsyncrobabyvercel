@@ -17,10 +17,13 @@ import Close from "../../assets/closeModal.svg"
 import setSelector from "../../assets/setExpandSelector.svg"
 import Trash from "../../assets/routines/trashPurple.svg"
 
+import { Link } from "react-router-dom";
+
 import { useRegisterDiaper } from "../../services/hooks/routines/useRegisterDiaper.ts";
 import type { RegisterDiaper } from "../../services/routines/routines.service.ts";
-import { useGetProductByType } from "../../services/hooks/product/useGetProductType.ts";
-import type { ProductTypeId } from "../../services/product/product.service.ts";
+import { useGetProductByTypeStorage } from "../../services/hooks/storage/useGetProductByTypeStorage.ts";
+import { useDeleteRoutines } from "../../services/hooks/routines/useDeleteRoutines.ts";
+import type { ProductStorage } from "../../services/storage/storage.service.ts";
 import type { ProductId } from "../../services/routines/routines.service.ts";
 
 interface TypeDiaper {
@@ -40,7 +43,7 @@ export interface Products {
 function RoutineDiaper() {
     const { mutate: onRegisterDiaper } = useRegisterDiaper()
     const idChild: number = Number(localStorage.getItem("select_child"))
-    const { data: onGetProducts } = useGetProductByType(4)
+    const { data: onGetProducts } = useGetProductByTypeStorage(4, idChild)
 
     const {
         register,
@@ -56,7 +59,7 @@ function RoutineDiaper() {
     const [childrenSelected, setChildSelected] = useState<number>(1)
     const [expandSelectorProduct, setExpandSelectorProduct] = useState<boolean>(false)
     const [valueProduct, setValueProduct] = useState<string>("")
-    const [productSelected, setProductSelected] = useState<ProductTypeId[]>([])
+    const [productSelected, setProductSelected] = useState<ProductStorage[]>([])
     const [typeSelected, setTypeSelected] = useState<string>("")
     const [expandTypeSelector, setExpandTypeSelector] = useState<boolean>(false)
     const [valueInputType, setValueInputType] = useState<string>("Selecione o tipo de registro!")
@@ -72,23 +75,23 @@ function RoutineDiaper() {
             "img": Pee
         }
     ]
-    const [productsMain, setProductsMain] = useState<ProductTypeId[]>([])
-    const [products, setProducts] = useState<ProductTypeId[]>([])
+    const [productsMain, setProductsMain] = useState<ProductStorage[]>([])
+    const [products, setProducts] = useState<ProductStorage[]>([])
 
-    function addProductList(product: ProductTypeId) {
+    function addProductList(product: ProductStorage) {
         setExpandSelectorProduct(false)
         if (productSelected.some(it => it.id == product.id)) {
             return
 
-        } else if (product.name) {
-            setValueProduct(product.name)
+        } else if (product.product_name) {
+            setValueProduct(product.product_name)
             setProductSelected([...productSelected, product])
         }
 
     }
 
     function onHandleQuantity(id: number, quantity: string) {
-        const newList: ProductTypeId[] = productSelected.map((it) => {
+        const newList: ProductStorage[] = productSelected.map((it) => {
             if (it.id == id) {
                 it.quantity = Number(quantity)
                 return it
@@ -103,7 +106,7 @@ function RoutineDiaper() {
     }
 
     function removeItemRegister(id: number) {
-        const newData: ProductTypeId[] = productSelected.filter(it => it.id != id)
+        const newData: ProductStorage[] = productSelected.filter(it => it.id != id)
         setProductSelected(newData)
     }
 
@@ -123,13 +126,13 @@ function RoutineDiaper() {
                 description: datas.description,
                 fk_id_child: idChild
             }
-                    console.log(fullDatas)
+            console.log(fullDatas)
 
             onRegisterDiaper(
                 fullDatas,
                 {
-                    onSuccess: (response) => {
-                        console.log(response)
+                    onSuccess: () => {
+                        
                     }, onError: () => {
 
                     }
@@ -145,7 +148,7 @@ function RoutineDiaper() {
     }
 
     function filterProducts(text: string) {
-        const newData: ProductTypeId[] = productsMain.filter(it => it.name.toLowerCase().includes(text.toLowerCase()))
+        const newData: ProductStorage[] = productsMain.filter(it => it.product_name.toLowerCase().includes(text.toLowerCase()))
         setProducts(newData)
     }
 
@@ -160,8 +163,8 @@ function RoutineDiaper() {
         }
 
         if (onGetProducts) {
-            setProductsMain(onGetProducts.product)
-            setProducts(onGetProducts.product)
+            setProductsMain(onGetProducts.stock)
+            setProducts(onGetProducts.stock)
         }
     }, [onGetProducts])
 
@@ -232,22 +235,34 @@ function RoutineDiaper() {
                             filterProducts(e.target.value)
                         }} onClick={() => setExpandSelectorProduct(true)} id="prodict" placeholder="Selecione os produtos desejados" value={valueProduct} className={`z-50 ${inputClassName}`} />
 
-                    <fieldset className={`absolute flex-col w-full h-70 top-21 overflow-y-scroll bg-lightest pt-4 gap-2 rounded-bl-lg rounded-br-lg border-b border-l border-r border-primary-darker z-40 ${expandSelectorProduct ? 'flex' : 'hidden'}`}>
-                        {products.map((product) => (
-                            <div key={product.id} className="flex items-center w-full h-8 pl-2 gap-2">
-                                <InputDefault onChange={() => {
-                                    addProductList(product)
-                                }} id={`item${product.id}`} type="radio" value={product.name} className={radioButton} name="product" />
-                                <label htmlFor={`item${product.id}`} className={labelRadioButton}>{product.name}</label>
+                    <fieldset className={`absolute flex-col w-full h-70 top-21 overflow-y-scroll bg-lightest pt-4 gap-2 rounded-bl-lg rounded-br-lg border-b border-l border-r border-primary-darker z-40 ${expandSelectorProduct ? 'flex' : 'hidden'}
+                    xl:top-17`}>
+                        {products.length == 0 &&
+                            <div className="flex flex-col w-full h-full pt-10 gap-5 items-center">
+                                <span className="text-[15px] font-semibold text-primary-text">Parece que não há nenhum produto deste tipo...</span>
+                                <Link to="/add-storage"
+                                    className="bg-accent rounded-md text-white font-semibold w-40 h-9 flex justify-center items-center"
+                                >Registrar Produto</Link>
                             </div>
-                        ))}
+                        }
+
+                        {products.length > 0 && products.map((product) => {
+                            return (
+                                <div key={product.id} className="flex items-center w-full h-8 pl-2 gap-2">
+                                    <InputDefault onChange={() => {
+                                        addProductList(product)
+                                    }} id={`item${product.id}`} type="radio" value={product.product_name} className={radioButton} name="product" />
+                                    <label htmlFor={`item${product.id}`} className={labelRadioButton}>{product.product_name}</label>
+                                </div>
+                            )
+                        })}
                     </fieldset>
                 </div>
                 <ul className={`h-30 ${listProductsClass}`}>
                     {productSelected.map((product) => (
                         <li key={product.id} className="flex items-center justify-between">
                             <span className="text-lilas-dark font-semibold text-lg
-                                    md:text-xl">{product.name}</span>
+                                    md:text-xl">{product.product_name}</span>
                             <div className="flex gap-10">
                                 <div className={inputMeasureClass}>
                                     <InputDefault onChange={(e) => onHandleQuantity(product.id, e.target.value)} type="number" className="w-2/3 pl-2 text-center" />

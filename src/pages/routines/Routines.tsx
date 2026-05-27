@@ -3,7 +3,8 @@ import { addDays, isSameDay, subDays } from 'date-fns';
 import { useEffect, useState } from "react"
 
 import Card from './components/HourCard'
-import Date from '../../utils/Date.ts'
+import DateUtils from '../../utils/Date.ts'
+import { LoadingBaby } from "../../components/LoadingBaby.tsx";
 
 import ChildrenSelect from "../../layouts/ChildrenSelect"
 import IconFeeding from '../../assets/routines/iconRoutineFood.svg'
@@ -20,6 +21,10 @@ import SetBlack from '../../assets/routines/setBlack.svg'
 import Search from '../../assets/searchLight.svg'
 import { Link } from "react-router-dom";
 
+import { useGetRoutinesByChild } from "../../services/hooks/routines/useGetRoutines.ts";
+import type { Routines } from "../../services/routines/routines.service.ts";
+import { EmptyState } from "../../components/EmptyState.tsx";
+
 interface IconsRoutine {
     id: number
     name: string
@@ -30,17 +35,14 @@ interface IconsRoutine {
 }
 
 export interface RoutineData {
-    id: number
+    child: number
+    time: string
     date: string
-    hours?: string
-    type: string
-    title?: string
+    duration: string
     description: string | null
-    asClicked?: boolean
-    imageDesk?: string
-    end_time?: string
-    start_time?: string
-    time?: string
+    title: string
+    log_type: string
+    id: number
 }
 
 const iconsRoutine: IconsRoutine[] = [
@@ -87,53 +89,12 @@ const iconsRoutine: IconsRoutine[] = [
 ]
 
 function Routines() {
+    const idChild: number = Number(localStorage.getItem("select_child"))
+    const [searchDateRoutine, setSearchDateRoutine] = useState<string>(DateUtils.getDateUTC().split("T")[0])
+    const { data: onGetRoutines, isLoading, isError } = useGetRoutinesByChild(idChild, searchDateRoutine)
+
     const [childrenSelected, setChildSelected] = useState<number>(1)
-    const [routineData, setRoutineData] = useState<RoutineData[]>([
-        {
-            "id": 1,
-            "date": "2026-04-01",
-            "hours": "11:36",
-            "type": "alimentacao",
-            "title": "Alimento sólido(Maçã)",
-            "description": null
-        },
-        {
-            "id": 2,
-            "date": "2026-04-01",
-            "hours": "14:36",
-            "type": "fralda",
-            "title": "Fralda(Xixi)",
-            "description": null
-        },
-        {
-            "id": 3,
-            "date": "2026-04-01",
-            "hours": "19:36",
-            "type": "alimentacao",
-            "title": "Leite e derivados",
-            "description": "Nova fórmula utilizada na alimentação. O bebê se adaptou sem dificuldades ou resistências."
-        },
-        {
-            "id": 4,
-            "title": "Hora da soneca",
-            "date": "2026-08-09",
-            "hours": "11:38",
-            "type": "sono",
-            "end_time": "12:56",
-            "time": "01:18:00",
-            "description": null
-        },
-        {
-            "id": 5,
-            "title": "Hora da soneca",
-            "date": "2026-08-09",
-            "hours": "15:38",
-            "type": "sono",
-            "end_time": "16:06",
-            "time": "01:28:00",
-            "description": "Acordou algumas vezes chorando"
-        }
-    ])
+    const [routineData, setRoutineData] = useState<Routines[]>([])
     const [hourRoutine, setHourRoutine] = useState<string>("")
     const [visibilityTrash, setVisibilityTrash] = useState<boolean>(true)
     const [dayFunction, setDayFunction] = useState<Date>()
@@ -143,7 +104,7 @@ function Routines() {
     const [countShower, setCountShower] = useState<number>(0)
     const [countDiaper, setCountDiaper] = useState<number>(0)
 
-    function addClickedArray(routine: RoutineData[]) {
+    function addClickedArray(routine: Routines[]) {
         const newRoutine: RoutineData[] = routine.map((it) => {
             it.asClicked = false
 
@@ -154,25 +115,25 @@ function Routines() {
 
     }
 
-    function addIconArray(routine: RoutineData[]) {
-        const newRoutine: RoutineData[] = routine.map((it) => {
-            if (it.type == "banho") {
+    function addIconArray(routine: Routines[]) {
+        const newRoutine: Routines[] = routine.map((it) => {
+            if (it.log_type == "banho") {
                 it.imageDesk = IconShowerDesktop
                 return it
 
-            } else if (it.type == "fralda") {
+            } else if (it.log_type == "fralda") {
                 it.imageDesk = IconDiaperDesktop
                 return it
 
-            } else if (it.type == "alimentacao") {
+            } else if (it.log_type == "alimentacao") {
                 it.imageDesk = IconFeedingDesktop
                 return it
 
-            } else if (it.type == "remedio") {
+            } else if (it.log_type == "medicacao") {
                 it.imageDesk = IconMedicineDesktop
                 return it
 
-            } else if (it.type == "sono") {
+            } else if (it.log_type == "sono") {
                 it.imageDesk = IconSleepDesktop
                 return it
 
@@ -184,9 +145,9 @@ function Routines() {
         setRoutineData(newRoutine)
     }
 
-    function onClickedCard(id: number) {
-        const newRoutine: RoutineData[] = routineData.map((it) => {
-            if (it.id == id) {
+    function onClickedCard(id: string) {
+        const newRoutine: Routines[] = routineData.map((it) => {
+            if (`${it.log_type}${it.id}` == id) {
                 it.asClicked = !it.asClicked
             }
 
@@ -201,18 +162,18 @@ function Routines() {
         const counts = { alimentacao: 0, fralda: 0, banho: 0 }
 
         routines.forEach((routine) => {
-            if (routine.type == "alimentacao") {
+            if (routine.log_type == "alimentacao") {
                 counts.alimentacao++
 
-            } else if (routine.type == "fralda") {
+            } else if (routine.log_type == "fralda") {
                 counts.fralda++
 
-            } else if (routine.type == "banho") {
+            } else if (routine.log_type == "banho") {
                 counts.banho++
 
-            } else if (routine.type == "sono") {
-                if (routine.time != null || routine.time != undefined) {
-                    let [h, m, s] = routine.time.split(":").map(Number)
+            } else if (routine.log_type == "sono") {
+                if (routine.duration != null || routine.duration != undefined) {
+                    let [h, m, s] = routine.duration.split(":").map(Number)
 
                     h = h * 3600
                     m = m * 60
@@ -239,15 +200,21 @@ function Routines() {
 
     function dateRoutine(operator: 'more' | 'less') {
         if (dayFunction) {
-            if (operator == 'more' && !isSameDay(Date.date, dayFunction)) {
+            if (operator == 'more' && !isSameDay(DateUtils.date, dayFunction)) {
+                setSearchDateRoutine(addDays(searchDateRoutine, 1).toISOString())
+                setHourRoutine(addDays(searchDateRoutine, 1).toISOString().split("T")[0])
+
                 setDayFunction(addDays(dayFunction, 1))
 
-                setDayFilterRotine(Date.calculateDaysFormated(dayFunction, operator))
+                setDayFilterRotine(DateUtils.calculateDaysFormated(dayFunction, operator))
 
             } else if (operator == 'less') {
+                setSearchDateRoutine(subDays(searchDateRoutine, 1).toISOString())
+                setHourRoutine(subDays(searchDateRoutine, 1).toISOString().split("T")[0])
+
                 setDayFunction(subDays(dayFunction, 1))
 
-                setDayFilterRotine(Date.calculateDaysFormated(dayFunction, operator))
+                setDayFilterRotine(DateUtils.calculateDaysFormated(dayFunction, operator))
 
             }
 
@@ -255,29 +222,38 @@ function Routines() {
 
     }
 
-    function onDeleteCard(id: number) {
-        const newRoutine: RoutineData[] = routineData.filter((it: RoutineData) => it.id != id)
+    function valideVisibilityTrash() {
+        const today: string[] = DateUtils.getDateUTC().split("T")
+
+        today[0] == hourRoutine ? setVisibilityTrash(true) : setVisibilityTrash(false)
+
+        changeDayInput()
+    }
+
+    function changeDayInput() {
+        const dateParse: string[] = hourRoutine.split("-")
+        const date: Date = new Date(Number(dateParse[0]), Number(dateParse[1]) - 1, Number(dateParse[2]))
+
+        setDayFilterRotine(DateUtils.calculateDaysFormated(hourRoutine, 'none'))
+        setDayFunction(date)
+        setSearchDateRoutine(hourRoutine)
+    }
+
+    function onDeleteCard(id: string) {
+        const newRoutine: Routines[] = onGetRoutines!.routines.filter((it: RoutineData) => `${it.log_type}${it.id}` == id)
 
         setRoutineData(newRoutine)
         countRoutineResume(newRoutine)
     }
 
-    function valideVisibilityTrash() {
-        const today: string[] = Date.getDateUTC().split("T")
-
-        today[0] == hourRoutine ? setVisibilityTrash(true) : setVisibilityTrash(false)
-    }
-
     useEffect(() => {
-        addClickedArray(routineData)
-        countRoutineResume(routineData)
-        setDayFunction(Date.date)
-        setDayFilterRotine(Date.getDateFormated())
+        setDayFunction(DateUtils.date)
+        setDayFilterRotine(DateUtils.getDateFormated())
     }, [])
 
     useEffect(() => {
         if (dayFunction) {
-            if (!isSameDay(Date.date, dayFunction)) {
+            if (!isSameDay(DateUtils.date, dayFunction)) {
 
                 setVisibilityTrash(false)
 
@@ -287,6 +263,17 @@ function Routines() {
             }
         }
     }, [dayFunction])
+
+    useEffect(() => {
+        if (!onGetRoutines) {
+            return
+        }
+
+        if (onGetRoutines) {
+            countRoutineResume(onGetRoutines.routines)
+            addClickedArray(onGetRoutines.routines)
+        }
+    }, [onGetRoutines])
 
     return (
         <div className="flex flex-col w-screen
@@ -308,7 +295,7 @@ function Routines() {
                     </div>
                     <InputDefault onChange={(e) => setHourRoutine(e.target.value)} value={hourRoutine} type="date" className="w-[calc(100%-30px)] pl-2
                         xl:w-[55%] xl:font-bold" />
-                    <button onClick={() => valideVisibilityTrash()}>
+                    <button onClick={valideVisibilityTrash}>
                         <img src={Search} alt="Icone de busca para pesquisar uma rotina específica pela data." className="w-4 h-auto xl:hidden" />
                     </button>
                 </div>
@@ -374,12 +361,37 @@ function Routines() {
                 xl:w-[45%] xl:bg-lilas xl:rounded-sm xl:pb-0 xl:overflow-y-auto">
                     <ul className="flex flex-col w-full gap-4 py-4 pb-8
                     xl:items-end xl:px-4 xl:py-6 xl:relative xl:gap-6 xl:min-h-full">
-                        <div className="absolute top-0 left-26 w-1 min-h-[55dvh] h-full bg-primary
-                        md:min-h-[70dvh] md:left-38
-                        xl:min-h-full xl:bg-white xl:left-[calc(9%+20px)]"></div>
-                        {routineData.map((routine) => (
-                            <Card key={routine.id} routineData={routine} visibilityTrash={visibilityTrash} onClick={onClickedCard} onDelete={onDeleteCard} />
-                        ))}
+                        {isLoading && <LoadingBaby text="Buscando rotinas" />}
+
+                        {!isLoading && isError &&
+                            <p className="text-red-500 font-poppins col-span-full text-center mt-4">
+                                Erro ao carregar a API
+                            </p>
+                        }
+
+                        {!isLoading && !isError && onGetRoutines?.routines.length == 0 &&
+                            <EmptyState
+                                title="Está tudo tão calmo..."
+                                description="Pareçe que nenhuma rotina foi cadastrada nesse dia."
+                                buttonText="Registre uma rotina ao lado"
+                                isFullPage={false}
+                                show404Background={false}
+                                onButtonClick={() => { }}
+                            ></EmptyState>
+                        }
+
+                        {!isLoading && !isError && onGetRoutines!.routines.length > 0 &&
+                            (
+                                <>
+                                    <div className="absolute top-0 left-26 w-1 min-h-[55dvh] h-full bg-primary
+                                        md:min-h-[70dvh] md:left-38
+                                        xl:min-h-full xl:bg-white xl:left-[calc(9%+20px)]"></div>
+                                    {routineData.map((routine) => (
+                                        <Card key={`${routine.log_type}${routine.id}`} routineData={routine} visibilityTrash={visibilityTrash} onClick={onClickedCard} onDelete={onDeleteCard} />
+                                    ))}
+                                </>
+                            )
+                        }
                     </ul>
                 </section>
             </div>

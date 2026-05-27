@@ -108,7 +108,7 @@ function NavigationBar({ listIcons }: Props) {
                   className="xl:w-6 xl:h-auto4"
                 />
                 <span className="xl:text-white xl:text-[12px]">
-                  ds
+                  {icon.title}
                 </span>
               </li>
             </Link>

@@ -17,6 +17,9 @@ import type { Products } from "./RoutineDiaper"
 
 import { useRegisterMedication } from "../../services/hooks/routines/useRegisterMedication.ts";
 import type { RegisterMedication } from "../../services/routines/routines.service.ts";
+import { useGetProductByTypeStorage } from "../../services/hooks/storage/useGetProductByTypeStorage.ts";
+import type { ProductStorage } from "../../services/storage/storage.service.ts";
+import type { ProductId } from "../../services/routines/routines.service.ts";
 
 interface DataMedicine {
     date_time: string,
@@ -27,6 +30,7 @@ interface DataMedicine {
 function RoutineMedicine() {
     const { mutate: onRegisterMedication } = useRegisterMedication()
     const idChild: number = Number(localStorage.getItem("select_child"))
+    const { data: onGetProducts } = useGetProductByTypeStorage(6, idChild)
 
     const {
         register,
@@ -46,60 +50,16 @@ function RoutineMedicine() {
     const [idRemedySelected, setIdRemedySelected] = useState<number>(0)
     const [disableInput, setDisableInput] = useState<boolean>(true)
     const [measure, setMeasure] = useState<string>("")
-    const remedyMain: Products[] = [
-        {
-            "id": 1,
-            "type": "Medicamentos",
-            "product": "Dipirona(100ml)",
-            "measure": "ml",
-            "quantity_product": 0
-        },
-        {
-            "id": 2,
-            "type": "Medicamentos",
-            "product": "Dipirona(comprimido)",
-            "measure": "u",
-            "quantity_product": 0
-        },
-        {
-            "id": 3,
-            "type": "Medicamentos",
-            "product": "Xarope(100ml)",
-            "measure": "ml",
-            "quantity_product": 0
-        }
-    ]
-    const [remedy, setRemedy] = useState<Products[]>([
-        {
-            "id": 1,
-            "type": "Medicamentos",
-            "product": "Dipirona(100ml)",
-            "measure": "ml",
-            "quantity_product": 0
-        },
-        {
-            "id": 2,
-            "type": "Medicamentos",
-            "product": "Dipirona(comprimido)",
-            "measure": "u",
-            "quantity_product": 0
-        },
-        {
-            "id": 3,
-            "type": "Medicamentos",
-            "product": "Xarope(100ml)",
-            "measure": "ml",
-            "quantity_product": 0
-        }
-    ])
+    const [remedyMain, setRemedyMain] = useState <ProductStorage[]>([])
+    const [remedy, setRemedy] = useState<ProductStorage[]>([])
 
-    function selectRemedy(remedy: Products) {
+    function selectRemedy(remedy: ProductStorage) {
         setIdRemedySelected(remedy.id)
         setExpandRemedy(false)
         setDisableInput(false)
 
-        if (remedy.product && remedy.measure) {
-            setRemedyListSelected(remedy.product)
+        if (remedy.product_name && remedy.measure) {
+            setRemedyListSelected(remedy.product_name)
             setMeasure(remedy.measure)
         }
     }
@@ -110,7 +70,7 @@ function RoutineMedicine() {
             'product_id': [
                 {
                     'id': idRemedySelected,
-                    'quantity_product': Number(data.product_id.quantity_product)
+                    'dosage': Number(data.product_id.quantity_product)
                 }
             ],
             'description': data.description,
@@ -130,14 +90,24 @@ function RoutineMedicine() {
     }
 
     function filterRemedy(text: string) {
-        const newData: Products[] = remedyMain.filter(it => it.product?.toLowerCase().includes(text.toLowerCase()))
+        const newData: ProductStorage[] = remedyMain.filter(it => it.product_name?.toLowerCase().includes(text.toLowerCase()))
         setRemedy(newData)
     }
 
     useEffect(() => {
         setValue("date_time", Date.getHourFormated())
-        setRemedy(remedyMain)
     }, [])
+
+    useEffect(() => {
+        if (!onGetProducts) {
+            return
+        }
+
+        if (onGetProducts) {
+            setRemedy(onGetProducts.stock)
+            setRemedyMain(onGetProducts.stock)
+        }
+    }, [onGetProducts])
 
     return (
         <div onClick={(e) => CloseElement.CloseElement(refChild, setExpandRemedy, e)}
@@ -176,7 +146,7 @@ function RoutineMedicine() {
                         {remedy.map((it) => (
                             <div key={it.id} className="flex items-center w-full h-8 pl-2 gap-2">
                                 <InputDefault onChange={() => selectRemedy(it)} type="radio" id={`remedy${it.id}`} name="remedy" className={radioButton} />
-                                <label htmlFor={`remedy${it.id}`} className={labelRadioButton}>{it.product}</label>
+                                <label htmlFor={`remedy${it.id}`} className={labelRadioButton}>{it.product_name}</label>
                             </div>
                         ))}
                     </fieldset>

@@ -67,9 +67,19 @@ export const getProductsIdChild = async (childId: number): Promise<ResponseGetSt
 };
 
 export const getProductsByType = async (childId: number, type_id: number): Promise<ResponseGetStorage> => {
-    const response = await api.get<ResponseGetStorage>(`/stock/type?child=${childId}&type=${type_id}`);
-    console.log(response.data)
-    return response.data;
+    try {
+        const response = await api.get<ResponseGetStorage>(`/stock/type?child=${childId}&type=${type_id}`);
+        return response.data;
+    } catch (error: any) {
+        if (String(error).includes("404")) {
+            return {
+                status_code: 200,
+                stock: []
+            }
+        }
+        throw error
+    }
+
 };
 
 export const insertProduct = async (data: InsertProduct): Promise<ResponseInsertStorage> => {

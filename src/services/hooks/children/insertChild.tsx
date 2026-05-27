@@ -1,7 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { insertChild } from "../../children/children.service"
-import type { InsertChild } from "../../children/children.service"
 import { useNavigate } from "react-router-dom";
 
 export const onInsertChild = () => {
