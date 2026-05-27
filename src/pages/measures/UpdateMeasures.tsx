@@ -9,37 +9,55 @@ import BtnPrimary from "../../components/BtnPrimary"
 import ChildrenSelect from "../../layouts/ChildrenSelect"
 import { useNavigate } from "react-router-dom"
 
-interface DataMeasures {
-    weight: number
-    height: number
-    head_circumference: number
-    description: string
-}
+import { useInsertMeasures } from "../../services/hooks/measures/useInsertMeasures"
+import type { InsertMeasures } from "../../services/measures/measures.service"
 
 const inputClass: string = 'text-primary w-full h-8'
 const labelClass: string = 'text-primary-darker font-semibold h-6 flex items-center md:text-[18px]'
 const containerInput: string = 'flex border border-primary-darker px-1 rounded-sm'
 
 function UpdateMeasures() {
+    const idChild: number = Number(localStorage.getItem("select_child"))
+    const { mutate: onInsertMeasures } = useInsertMeasures()
+
     const {
         register,
         handleSubmit,
         formState: { errors }
-    } = useForm<DataMeasures>()
+    } = useForm<InsertMeasures>()
 
     const navigate = useNavigate()
     const [childSelected, setChildSelected] = useState<number>(1)
 
-    function sendData(data: DataMeasures) {
-        const height: string = data.height.toString()
-        const weight: string = data.weight.toString()
-        const head: string = data.head_circumference.toString()
+    function sendData(data: InsertMeasures) {
+        let height: string | undefined | null = data.height?.toString()
+        let weight: string | undefined | null = data.weight?.toString()
+        let head: string | undefined | null = data.head_circumference?.toString()
 
         if (height == '' && weight == '' && head == '') {
             alert("Preencha ao menos um campo de medidas!")
-
+            return
         }
-        console.log(data)
+
+        const newData: InsertMeasures = {
+            height: height ? Number(height) : 0,
+            weight: weight ? Number(weight) : 0,
+            head_circumference: head ? Number(head) : 0,
+            description: data.description,
+            fk_id_child: idChild
+        }
+
+        onInsertMeasures(
+            newData,
+            {
+                onSuccess: (response) => {
+                    alert("Medidas registradas")
+                    console.log(response)
+                }, onError: () => {
+
+                }
+            }
+        )
     }
 
     return (
@@ -68,7 +86,7 @@ function UpdateMeasures() {
                     </div>
                     <div className="w-full h-40 px-4">
                         <div className="flex font-poppins w-full h-40 px-4 justify-center items-center gap-6 border-2 border-dotted border-accent rounded-2xl
-                        md:h-52
+                        md:h-42
                         xl:h-40">
                             <div className="flex justify-center items-center w-8 h-8 rounded-full shadow-purple-md
                             md:w-10 md:h-10">

@@ -9,8 +9,10 @@ import type { DataChart } from "./components/Chart"
 import Chart from "./components/Chart"
 import ChildrenSelect from "../../layouts/ChildrenSelect"
 import { Link } from "react-router-dom"
+import type { MonthData } from "./components/Chart"
 
 import { useGetHeightMeasures } from "../../services/hooks/measures/useGetHeightMeasures"
+import type { ResponseMeasuresHeight } from "../../services/measures/measures.service"
 
 interface LabelDescription {
     label: string
@@ -147,13 +149,40 @@ function Measures() {
         }
     }
 
+    function formaterJSONMonths(data: ResponseMeasuresHeight) {
+        let monthHight: number = 0
+        let arrayDataChart: DataChart[] = []
+        let arrayMonths: MonthData[] = []
+        
+        for (let i = 0; i < 12; i++) {
+            const values: any[] = data.height.filter(it => {
+                Number(it.update_date.split("T")[0].split("-")[1].slice(-1)) == i
+                 
+            })
+            console.log(values)
+            if (values.length > 0) {
+                console.log({
+                    i: i,
+                    a: values
+                })
+
+            }
+            
+        }
+        
+
+        
+
+    }
+
     useEffect(() => {
         if (!onGetHeighMeasures) {
             return
         }
 
-        if (onGetHeighMeasures) {
+        if (onGetHeighMeasures && typeof onGetHeighMeasures != 'string') {
             console.log(onGetHeighMeasures)
+            formaterJSONMonths(onGetHeighMeasures)
         }
     }, [onGetHeighMeasures])
 
