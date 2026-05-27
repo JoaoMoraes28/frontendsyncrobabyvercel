@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 import { DropdownFilter, type FilterOption } from "../../components/DropDownFilter"
 
@@ -9,6 +9,8 @@ import type { DataChart } from "./components/Chart"
 import Chart from "./components/Chart"
 import ChildrenSelect from "../../layouts/ChildrenSelect"
 import { Link } from "react-router-dom"
+
+import { useGetHeightMeasures } from "../../services/hooks/measures/useGetHeightMeasures"
 
 interface LabelDescription {
     label: string
@@ -59,7 +61,10 @@ const descriptionMeasure: LabelDescription[] = [
 ]
 
 function Measures() {
-    const [idChild, setIdChild] = useState<number>(1)
+    const idChild: number = Number(localStorage.getItem("select_child"))
+    const { data: onGetHeighMeasures } = useGetHeightMeasures(idChild)
+
+    const [idChildSelected, setIdChild] = useState<number>(idChild)
     const [filterSelected, setFilterSelected] = useState<string>("Perímetro cefálico")
     const [dataChart] = useState<DataChart[]>([
         {
@@ -141,6 +146,16 @@ function Measures() {
 
         }
     }
+
+    useEffect(() => {
+        if (!onGetHeighMeasures) {
+            return
+        }
+
+        if (onGetHeighMeasures) {
+            console.log(onGetHeighMeasures)
+        }
+    }, [onGetHeighMeasures])
 
     return (
         <div className="flex flex-col w-full min-h-full gap-3
