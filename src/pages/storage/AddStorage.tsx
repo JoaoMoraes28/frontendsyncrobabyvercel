@@ -98,6 +98,7 @@ function AddStorage() {
             return
         }
 
+        console.log(onGetProduct)
         setListProducts(onGetProduct?.product)
 
     }, [onGetProduct])

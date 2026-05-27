@@ -44,10 +44,6 @@ function Chart({ data }: Props) {
         return [...newDataChart[0], ...newDataChart[1]]
     }
 
-    useEffect(() => {
-        console.log(formatedData(data))
-    }, [])
-
     return (
         <ResponsiveContainer width="100%" height="100%">
             <LineChart data={formatedData(data)}
