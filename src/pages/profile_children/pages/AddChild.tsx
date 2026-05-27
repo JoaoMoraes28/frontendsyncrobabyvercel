@@ -90,8 +90,6 @@ export function AddChildPage() {
       console.log(formData)
     });
 
-    console.log(formData)
-
     handleRegisterAPI(
       formData,
       {

@@ -211,11 +211,15 @@ function ProfileChildren() {
     Object.entries(newObject).forEach(([name, value]) => {
       formData.append(name, value)
     });
-
+    console.log(formData)
     updateChild(
-      newObject,
+      {
+        data: formData,
+        id_child: idChild
+      },
       {
         onSuccess: (response) => {
+          console.log(response)
           alert("Alterações salvas!")
           const newData: UpdateChild = response.response
           const newChildren: Children = {

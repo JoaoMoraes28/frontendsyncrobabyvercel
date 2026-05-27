@@ -18,6 +18,9 @@ import type { Products } from "./RoutineDiaper"
 
 import { useRegisterBath } from "../../services/hooks/routines/useRegisterBath.ts";
 import type { RegisterBath } from "../../services/routines/routines.service.ts";
+import { useGetProductByTypeStorage } from "../../services/hooks/storage/useGetProductByTypeStorage.ts";
+import type { ProductStorage } from "../../services/storage/storage.service.ts";
+import type { ProductId } from "../../services/routines/routines.service.ts";
 
 interface DataShower {
     start_time: string
@@ -30,6 +33,7 @@ interface DataShower {
 function RoutineShower() {
     const idChild: number = Number(localStorage.getItem("select_child"))
     const { mutate: onRegisterBath } = useRegisterBath()
+    const { data: onGeteProducts } = useGetProductByTypeStorage(4, idChild)
 
     const {
         register,
@@ -47,53 +51,9 @@ function RoutineShower() {
     const [childrenSelected, setChildSelected] = useState<number>(1)
     const [expandSelectorProduct, setExpandSelectorProduct] = useState<boolean>(false)
     const [productSelected, setProductSelected] = useState<string>("")
-    const [listProductSelected, setListProductSelected] = useState<Products[]>([])
-    const productsMain: Products[] = [
-        {
-            "id": 1,
-            "type": "Higiene",
-            "product": "Fraldas(M)",
-            "measure": "un",
-            "quantity_product": 0
-        },
-        {
-            "id": 2,
-            "type": "Higiene",
-            "product": "Sabonete neutro",
-            "measure": "un",
-            "quantity_product": 0
-        },
-        {
-            "id": 3,
-            "type": "Higiene",
-            "product": "Xampu",
-            "measure": "un",
-            "quantity_product": 0
-        }
-    ]
-    const [products, setProducts] = useState<Products[]>([
-        {
-            "id": 1,
-            "type": "Higiene",
-            "product": "Fraldas(M)",
-            "measure": "un",
-            "quantity_product": 0
-        },
-        {
-            "id": 2,
-            "type": "Higiene",
-            "product": "Sabonete neutro",
-            "measure": "un",
-            "quantity_product": 0
-        },
-        {
-            "id": 3,
-            "type": "Higiene",
-            "product": "Xampu",
-            "measure": "un",
-            "quantity_product": 0
-        }
-    ])
+    const [listProductSelected, setListProductSelected] = useState<ProductStorage[]>([])
+    const [productsMain, setProductsMain] = useState<ProductStorage[]>([])
+    const [products, setProducts] = useState<ProductStorage[]>([])
 
     function calculateTimeShower() {
         const { start_time, end_time } = getValues()
@@ -109,7 +69,7 @@ function RoutineShower() {
         }
     }
 
-    function setListProducts(product: Products) {
+    function setListProducts(product: ProductStorage) {
         setExpandSelectorProduct(false)
 
         if (listProductSelected.some(it => it.id == product.id)) {
@@ -118,17 +78,17 @@ function RoutineShower() {
         } else {
             setListProductSelected([...listProductSelected, product])
 
-            if (product.product) {
-                setProductSelected(product.product)
+            if (product.product_name) {
+                setProductSelected(product.product_name)
             }
 
         }
     }
 
     function onHandleQuantity(id: number, quantity: string) {
-        const newList: Products[] = listProductSelected.map((it) => {
+        const newList: ProductStorage[] = listProductSelected.map((it) => {
             if (it.id == id) {
-                return { ...it, quantity_product: Number(quantity) }
+                return { ...it, quantity: Number(quantity) }
 
             } else {
                 return it
@@ -140,14 +100,16 @@ function RoutineShower() {
     }
 
     function removeItemRegister(id: number) {
-        const newData: Products[] = listProductSelected.filter(it => it.id != id)
+        const newData: ProductStorage[] = listProductSelected.filter(it => it.id != id)
         setListProductSelected(newData)
     }
 
     function sendDatas(data: DataShower) {
-        const newListProduct: Products[] = listProductSelected.map((it) => {
-            const { type, product, measure, ...newProduct } = it
-            return newProduct
+        const newListProduct: ProductId[] = listProductSelected.map((it) => {
+            return {
+                id: it.id,
+                quantity_product: it.quantity
+            }
         })
 
         if (getValues("time") != "Datas inválidas!") {
@@ -158,7 +120,7 @@ function RoutineShower() {
                 "description": data.description,
                 "fk_id_child": idChild
             }
-            console.log(fullDatas)
+            
             onRegisterBath(
                 fullDatas,
                 {
@@ -178,13 +140,20 @@ function RoutineShower() {
     }
 
     function filterProducts(text: string) {
-        const newData: Products[] = productsMain.filter(it => it.product?.toLowerCase().includes(text.toLowerCase()))
+        const newData: ProductStorage[] = productsMain.filter(it => it.product_name.toLowerCase().includes(text.toLowerCase()))
         setProducts(newData)
     }
 
     useEffect(() => {
-        setProducts(productsMain)
-    }, [])
+        if (!onGeteProducts) {
+            return
+        }
+
+        if (onGeteProducts) {
+            setProducts(onGeteProducts.stock)
+            setProductsMain(onGeteProducts.stock)
+        }
+    }, [onGeteProducts])
 
     return (
         <div onClick={(e) => CloseElement.CloseElement(refChild, setExpandSelectorProduct, e)}
@@ -228,11 +197,11 @@ function RoutineShower() {
                         }} onClick={() => setExpandSelectorProduct(true)} placeholder="Selecione produtos utilizados" id="products" value={productSelected} className={`z-50 ${inputClassName}`} />
 
                     <fieldset className={`absolute flex-col w-full h-68 top-21 overflow-y-scroll bg-lightest pt-4 gap-2 rounded-bl-lg rounded-br-lg border-b border-l border-r border-primary-darker z-40 ${expandSelectorProduct ? 'flex' : 'hidden'}
-                    xl:h-46`}>
+                    xl:h-46 xl:top-17`}>
                         {products.map((product) => (
                             <div key={product.id} className="flex items-center w-full h-8 pl-2 gap-2">
                                 <InputDefault onChange={() => setListProducts(product)} type="radio" id={`product${product.id}`} name="product" className={radioButton} />
-                                <label htmlFor={`product${product.id}`} className={labelRadioButton}>{product.product}</label>
+                                <label htmlFor={`product${product.id}`} className={labelRadioButton}>{product.product_name}</label>
                             </div>
                         ))}
                     </fieldset>
@@ -241,11 +210,11 @@ function RoutineShower() {
                     {listProductSelected.map((product) => (
                         <li key={product.id} className="flex justify-between items-center">
                             <span className="text-lilas-dark font-semibold text-lg
-                                    md:text-xl">{product.product}</span>
+                                    md:text-xl">{product.product_name}</span>
                             <div className="flex gap-10">
                                 <div className={inputMeasureClass}>
                                     <InputDefault onChange={(e) => onHandleQuantity(product.id, e.target.value)} type="number" className="w-2/3 pl-2 text-center" />
-                                    <span className="w-1/3">{product.measure}</span>
+                                    <span className="w-1/3">un</span>
                                 </div>
                                 <button onClick={() => removeItemRegister(product.id)} type="button">
                                     <img src={Trash} alt="Exclui produto do registro." className="w-auto h-4" />

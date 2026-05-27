@@ -95,7 +95,7 @@ export const insertChild = async (data: FormData): Promise<ResponseInsertChild> 
   return response.data;
 };
 
-export const updateChild = async (data: UpdateChild, childId: number): Promise<ResponseJSONUpdateChild> => {
+export const updateChild = async (data: FormData, childId: number): Promise<ResponseJSONUpdateChild> => {
   const response = await api.put<ResponseJSONUpdateChild>(`/child/${childId}`, data);
   return response.data;
 };

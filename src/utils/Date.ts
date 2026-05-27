@@ -10,6 +10,8 @@ import {
   differenceInCalendarDays
 } from "date-fns";
 
+import { formatInTimeZone } from "date-fns-tz";
+
 const date = new Date();
 
 function getHourFormated() {
@@ -17,7 +19,7 @@ function getHourFormated() {
 }
 
 function getDateUTC() {
-  return date.toISOString();
+  return formatInTimeZone(date, "America/Sao_Paulo", "yyyy-MM-dd")
 }
 
 function convertISO(hour: string) {
@@ -55,7 +57,7 @@ function formatedDayYear(data: string) {
   return fullDate
 }
 
-function calculateDaysFormated(dayInitial: Date, operator: "more" | "less") {
+function calculateDaysFormated(dayInitial: Date | string, operator: "more" | "less" | "none") {
   let dateFull: string = "";
 
   if (operator == "more") {
@@ -64,8 +66,16 @@ function calculateDaysFormated(dayInitial: Date, operator: "more" | "less") {
     });
 
     dateFull = dateFull.charAt(0).toUpperCase() + dateFull.slice(1);
+
   } else if (operator == "less") {
     dateFull = format(subDays(dayInitial, 1), "EEEE, dd 'de' MMMM", {
+      locale: ptBR,
+    });
+
+    dateFull = dateFull.charAt(0).toUpperCase() + dateFull.slice(1);
+
+  } else if (operator == "none") {
+    dateFull = format(dayInitial, "EEEE, dd 'de' MMMM", {
       locale: ptBR,
     });
 
@@ -78,7 +88,7 @@ function calculateDaysFormated(dayInitial: Date, operator: "more" | "less") {
 function subHoursFormated(startTime: string, endTime: string) {
   const startTimeFormated: string = `2026-04-27T${startTime}:00.000Z`;
   const endTimeFormated: string = `2026-04-27T${endTime}:00.000Z`;
-    console.log(endTime, startTime)
+  console.log(endTime, startTime)
   const dateStart: Date = parseISO(startTimeFormated);
   const dateEnd: Date = parseISO(endTimeFormated);
 

@@ -1,12 +1,13 @@
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import { updateChild } from "../../children/children.service"
+import { deleteRegisterRoutines } from "../../routines/routines.service";
 
-export const useUpdateChild = () => {
+export const useDeleteRoutines = () => {
     return useMutation({
-        mutationFn: ({data, id_child}: {data: FormData, id_child: number}) => updateChild(data, id_child),
+        mutationFn: ({ id_register, type }: { id_register: number, type: string }) => deleteRegisterRoutines(id_register, type),
 
         onSuccess: (data) => {
+            alert("Registro deletado!")
             return data
         },
 
