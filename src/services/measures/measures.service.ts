@@ -12,15 +12,12 @@ export interface Measures {
 }
 
 export interface InsertMeasures {
-  
   "height": number | null,
   "weight": number | null,
   "head_circumference": number | null,
   "description": string | null,
   "fk_id_child": number
-
 }
-
 
 export interface Height {
   "height": number | null,
@@ -85,7 +82,7 @@ export const getMeasuresHeight = async (childId: number): Promise<ResponseMeasur
     return response.data;
   } catch (error: unknown) {
     if (String(error).includes("404")) {
-      return { status_code: 404, height: [] };
+      return { status_code: 200, height: [] };
     }
     throw error;
   }

@@ -6,13 +6,8 @@ export const useGetHeightMeasures = (child_id: number) => {
     return useQuery<ResponseMeasuresHeight | string>({
         queryKey: ['heightMeasures', child_id],
         queryFn: async () => {
-            try {
-                const response = await getMeasuresHeight(child_id)
-
-                return response
-            } catch (error) {
-                return "404: notFound"
-            }
+            const response = await getMeasuresHeight(child_id)
+            return response
         }
     });
 }
