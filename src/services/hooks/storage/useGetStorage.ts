@@ -11,6 +11,6 @@ export const useGetStorage = (child_id: number, canExecute: boolean) => {
       await delay(700)
       return getProductsIdChild(child_id)
     },
-    enabled: canExecute,
+    enabled: canExecute
   });
 };

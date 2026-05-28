@@ -4,8 +4,12 @@ import Vaccine from "../../assets/vaccineNotification.svg";
 import Storage from "../../assets/storageNotification.svg";
 import Trash from "../../assets/trash.svg";
 import SetBack from "../../assets/navigation/setBack.svg";
+import { useEffect, useState } from "react";
 
 import type { Notification } from "../../layouts/Header";
+import { useGetNotificationId } from "../../services/hooks/notification/useGetNotificationById";
+import { useGetNotificationUser } from "../../services/hooks/notification/useGetNotificationUser";
+import { useGetNotificationChild } from "../../services/hooks/notification/useGetNotificationChild";
 
 interface Props {
   visibleNotifications: boolean;
@@ -20,6 +24,14 @@ function Notifications({
   notifications,
   setNot,
 }: Props) {
+
+  const idChild: number = Number(localStorage.getItem("select_child"))
+
+  const { data: onGetNotificationId } = useGetNotificationId(1)
+  const { data: onGetNotificationUser } = useGetNotificationUser()
+  const { data: onGetNotificationChild } = useGetNotificationChild(idChild)
+
+
   function setImage(type: string) {
     if (type == "vacine") {
       return Vaccine;
@@ -39,6 +51,36 @@ function Notifications({
   function deleteAllNotications() {
     setNot([]);
   }
+
+  useEffect(() => {
+    if (!onGetNotificationId) {
+      return
+    }
+
+    if(onGetNotificationId) {
+      console.log(onGetNotificationId)
+    }
+  }, [onGetNotificationId])
+
+  useEffect(() => {
+    if (!onGetNotificationUser) {
+      return
+    }
+
+    if(onGetNotificationUser) {
+      console.log(onGetNotificationUser)
+    }
+  }, [onGetNotificationUser])
+
+  useEffect(() => {
+    if (!onGetNotificationChild) {
+      return
+    }
+
+    if(onGetNotificationChild) {
+      console.log(onGetNotificationChild)
+    }
+  }, [onGetNotificationChild])
 
   return (
     <aside className={`fixed px-6 pt-10 pb-34 top-0 w-screen h-screen z-90 overflow-auto bg-light

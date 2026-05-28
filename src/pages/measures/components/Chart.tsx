@@ -22,7 +22,7 @@ export interface DataChart {
     records: MonthData[]
 }
 
-interface MonthData {
+export interface MonthData {
     date: string
     value: number
 }
