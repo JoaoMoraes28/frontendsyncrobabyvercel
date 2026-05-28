@@ -19,7 +19,7 @@ export interface VaccineStatus {
     observation: string,
     prevented_diseases: string,
     dose: string,
-    application_status: boolean,
+    application_status: number,
     application_date: string,
     id_child: number
 }
@@ -45,7 +45,7 @@ export interface ResponseGetVaccineAgeGroup {
 }
 
 export interface UpdateVaccine {
-    application_status: boolean,
+    application_status: number,
     application_date: string,
     fk_id_child: number,
     fk_id_vaccine: number
@@ -72,9 +72,9 @@ export const getAllVaccine = async (): Promise<ResponseGetAllVaccine> => {
     }
 };
 
-export const getVaccineByStatus = async (status: boolean, child: number): Promise<ResponseGetVaccineStatus> => {
+export const getVaccineByStatus = async (status: number, child: number): Promise<ResponseGetVaccineStatus> => {
     try {
-        const response = await api.get<ResponseGetVaccineStatus>(`/vaccine/status?=${status}&child=${child}`);
+        const response = await api.get<ResponseGetVaccineStatus>(`/vaccine/status?status=${status}&child=${child}`);
         return response.data;
 
     } catch (error: any) {
@@ -91,7 +91,7 @@ export const getVaccineByStatus = async (status: boolean, child: number): Promis
 
 export const getVaccineByAgeGroup = async (child: number, age: number): Promise<ResponseGetVaccineAgeGroup> => {
     try {
-        const response = await api.get<ResponseGetVaccineAgeGroup>(`/vaccine/age?=${child}&age=${age}`);
+        const response = await api.get<ResponseGetVaccineAgeGroup>(`/vaccine/age?child=${child}&age=${age}`);
         return response.data;
 
     } catch (error: any) {
