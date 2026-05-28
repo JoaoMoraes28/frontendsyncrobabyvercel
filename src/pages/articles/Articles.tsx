@@ -10,6 +10,9 @@ import Search from "../../assets/search.svg"
 import { InputDefault } from "../../components/InputDefault"
 import { CarouselDots } from "../../components/CarouselDots"
 
+import { useGetArticles} from "../../services/hooks/article/useGetArticles";
+import { useGetArticleByAge } from "../../services/hooks/article/useGetArticleByAge";
+
 import CardCarousel from "./components/CardCarousel";
 import ArticleCard from "./components/ArticleCard";
 
@@ -29,6 +32,8 @@ const classButtonFilter: string = 'flex justify-center items-center w-[30%] h-8 
 
 function Articles() {
     const navigate = useNavigate()
+
+     const { data: onGetArticles } = useGetArticles()
 
     const carousel = useRef<HTMLUListElement>(null)
     const articleCarousel = useRef<HTMLLIElement>(null)
@@ -241,6 +246,16 @@ function Articles() {
         e.stopPropagation()
         navigate(`/article/${id}`)
     }
+
+      useEffect(() => {
+        if (!onGetArticles) {
+            return
+        }
+
+        if (onGetArticles) {
+            console.log(onGetArticles)
+        }
+    }, [onGetArticles])
 
     useEffect(() => {
         const interval = setInterval(() => {
