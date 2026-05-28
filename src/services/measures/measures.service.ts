@@ -95,9 +95,8 @@ export const getMeasuresWeight = async (childId: number): Promise<ResponseMeasur
     );
     return response.data;
   } catch (error: unknown) {
-    if (isAxiosError(error) && error.response?.status === 404) {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      return { status_code: 200, weight: [] };
+    if (String(error).includes("404")) {
+      return { status_code: 404, weight: [] };
     }
     throw error;
   }
@@ -110,9 +109,8 @@ export const getMeasuresHead = async (childId: number): Promise<ResponseMeasures
     );
     return response.data;
   } catch (error: unknown) {
-    if (isAxiosError(error) && error.response?.status === 404) {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      return { status_code: 200, head_circumference: [] };
+    if (String(error).includes("404")) {
+      return { status_code: 404, head_circumference: [] };
     }
     throw error;
   }
@@ -125,9 +123,8 @@ export const getMeasuresBmi = async (childId: number): Promise<ResponseMeasuresB
     );
     return response.data;
   } catch (error: unknown) {
-    if (isAxiosError(error) && error.response?.status === 404) {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      return { status_code: 200, bmi: [] };
+     if (String(error).includes("404")) {
+      return { status_code: 404, bmi: [] };
     }
     throw error;
   }

@@ -12,6 +12,9 @@ import { Link } from "react-router-dom"
 import type { MonthData } from "./components/Chart"
 
 import { useGetHeightMeasures } from "../../services/hooks/measures/useGetHeightMeasures"
+import { useGetWeightMeasures } from "../../services/hooks/measures/useGetWeightMeasures"
+import { useGetHeadMeasures } from "../../services/hooks/measures/useGetHeadMeasures"
+import { useGetBmiMeasures } from "../../services/hooks/measures/useGetBmiMeasures"
 import type { ResponseMeasuresHeight } from "../../services/measures/measures.service"
 
 interface LabelDescription {
@@ -65,6 +68,9 @@ const descriptionMeasure: LabelDescription[] = [
 function Measures() {
     const idChild: number = Number(localStorage.getItem("select_child"))
     const { data: onGetHeighMeasures } = useGetHeightMeasures(idChild)
+    const { data: onGetWeighMeasures } = useGetWeightMeasures(idChild)
+    const { data: onGetHeadMeasures } = useGetHeadMeasures(idChild)
+    const { data: onGetBmiMeasures } = useGetBmiMeasures(idChild)
 
     const [idChildSelected, setIdChild] = useState<number>(idChild)
     const [filterSelected, setFilterSelected] = useState<string>("Perímetro cefálico")
@@ -185,6 +191,36 @@ function Measures() {
             formaterJSONMonths(onGetHeighMeasures)
         }
     }, [onGetHeighMeasures])
+
+        useEffect(() => {
+        if (!onGetWeighMeasures) {
+            return
+        }
+
+        if (onGetWeighMeasures) {
+            console.log(onGetWeighMeasures)
+        }
+    }, [onGetWeighMeasures])
+
+         useEffect(() => {
+        if (!onGetHeadMeasures) {
+            return
+        }
+
+        if (onGetHeadMeasures) {
+            console.log(onGetHeadMeasures)
+        }
+    }, [onGetHeadMeasures])
+
+     useEffect(() => {
+        if (!onGetBmiMeasures) {
+            return
+        }
+
+        if (onGetBmiMeasures) {
+            console.log(onGetBmiMeasures)
+        }
+    }, [onGetBmiMeasures])
 
     return (
         <div className="flex flex-col w-full min-h-full gap-3
