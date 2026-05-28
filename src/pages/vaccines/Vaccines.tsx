@@ -2,7 +2,11 @@ import {
   DropdownFilter,
   type FilterOption,
 } from "../../components/DropDownFilter";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+import { useGetAllVaccine } from "../../services/hooks/vaccine/useGetAllVaccine";
+import { useGetVaccineStatus } from "../../services/hooks/vaccine/useGetVaccineByStatus";
+import { useGetVaccineAgeGroup } from "../../services/hooks/vaccine/useGetVaccineByAgeGroup";
 
 export type VaccineStatus = "Pendente" | "Aplicada";
 
@@ -80,6 +84,11 @@ const ageOptions: FilterOption[] = [
 ];
 
 export function Vaccines() {
+  const idChild: number = Number(localStorage.getItem("select_child"))
+  const { data: onGetAllVaccines } = useGetAllVaccine()
+  const { data: onGetVaccineByStatus } = useGetVaccineStatus(0, idChild)
+  const { data: onGetVaccineAgeGroup } = useGetVaccineAgeGroup(idChild, 1)
+
   const [selectedStatus, setSelectedStatus] = useState("Todas");
   const [selectedAge, setSelectedAge] = useState("0 - 6 meses");
 
@@ -120,6 +129,36 @@ export function Vaccines() {
         </div>
       );
     }
+
+    useEffect(() => {
+      if (!onGetAllVaccines) {
+        return
+      }
+
+      if(onGetAllVaccines) {
+        console.log(onGetAllVaccines)
+      }
+    }, [onGetAllVaccines])
+
+    useEffect(() => {
+      if (!onGetVaccineByStatus) {
+        return
+      }
+
+      if(onGetVaccineByStatus) {
+        console.log(onGetVaccineByStatus)
+      }
+    }, [onGetVaccineByStatus])
+
+    useEffect(() => {
+      if (!onGetVaccineAgeGroup) {
+        return
+      }
+
+      if(onGetVaccineAgeGroup) {
+        console.log(onGetVaccineAgeGroup)
+      }
+    }, [onGetVaccineAgeGroup])
 
     return vaccines.map((vaccine) => (
       <div
