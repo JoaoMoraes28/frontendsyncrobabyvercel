@@ -7,7 +7,6 @@ export const useDeleteRoutines = () => {
         mutationFn: ({ id_register, type }: { id_register: number, type: string }) => deleteRegisterRoutines(id_register, type),
 
         onSuccess: (data) => {
-            alert("Registro deletado!")
             return data
         },
 

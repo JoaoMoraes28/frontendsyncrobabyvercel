@@ -11,6 +11,7 @@ export const useGetBmiMeasures = (child_id: number) => {
 
                 return response
           
-        }
+        },
+        enabled: false
     });
 }

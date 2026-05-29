@@ -110,7 +110,7 @@ function HourCard({ routineData, visibilityTrash, onClick, onDelete }: Props) {
         </p>
         <button onClick={(e) => {
           e.stopPropagation()
-          onDelete(`${routineData.log_type}${routineData.id}`)
+          onDelete(`${routineData.log_type}/${routineData.id}`)
         }} className={`sm:block md:block lg:block xl:absolute ${visibilityTrash ? 'block' : 'hidden'} ${visibilityTrash && hoverVisibilityTrash == `${routineData.log_type}${routineData.id}` ? 'xl:block' : 'xl:hidden'}`}>
           <img src={Trash} alt="Exclui o registro atual." className="w-5 h-5 mt-2" />
         </button>

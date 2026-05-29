@@ -11,12 +11,14 @@ interface DropdownFilterProps {
   options: FilterOption[];
   selectedFilter: string;
   onSelect: (filter: string) => void;
+  functionExtra?: (option: string) => void
 }
 
 export function DropdownFilter({
   options,
   selectedFilter,
   onSelect,
+  functionExtra
 }: DropdownFilterProps) {
   const [activeFilter, setActiveFilter] = useState(false);
 
@@ -41,6 +43,9 @@ export function DropdownFilter({
               onClick={() => {
                 onSelect(option.label);
                 setActiveFilter(false);
+                if (functionExtra) {
+                  functionExtra(option.label)
+                }
               }}
             >
               <input
@@ -49,7 +54,7 @@ export function DropdownFilter({
                 name="category-filter"
                 value={option.label}
                 checked={option.label === selectedFilter}
-                onChange={() => {}}
+                onChange={() => { }}
                 className="sr-only"
               />
 

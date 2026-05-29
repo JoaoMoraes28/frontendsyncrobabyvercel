@@ -8,6 +8,7 @@ export const useGetHeightMeasures = (child_id: number) => {
         queryFn: async () => {
             const response = await getMeasuresHeight(child_id)
             return response
-        }
+        },
+        enabled: false
     });
 }

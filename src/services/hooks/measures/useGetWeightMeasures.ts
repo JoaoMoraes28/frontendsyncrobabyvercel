@@ -11,6 +11,7 @@ export const useGetWeightMeasures = (child_id: number) => {
 
                 return response
           
-        }
+        },
+        enabled: false
     });
 }

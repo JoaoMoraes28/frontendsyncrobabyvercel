@@ -22,6 +22,7 @@ import Search from '../../assets/searchLight.svg'
 import { Link } from "react-router-dom";
 
 import { useGetRoutinesByChild } from "../../services/hooks/routines/useGetRoutines.ts";
+import { useDeleteRoutines } from "../../services/hooks/routines/useDeleteRoutines.ts";
 import type { Routines } from "../../services/routines/routines.service.ts";
 import { EmptyState } from "../../components/EmptyState.tsx";
 
@@ -92,6 +93,7 @@ function Routines() {
     const idChild: number = Number(localStorage.getItem("select_child"))
     const [searchDateRoutine, setSearchDateRoutine] = useState<string>(DateUtils.getDateUTC().split("T")[0])
     const { data: onGetRoutines, isLoading, isError } = useGetRoutinesByChild(idChild, searchDateRoutine)
+    const { mutate: onDeleteRoutines } = useDeleteRoutines()
 
     const [childrenSelected, setChildSelected] = useState<number>(1)
     const [routineData, setRoutineData] = useState<Routines[]>([])
@@ -240,10 +242,43 @@ function Routines() {
     }
 
     function onDeleteCard(id: string) {
-        const newRoutine: Routines[] = onGetRoutines!.routines.filter((it: RoutineData) => `${it.log_type}${it.id}` == id)
+        const values: string[] = id.split("/")
 
-        setRoutineData(newRoutine)
-        countRoutineResume(newRoutine)
+        let type: string = ""
+
+        if (values[0] == "sono") {
+            type = "sleep"
+
+        } else if (values[0] == "banho") {
+            type = "bath"
+
+        } else if (values[0] == "alimentacao") {
+            type = "feeding"
+
+        } else if (values[0] == "fralda") {
+            type = "diaper"
+
+        } else if (values[0] == "medicacao") {
+            type = "medication"
+
+        }
+        
+        onDeleteRoutines(
+            {
+                id_register: Number(values[1]),
+                type: type
+            },
+            {
+                onSuccess: () => {
+                    const newRoutine: Routines[] = routineData.filter((it: RoutineData) => `${it.log_type}/${it.id}` != id)
+
+                    setRoutineData(newRoutine)
+                    countRoutineResume(newRoutine)
+                }, onError: () => {
+                    alert("Erro ao deletar rotina!")
+                }
+            }
+        )
     }
 
     useEffect(() => {

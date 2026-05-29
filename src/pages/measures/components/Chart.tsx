@@ -1,5 +1,3 @@
-import { useEffect } from "react";
-
 import Date from "../../../utils/Date.ts"
 
 import {
@@ -12,36 +10,23 @@ import {
     ResponsiveContainer,
 } from "recharts";
 
+import type { Height } from "../../../services/measures/measures.service"
+import type { Weight } from "../../../services/measures/measures.service"
+import type { Bmi } from "../../../services/measures/measures.service"
+import type { Head } from "../../../services/measures/measures.service"
+
 interface Props {
-    data: DataChart[]
+    data: (Height | Head | Weight | Bmi)[]
+    value_type: string
 }
 
-export interface DataChart {
-    month: string
-    month_index: number
-    records: MonthData[]
-}
-
-export interface MonthData {
-    date: string
-    value: number
-}
-
-interface ChartValues {
-    name: string
-    valor: number
-}
-
-function Chart({ data }: Props) {
-    function formatedData(data: DataChart[]) {
-        const newDataChart: ChartValues[][] = data.map((it) => {
-            const values: ChartValues[] = it.records.map((value) => {
-                return { name: `${Date.formatedDate(value.date)}`, valor: value.value }
-            })
-            return values
+function Chart({ data, value_type }: Props) {
+    function formatedData(data: (Height | Head | Weight | Bmi)[]) {
+        const newChartData: (Height | Head | Weight | Bmi)[] = data.map((it) => {
+            return {...it, update_date: Date.formatedDate(it.update_date.split("T")[0])}
         })
 
-        return [...newDataChart[0], ...newDataChart[1]]
+        return newChartData
     }
 
     return (
@@ -50,7 +35,7 @@ function Chart({ data }: Props) {
                 margin={{ left: -40, right: 5, top: 0, bottom: 0 }}
                 className="bg-lilas-bg py-2 shadow-purple-md">
                 <CartesianGrid stroke="#9d87d2" strokeDasharray="3 3" />
-                <XAxis dataKey="name"
+                <XAxis dataKey="update_date"
                     tick={{ fill: "#41354c", fontSize: 12 }}
                     axisLine={{ stroke: "#000000" }}
                     tickLine={false} />
@@ -64,7 +49,7 @@ function Chart({ data }: Props) {
                     border: "1px solid #9334ea",
                 }}
                     labelStyle={{ fontWeight: "bold", color: "#41354c" }} />
-                <Line activeDot={{ r: 7 }} type="monotone" dataKey="valor" stroke="#722cb2" strokeWidth={2} />
+                <Line activeDot={{ r: 7 }} type="linear" dataKey={value_type} stroke="#722cb2" strokeWidth={2} />
             </LineChart>
         </ResponsiveContainer>
     )
