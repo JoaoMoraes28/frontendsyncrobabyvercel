@@ -27,9 +27,9 @@ function Notifications({
 
   const idChild: number = Number(localStorage.getItem("select_child"))
 
-  const { data: onGetNotificationId } = useGetNotificationId(1)
-  const { data: onGetNotificationUser } = useGetNotificationUser()
-  const { data: onGetNotificationChild } = useGetNotificationChild(idChild)
+  // const { data: onGetNotificationId } = useGetNotificationId(1)
+  // const { data: onGetNotificationUser } = useGetNotificationUser()
+  // const { data: onGetNotificationChild } = useGetNotificationChild(idChild)
 
 
   function setImage(type: string) {
@@ -52,35 +52,35 @@ function Notifications({
     setNot([]);
   }
 
-  useEffect(() => {
-    if (!onGetNotificationId) {
-      return
-    }
+  // useEffect(() => {
+  //   if (!onGetNotificationId) {
+  //     return
+  //   }
 
-    if(onGetNotificationId) {
-      console.log(onGetNotificationId)
-    }
-  }, [onGetNotificationId])
+  //   if(onGetNotificationId) {
+  //     console.log(onGetNotificationId)
+  //   }
+  // }, [onGetNotificationId])
 
-  useEffect(() => {
-    if (!onGetNotificationUser) {
-      return
-    }
+  // useEffect(() => {
+  //   if (!onGetNotificationUser) {
+  //     return
+  //   }
 
-    if(onGetNotificationUser) {
-      console.log(onGetNotificationUser)
-    }
-  }, [onGetNotificationUser])
+  //   if(onGetNotificationUser) {
+  //     console.log(onGetNotificationUser)
+  //   }
+  // }, [onGetNotificationUser])
 
-  useEffect(() => {
-    if (!onGetNotificationChild) {
-      return
-    }
+  // useEffect(() => {
+  //   if (!onGetNotificationChild) {
+  //     return
+  //   }
 
-    if(onGetNotificationChild) {
-      console.log(onGetNotificationChild)
-    }
-  }, [onGetNotificationChild])
+  //   if(onGetNotificationChild) {
+  //     console.log(onGetNotificationChild)
+  //   }
+  // }, [onGetNotificationChild])
 
   return (
     <aside className={`fixed px-6 pt-10 pb-34 top-0 w-screen h-screen z-90 overflow-auto bg-light

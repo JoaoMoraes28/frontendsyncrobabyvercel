@@ -80,7 +80,7 @@ export const getMeasuresHeight = async (childId: number): Promise<ResponseMeasur
     );
 
     return response.data;
-  } catch (error: unknown) {
+  } catch (error: any) {
     if (String(error).includes("404")) {
       return { status_code: 200, height: [] };
     }
@@ -94,7 +94,7 @@ export const getMeasuresWeight = async (childId: number): Promise<ResponseMeasur
       `/measures/weight/${childId}`,
     );
     return response.data;
-  } catch (error: unknown) {
+  } catch (error: any) {
     if (String(error).includes("404")) {
       return { status_code: 404, weight: [] };
     }
