@@ -11,6 +11,7 @@ import ChildrenSelect from "../../layouts/ChildrenSelect.tsx"
 
 function Diary() {
     const [childSelected, setChildSelected] = useState<number>(1)
+
     const [registerMain] = useState<Register[]>([
         {
             "id": 1,
