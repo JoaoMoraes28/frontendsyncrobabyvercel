@@ -1,15 +1,16 @@
 import type { ArticleModel } from "../Articles"
+import type { Article } from "../../../services/article/article.service.ts"
 
 import Date from "../../../utils/Date.ts"
 
 interface Props {
-    article: ArticleModel
+    article: any
     cardArticleDesktop: React.RefObject<HTMLLIElement | null>
 }
 
 function ArticleCard({ article, cardArticleDesktop }: Props) {
     return (
-        <li ref={cardArticleDesktop} key={article.id} className="flex w-full min-h-22
+        <li ref={cardArticleDesktop} key={article.id_article} className="flex w-full min-h-22
                                 md:min-h-24
                                 xl:min-w-50 xl:max-w-50 xl:h-full xl:overflow-hidden xl:rounded-sm xl:snap-center xl:hover:shadow-purple-sm xl:hover:scale-102 xl:transition xl:duration-300">
             <article className="flex w-full h-full rounded-lg
@@ -19,9 +20,9 @@ function ArticleCard({ article, cardArticleDesktop }: Props) {
                                         xl:relative xl:w-full xl:h-1/2 xl:rounded-bl-none xl:rounded-tl-sm xl:rounded-tr-sm xl:pt-0">
                     <span className="flex justify-center items-center w-22 h-6 font-nunito text-primary-text bg-light font-bold rounded-md
                                             md:w-30 md:h-8
-                                            xl:absolute xl:bg-accent xl:text-white xl:font-normal xl:text-[12px] xl:rounded-sm xl:w-18 xl:h-6 xl:top-2 xl:right-2">{Date.formatedDate(article.date)}</span>
+                                            xl:absolute xl:bg-accent xl:text-white xl:font-normal xl:text-[12px] xl:rounded-sm xl:w-18 xl:h-6 xl:top-2 xl:right-2">{Date.formatedDate(article.publication_date)}</span>
                     <figure className="hidden xl:block xl:w-full xl:h-full xl:rounded-t-sm">
-                        <img src={article.midia} alt="" className="xl:w-full xl:h-full xl:rounded-t-sm xl:object-cover xl:object-top" />
+                        <img src={article.media} alt="" className="xl:w-full xl:h-full xl:rounded-t-sm xl:object-cover xl:object-top" />
                     </figure>
                 </div>
                 <div className="flex flex-col justify-between w-2/3 h-full bg-lilas py-2 rounded-r-lg
