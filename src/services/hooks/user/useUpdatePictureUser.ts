@@ -1,10 +1,10 @@
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import { updateChild } from "../../children/children.service"
+import { updatePicture } from "../../user/user.service";
 
-export const useUpdateChild = () => {
+export const useUpdatePictureUser = () => {
     return useMutation({
-        mutationFn: ({data, id_child}: {data: FormData, id_child: number}) => updateChild(data, id_child),
+        mutationFn: (data: FormData) => updatePicture(data),
 
         onSuccess: (data) => {
             return data

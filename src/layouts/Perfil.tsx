@@ -3,32 +3,32 @@ import { useLocation } from "react-router-dom";
 import Databar from "../pages/perfil/components/DataBar.tsx";
 import { InputDefault } from "../components/InputDefault.tsx";
 
-import ProfilePicture from "../assets/profileChildren/profilePicture.svg";
-
-import type { UseFormRegisterReturn } from "react-hook-form";
 import type { DataChild } from "../pages/profile_children/ProfileChildren.tsx";
-import { useState } from "react";
+
+import Profile from "../assets/profileChildren/profilePicture.svg"
 
 export interface Props {
   child?: DataChild;
   readonly?: boolean;
   setGenderSelected?: (gender: string) => void;
   genderSelected?: string;
-  register_name?: UseFormRegisterReturn;
+  register_name?: string;
+  set_register_name?: (text: string) => void;
+  previewImg?: (e: React.ChangeEvent<HTMLInputElement>) => void
+  preview?: string
 }
 
 function Perfil({
   child,
   register_name,
+  set_register_name,
   readonly,
   genderSelected,
   setGenderSelected,
+  previewImg,
+  preview
 }: Props) {
   const location = useLocation();
-
-  const [photo_user] = useState<string | null>(localStorage.getItem("user_photo") == "null"
-    || localStorage.getItem("user_photo") == null
-    || localStorage.getItem("user_photo") == "" ? ProfilePicture : localStorage.getItem("user_photo"))
 
   return (
     <aside className="hidden xl:flex xl:flex-col xl:z-99 xl:items-center xl:w-1/3 xl:min-w-136 xl:h-screen xl:pt-8 xl:rounded-tr-2xl xl:rounded-br-2xl xl:bg-primary">
@@ -39,7 +39,10 @@ function Perfil({
         {location.pathname == "/profile-children" ? (
           <InputDefault
             readOnly={readonly}
-            {...register_name}
+            value={register_name}
+            onChange={(e) => {
+              set_register_name ? set_register_name(e.target.value) : ""
+            }}
             className={`xl:w-[77%] xl:pl-2 xl:text-[3.1rem] xl:text-text-primary xl:font-bold ${readonly ? "" : "xl:bg-white xl:rounded-xl"}`}
           />
         ) : (
@@ -49,17 +52,31 @@ function Perfil({
         )}
       </h3>
       {location.pathname == "/profile-children" ? (
-        <img
-          src={child?.photo == "" ? ProfilePicture : child?.photo}
-          alt="Foto do perfil do usuário logado."
-          className="xl:w-84 xl:h-84 xl:mt-10 xl:rounded-full xl:border-5 xl:object-cover xl:object-center xl:border-lilas-dark"
-        />
+        <div>
+          <label htmlFor={!readonly ? "imgChild" : ""}>
+            <img
+              src={preview ? preview : Profile}
+              alt="Foto do perfil do usuário logado."
+              className="xl:w-84 xl:h-84 xl:mt-10 xl:rounded-full xl:border-5 xl:object-cover xl:object-center xl:border-lilas-dark"
+            />
+          </label>
+          <input onChange={(e) => {
+            previewImg ? previewImg(e) : ""
+          }} type="file" id="imgChild" className="hidden" />
+        </div>
       ) : (
-        <img
-          src={photo_user!}
-          alt="Foto do perfil do usuário logado."
-          className="xl:w-84 xl:h-84 xl:mt-10 xl:rounded-full xl:border-5 xl:object-cover xl:object-center xl:border-lilas-dark"
-        />
+        <div>
+          <label htmlFor={readonly ? "imgUser" : ""}>
+            <img
+              src={preview ? preview : Profile}
+              alt="Foto do perfil do usuário logado."
+              className="xl:w-84 xl:h-84 xl:mt-10 xl:rounded-full xl:border-5 xl:object-cover xl:object-center xl:border-lilas-dark"
+            />
+          </label>
+          <input onChange={(e) => {
+            previewImg ? previewImg(e) : ""
+          }} type="file" id="imgUser" className="hidden" />
+        </div>
       )}
       <div
         className={`${location.pathname == "/profile-children" ? "xl:flex" : "xl:hidden"} xl:flex xl:justify-center xl:items-center xl:w-full xl:h-42 xl:mt-4`}

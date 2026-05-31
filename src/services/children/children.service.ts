@@ -29,21 +29,18 @@ export interface UpdateChild {
   child_name: string
   birth_date: string
   blood_type: string
-  photo: string | File
   gender: string
 }
 
 export interface ResponseJSONUpdateChild {
-  status: boolean
   status_code: number
-  response: ResponseUpdateChild
+  child: ResponseUpdateChild
 }
 
 export interface ResponseUpdateChild {
   child_name: string
   birth_date: string
   blood_type: string
-  photo: string
   gender: string
   fk_id_guardian: number
   id_child: number
@@ -95,8 +92,13 @@ export const insertChild = async (data: FormData): Promise<ResponseInsertChild> 
   return response.data;
 };
 
-export const updateChild = async (data: FormData, childId: number): Promise<ResponseJSONUpdateChild> => {
+export const updateChild = async (data: UpdateChild, childId: number): Promise<ResponseJSONUpdateChild> => {
   const response = await api.put<ResponseJSONUpdateChild>(`/child/${childId}`, data);
+  return response.data;
+};
+
+export const updatePictureChild = async (data: FormData, childId: number): Promise<any> => {
+  const response = await api.patch<any>(`/child/photo/${childId}`, data);
   return response.data;
 };
 

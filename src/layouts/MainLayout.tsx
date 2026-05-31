@@ -20,6 +20,7 @@ import HomeSelected from "../assets/navigation/homeSelected.svg";
 import RoutineSelected from "../assets/navigation/routinesSelected.svg";
 import StorageSelected from "../assets/navigation/storageSelected.svg";
 import ArticlesSelected from "../assets/navigation/articlesSelected.svg";
+import { useState } from "react";
 
 export interface IconsNavigation {
   id: number;
@@ -96,17 +97,19 @@ export const listIcons: IconsNavigation[] = [
 ];
 
 export function MainLayout() {
+  const [childName, setChildName] = useState<string>(localStorage.getItem("select_child_name")!)
+
   return (
     <div className="flex h-screen w-screen bg-light">
       <Header />
-      <NavigationBar listIcons={listIcons} />
+      <NavigationBar listIcons={listIcons} child_name={childName} />
       <main className="min-w-screen h-full overflow-y-auto xl:flex xl:justify-end">
         <div
           className="content flex w-full min-h-full px-6 pt-25 pb-24
         md:px-14 md:pb-30
         xl:px-20 xl:w-[calc(100%-200px)] xl:pb-8"
         >
-          <Outlet />
+          <Outlet context={setChildName} />
         </div>
       </main>
     </div>

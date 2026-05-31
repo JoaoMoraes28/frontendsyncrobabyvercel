@@ -78,8 +78,8 @@ function Measures() {
     const [idChildSelected, setIdChild] = useState<number>(idChild)
     const [filterSelected, setFilterSelected] = useState<string>("Perímetro cefálico")
     const [dataChart, setDataChart] = useState<(Height | Weight | Bmi | Head)[]>([])
-    const [lastRegister, setLastRegister] = useState<string>("")
-    const [beforeRegister, setBeforeRegister] = useState<string>("")
+    const [lastRegister, setLastRegister] = useState<string>("Nenhum registro")
+    const [beforeRegister, setBeforeRegister] = useState<string>("Nenhum registro")
     const [valueChart, setValueChart] = useState<string>("")
     const [developmentResult] = useState<ResultDevelopment>(
         {
@@ -108,43 +108,51 @@ function Measures() {
             value: string | null
         }
 
-        const newArray: Value[] = data.map((it) => {
-            let numberValue: number
+        if (data.length > 0) {
+            const newArray: Value[] = data.map((it) => {
+                let numberValue: number
 
-            if ("height" in it) {
-                numberValue = Math.round(it.height! * 10) / 10
-                return {
-                    value: `${numberValue}cm`
+                if ("height" in it) {
+                    numberValue = Math.round(it.height! * 10) / 10
+                    return {
+                        value: `${numberValue}cm`
+                    }
+
+                } else if ("weight" in it) {
+                    numberValue = Math.round(it.weight! * 10) / 10
+                    return {
+                        value: `${numberValue}kg`
+                    }
+
+                } else if ("head_circumference" in it) {
+                    numberValue = Math.round(it.head_circumference! * 10) / 10
+                    return {
+                        value: `${numberValue}cm`
+                    }
+
+                } else if ("bmi" in it) {
+                    numberValue = Math.round(it.bmi! * 10) / 10
+                    return {
+                        value: `${numberValue}`
+                    }
+
                 }
 
-            } else if ("weight" in it) {
-                numberValue = Math.round(it.weight! * 10) / 10
                 return {
-                    value: `${numberValue}kg`
+                    value: null
                 }
 
-            } else if ("head_circumference" in it) {
-                numberValue = Math.round(it.head_circumference! * 10) / 10
-                return {
-                    value: `${numberValue}cm`
-                }
+            })
 
-            } else if ("bmi" in it) {
-                numberValue = Math.round(it.bmi! * 10) / 10
-                return {
-                    value: `${numberValue}`
-                }
+            setLastRegister(newArray[newArray.length - 1].value!)
 
+            if (data.length > 1) {
+                setBeforeRegister(newArray[newArray.length - 2].value!)
+                
             }
 
-            return {
-                value: null
-            }
+        }
 
-        })
-
-        setLastRegister(newArray[newArray.length - 1].value!)
-        setBeforeRegister(newArray[newArray.length - 2].value!)
     }
 
     function changeDataChart(option: string) {
@@ -292,13 +300,13 @@ function Measures() {
                             xl:bg-transparent">
                                 <dt className="font-semibold text-primary-text">Hoje:</dt>
                                 <dd className="flex justify-center items-center min-w-15 h-6 text-accent font-semibold
-                                xl:rounded-lg xl:shadow-purple-sm xl:h-7 xl:min-w-17">{lastRegister}</dd>
+                                xl:rounded-lg xl:shadow-purple-sm xl:h-7 xl:min-w-17 xl:px-2">{lastRegister}</dd>
                             </div>
                             <div className="flex justify-between bg-lilas-bg/70 rounded-md p-1
                             xl:bg-transparent">
                                 <dt className="font-semibold text-primary-text">Registro anterior: </dt>
                                 <dd className="flex justify-center items-center min-w-15 h-6 text-accent font-semibold
-                                xl:rounded-lg xl:shadow-purple-sm xl:h-7 xl:min-w-17">{beforeRegister}</dd>
+                                xl:rounded-lg xl:shadow-purple-sm xl:h-7 xl:min-w-17 xl:px-2">{beforeRegister}</dd>
                             </div>
                         </dl>
                     </div>

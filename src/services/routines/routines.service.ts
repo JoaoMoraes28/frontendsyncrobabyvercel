@@ -1,6 +1,6 @@
 import { api } from "../api"
 
-export interface Routines {
+export interface Routine {
   child: number
   time: string
   date: string
@@ -15,7 +15,7 @@ export interface Routines {
 
 export interface ResponseRoutines {
   status_code: number
-  routines: Routines[]
+  routines: Routine[]
 }
 
 export interface RegisterSleep {

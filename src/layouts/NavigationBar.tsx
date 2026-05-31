@@ -8,10 +8,15 @@ import type { IconsNavigation } from "../layouts/MainLayout";
 
 interface Props {
   listIcons: IconsNavigation[];
+  child_name?: string
 }
 
-function NavigationBar({ listIcons }: Props) {
+function NavigationBar({ listIcons, child_name }: Props) {
   const location = useLocation();
+
+  const photoUser = localStorage.getItem("user_photo") != undefined
+    && localStorage.getItem("user_photo") != null ?
+    localStorage.getItem("user_photo") : Profile
 
   return (
     <nav
@@ -122,13 +127,13 @@ function NavigationBar({ listIcons }: Props) {
       >
         <div className="xl:flex xl:items-top xl:gap-2">
           <img
-            src={Profile}
+            src={photoUser!}
             alt="Foto de perfil do usuário"
             className="xl:w-8 xl:h-8 xl:rounded-full xl:border xl:border-white"
           />
           <div className="xl:flex xl:flex-col xl:font-nunito xl:text-white">
-            <span className="text-[14px]">Mariana Silvana</span>
-            <span className="xl:text-[10px] xl:font">Pedro Henrique</span>
+            <span className="text-[14px]">{localStorage.getItem("user_name")}</span>
+            <span className="xl:text-[10px] xl:font">{child_name}</span>
           </div>
         </div>
         <img

@@ -5,7 +5,7 @@ import { Login } from "./pages/auth/Login/Login";
 import { Register } from "./pages/auth/Register/Register";
 import { ResetPassword } from "./pages/auth/ResetPassword/ResetPassword";
 import { Home } from "./pages/Home/Home";
-import Routines from "./pages/routines/Routines";
+import Routines from "./pages/routines/Routines"
 import { MainLayout } from "./layouts/MainLayout";
 import RoutineFeeding from "./pages/routines/RoutineFeeding";
 import NotFound from "./pages/notFound/NotFound";

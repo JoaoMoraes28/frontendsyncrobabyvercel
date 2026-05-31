@@ -1,10 +1,8 @@
 import { api } from "../api";
-import type { LoginResponse } from "../auth/auth.service"
 
 export interface UpdateUser {
   guardian_name: string
   email: string
-  profile_picture: string
 }
 
 interface UpdateResponse {
@@ -15,6 +13,19 @@ interface UpdateResponse {
     profile_picture: string
     id_guardian: number
   }
+}
+
+export interface ResponseUser {
+  status_code: number,
+  user: [
+    {
+      id_guardian: number,
+      guardian_name: string,
+      email: string,
+      profile_picture: string,
+      active: number
+    }
+  ]
 }
 
 interface VerifyPassword {
@@ -36,8 +47,8 @@ interface UpdatePassword {
   new_password: string
 }
 
-export const getUser = async (): Promise<LoginResponse> => {
-  const response = await api.get<LoginResponse>("/user");
+export const getUser = async (): Promise<ResponseUser> => {
+  const response = await api.get<ResponseUser>("/user");
   return response.data;
 };
 
@@ -58,5 +69,11 @@ export const reactivateUser = async (data: VerifyEmailPass): Promise<ResponseRea
 
 export const updatePassword = async (data: UpdatePassword): Promise<any> => {
   const response = await api.patch<any>("/user/password", data);
+  return response.data;
+};
+
+
+export const updatePicture = async (data: FormData): Promise<any> => {
+  const response = await api.patch<any>("/user/profile-picture", data);
   return response.data;
 };

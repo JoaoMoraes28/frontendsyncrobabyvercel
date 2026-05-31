@@ -40,9 +40,9 @@ function UpdateMeasures() {
         }
 
         const newData: InsertMeasures = {
-            height: height ? Number(height) : 0,
-            weight: weight ? Number(weight) : 0,
-            head_circumference: head ? Number(head) : 0,
+            height: height ? Number(height) : null,
+            weight: weight ? Number(weight) : null,
+            head_circumference: head ? Number(head) : null,
             description: data.description,
             fk_id_child: idChild
         }

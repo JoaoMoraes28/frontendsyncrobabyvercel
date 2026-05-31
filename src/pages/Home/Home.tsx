@@ -14,7 +14,7 @@ import healthIcon from "../../assets/healthIcon.svg";
 import { CardPrincipal } from "../../components/CarouselCard";
 import { CarouselDots } from "../../components/CarouselDots";
 import { CategorySection } from "./components/CategorySection";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useOutletContext } from "react-router-dom";
 import { useGetChildren } from "../../services/hooks/children/getChildren"
 import Date from "../../utils/Date.ts"
 import type { ResponseChild, Children } from "../../services/children/children.service";
@@ -116,6 +116,10 @@ export function Home() {
   const { data: childrenData } = useGetChildren();
 
   const navigate = useNavigate();
+
+  const setChildName = useOutletContext<
+    (name: string) => void
+  >()
 
   const handleCategoryNavigation = (path: string) => {
     if (path && path !== "") {
@@ -481,6 +485,8 @@ export function Home() {
                     onClick={() => {
                       setSelectedChild(child);
                       localStorage.setItem("select_child", child.id_child.toString())
+                      setChildName(child.child_name)
+                      localStorage.setItem("select_child_name", child.child_name)
                       setIsModalOpen(false);
                     }}
                     className="w-full bg-white border border-lilas md:py-3 py-2 px-4 rounded-xl flex items-center gap-4 cursor-pointer hover:bg-lilas/20 transition-colors"
