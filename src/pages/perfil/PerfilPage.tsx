@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import BtnPrimary from "../../components/BtnPrimary";
 import { InputDefault } from "../../components/InputDefault";
@@ -17,7 +17,9 @@ import backIcon from "../../assets/BackIcon.svg";
 import { inputClassName, labelClassName } from "../routines/RoutineFeeding";
 
 import { useUpdateUser } from "../../services/hooks/user/useUpdateUser";
+import { useGetUser } from "../../services/hooks/user/useGetUser";
 import type { UpdateUser } from "../../services/user/user.service";
+import { useUpdatePictureUser } from "../../services/hooks/user/useUpdatePictureUser";
 
 interface UserData {
   name: string;
@@ -27,11 +29,15 @@ interface UserData {
 
 export function PerfilPage() {
   const { mutate: onUpdateUser } = useUpdateUser()
+  const { mutate: onUpdatePictureUser } = useUpdatePictureUser()
+  const { data: onGetUserData, refetch } = useGetUser()
 
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
 
   const [preview, setPreview] = useState<string>(localStorage.getItem("user_photo")!)
+  const [photoFile, setPhotoFile] = useState<File | string>("")
+  const [editPhoto, setEditPhoto] = useState<boolean>(false)
 
   const {
     register,
@@ -42,29 +48,43 @@ export function PerfilPage() {
     defaultValues: {
       name: localStorage.getItem("user_name") ?? "",
       email: localStorage.getItem("user_email") ?? "",
-    },
+    }
   });
 
   function handleSave(data: UserData) {
     const newData: UpdateUser = {
       guardian_name: data.name,
-      email: data.email,
-      profile_picture: preview
+      email: data.email
     }
+
+    if (editPhoto) {
+      const formData = new FormData()
+      formData.append("profile_picture", photoFile)
+
+      onUpdatePictureUser(
+        formData,
+        {
+          onSuccess: () => {
+            refetch()
+
+          }, onError: () => {
+
+          }
+        }
+      )
+    }
+
     onUpdateUser(
       newData,
       {
         onSuccess: (response) => {
           alert("Alterações salvas!")
-          console.log(response)
           reset({
             name: response.user.guardian_name,
             email: response.user.email
           })
-          setPreview(response.user.profile_picture)
           localStorage.setItem("user_name", response.user.guardian_name);
           localStorage.setItem("user_email", response.user.email);
-          localStorage.setItem("user_photo", response.user.profile_picture);
         }
       }
     )
@@ -72,6 +92,7 @@ export function PerfilPage() {
   }
 
   const handleEditClick = (e: React.MouseEvent) => {
+    setEditPhoto(false)
     e.preventDefault();
     if (!isEditing) {
       setIsEditing(true);
@@ -80,16 +101,29 @@ export function PerfilPage() {
 
   function onChangePreview(e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.files) {
+      setEditPhoto(true)
+      setPhotoFile(e.target.files[0])
       setPreview(URL.createObjectURL(e.target.files[0]))
     }
   }
+
+  useEffect(() => {
+    if (!onGetUserData) {
+      return
+    }
+
+    if (onGetUserData) {
+      setPreview(onGetUserData.user[0].profile_picture)
+      localStorage.setItem("user_photo", onGetUserData.user[0].profile_picture)
+    }
+  }, [onGetUserData])
 
   return (
     <div className="flex flex-col xl:flex-row w-full min-h-screen bg-light">
       <div className="xl:hidden w-full">
         <Header />
       </div>
-      <PerfilHeader />
+      <PerfilHeader previewImg={onChangePreview} preview={preview} readonly={isEditing} />
 
       <main className="flex-1 flex flex-col items-center justify-center w-full relative py-8 xl:py-0 font-nunito">
         <div className="hidden xl:flex justify-between items-center w-full absolute top-10 left-0 px-16">
@@ -101,7 +135,10 @@ export function PerfilPage() {
           </button>
 
           <div className="flex gap-6 items-center">
-            <button onClick={() => navigate("/")}>
+            <button onClick={() => {
+              localStorage.setItem("select_child", "0")
+              navigate("/")
+            }}>
               <img src={logoutIcon} alt="Sair" className="w-8 h-8" />
             </button>
             <button>

@@ -87,7 +87,6 @@ export function AddChildPage() {
 
     Object.entries(newData).forEach(([name, value]) => {
       formData.append(name, value)
-      console.log(formData)
     });
 
     handleRegisterAPI(
@@ -107,7 +106,7 @@ export function AddChildPage() {
       <div className="xl:hidden w-full">
         <Header />
       </div>
-      <PerfilHeader />
+      <PerfilHeader preview={localStorage.getItem("user_photo")!} />
 
       <main className="flex-1 flex flex-col items-center justify-start w-full px-6 relative pt-5 pb-8">
         <div className="hidden xl:flex justify-between items-center w-full mb-1">
@@ -136,7 +135,7 @@ export function AddChildPage() {
           <ul className="absolute left-6 top-6">
             {genderList.map((gender) => (
               <li key={gender.id} className={`w-14 h-14 ${genderSelected != gender.id ? 'hidden' : 'flex'}`}>
-                <button onClick={() => setGenderSelected(gender.opposite)} className="rounded-full w-full h-full">
+                <button onClick={() => setGenderSelected(gender.opposite)} className=" flex justify-center items-center bg-white border border-primary/70 rounded-full w-full h-full">
                   <img src={gender.gender} alt="Gênero da criança." className="w-8 h-auto" />
                 </button>
               </li>

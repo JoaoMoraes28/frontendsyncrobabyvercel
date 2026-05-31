@@ -23,7 +23,7 @@ import { Link } from "react-router-dom";
 
 import { useGetRoutinesByChild } from "../../services/hooks/routines/useGetRoutines.ts";
 import { useDeleteRoutines } from "../../services/hooks/routines/useDeleteRoutines.ts";
-import type { Routines } from "../../services/routines/routines.service.ts";
+import type { Routine } from "../../services/routines/routines.service.ts";
 import { EmptyState } from "../../components/EmptyState.tsx";
 
 interface IconsRoutine {
@@ -96,7 +96,7 @@ function Routines() {
     const { mutate: onDeleteRoutines } = useDeleteRoutines()
 
     const [childrenSelected, setChildSelected] = useState<number>(1)
-    const [routineData, setRoutineData] = useState<Routines[]>([])
+    const [routineData, setRoutineData] = useState<Routine[]>([])
     const [hourRoutine, setHourRoutine] = useState<string>("")
     const [visibilityTrash, setVisibilityTrash] = useState<boolean>(true)
     const [dayFunction, setDayFunction] = useState<Date>()
@@ -106,7 +106,7 @@ function Routines() {
     const [countShower, setCountShower] = useState<number>(0)
     const [countDiaper, setCountDiaper] = useState<number>(0)
 
-    function addClickedArray(routine: Routines[]) {
+    function addClickedArray(routine: Routine[]) {
         const newRoutine: RoutineData[] = routine.map((it) => {
             it.asClicked = false
 
@@ -117,8 +117,8 @@ function Routines() {
 
     }
 
-    function addIconArray(routine: Routines[]) {
-        const newRoutine: Routines[] = routine.map((it) => {
+    function addIconArray(routine: Routine[]) {
+        const newRoutine: Routine[] = routine.map((it) => {
             if (it.log_type == "banho") {
                 it.imageDesk = IconShowerDesktop
                 return it
@@ -148,7 +148,7 @@ function Routines() {
     }
 
     function onClickedCard(id: string) {
-        const newRoutine: Routines[] = routineData.map((it) => {
+        const newRoutine: Routine[] = routineData.map((it) => {
             if (`${it.log_type}${it.id}` == id) {
                 it.asClicked = !it.asClicked
             }
@@ -270,7 +270,7 @@ function Routines() {
             },
             {
                 onSuccess: () => {
-                    const newRoutine: Routines[] = routineData.filter((it: RoutineData) => `${it.log_type}/${it.id}` != id)
+                    const newRoutine: Routine[] = routineData.filter((it: RoutineData) => `${it.log_type}/${it.id}` != id)
 
                     setRoutineData(newRoutine)
                     countRoutineResume(newRoutine)

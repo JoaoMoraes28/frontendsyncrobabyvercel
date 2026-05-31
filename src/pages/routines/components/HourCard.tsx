@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 
 import Trash from "../../../assets/routines/trashPurple.svg"
 
-import type { Routines } from "../../../services/routines/routines.service.ts";
+import type { Routine } from "../../../services/routines/routines.service.ts";
 
 interface Props {
-  routineData: Routines
+  routineData: Routine
   visibilityTrash: boolean
   onClick: (id: string) => void
   onDelete: (id: string) => void

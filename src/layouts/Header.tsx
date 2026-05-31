@@ -308,7 +308,7 @@ function Header() {
             xl:hidden ${location.pathname == "/profile-children" || location.pathname == "/profile-user" ? "hidden" : "block"}`}
           >
             <img
-              src={Profile}
+              src={photoUser!}
               alt="Icone de perfil de usuário que redireciona para página de usuário."
               className="w-full h-full rounded-full object-cover object-center"
             />

@@ -36,6 +36,8 @@ import type { UpdateChild } from "../../services/children/children.service";
 import { useDeactivateChild } from "../../services/hooks/children/deactivateChild";
 import type { VerifyDesactivate } from "../../services/children/children.service";
 
+import { useUpdatePictureChild } from "../../services/hooks/children/useUpdatePictureChild.ts";
+
 export interface ListDescription {
   title: string;
   img: string;
@@ -72,11 +74,13 @@ function ProfileChildren() {
 
   const idChild: number = Number(localStorage.getItem("select_child"))
   const { data: childData } = useGetChild(idChild)
-  const { mutate: updateChild } = useUpdateChild()
-  const refProfile = useRef<HTMLDivElement | null>(null)
+  const { mutate: onUpdateChild } = useUpdateChild()
+  const { mutate: onUpdatePicture } = useUpdatePictureChild()
 
+  const refProfile = useRef<HTMLDivElement | null>(null)
   const [deleteModal, setDeleteModal] = useState<boolean>(false)
-  const [preview, setPreview] = useState<string>("")
+  const [preview, setPreview] = useState<string | null>(null)
+  const [editPhoto, setEditPhoto] = useState<boolean>(false)
   const [photoFile, setPhotoFile] = useState<File | string>("")
   const [descriptionItems, setDescriptionItems] = useState<ListDescription[]>([
     {
@@ -129,6 +133,7 @@ function ProfileChildren() {
   const [genderSelected, setGenderSelected] = useState<string>(
     dataChildren.gender
   );
+  const [valueInputName, setValueInputName] = useState<string>("")
 
   const { register, handleSubmit, setValue, getValues, reset } = useForm<FormChild>({
     defaultValues: {
@@ -138,9 +143,7 @@ function ProfileChildren() {
     }
   });
 
-  const { register: deleteRegister, handleSubmit: deleteSubmit, formState: { errors } } = useForm<VerifyDesactivate>({
-
-  });
+  const { register: deleteRegister, handleSubmit: deleteSubmit, formState: { errors } } = useForm<VerifyDesactivate>({});
 
   useEffect(() => {
     if (childData?.child && childData.child.length > 0) {
@@ -149,10 +152,11 @@ function ProfileChildren() {
         birth_date: childData.child[0].birth_date.split("T")[0],
         height: Math.round(childData.child[0].height)
       }
-      console.log(childData.child[0].photo)
+
       setGenderSelected(newData.gender);
       setDataChildren(newData);
       setArrayData(newData);
+      setValueInputName(newData.child_name)
 
       reset({
         child_name: newData.child_name,
@@ -201,27 +205,30 @@ function ProfileChildren() {
   function sendDatas(data: FormChild) {
     const newObject: UpdateChild = {
       ...data,
+      child_name: valueInputName,
       gender: genderSelected,
-      id_child: idChild,
-      photo: preview == "" ? "" : photoFile
+      id_child: idChild
     };
 
-    const formData = new FormData()
+    if (editPhoto) {
+      const formData = new FormData()
+      formData.append("photo", photoFile)
 
-    Object.entries(newObject).forEach(([name, value]) => {
-      formData.append(name, value)
-    });
-    console.log(formData)
-    updateChild(
-      {
-        data: formData,
-        id_child: idChild
-      },
+      onUpdatePicture(
+        {
+          data: formData,
+          id_child: idChild
+        }
+      )
+    }
+
+    onUpdateChild(
+      newObject,
       {
         onSuccess: (response) => {
-          console.log(response)
+
           alert("Alterações salvas!")
-          const newData: UpdateChild = response.response
+          const newData: UpdateChild = response.child
           const newChildren: Children = {
             child_name: newData.child_name,
             gender: newData.gender,
@@ -233,8 +240,9 @@ function ProfileChildren() {
             active: dataChildren.active,
             fk_id_guardian: dataChildren.fk_id_guardian,
             id_child: newData.id_child,
-            photo: preview
+            photo: preview!
           }
+
           setDataChildren(newChildren)
         }
       }
@@ -243,6 +251,7 @@ function ProfileChildren() {
 
   function previewImg(e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.files) {
+      setEditPhoto(true)
       setPhotoFile(e.target.files[0])
       setPreview(URL.createObjectURL(e.target.files[0]))
     }
@@ -264,7 +273,7 @@ function ProfileChildren() {
       onDeleteChild(
         { child_name: data.child_name, id_child: idChild },
         {
-          onSuccess: (response) => {
+          onSuccess: () => {
             localStorage.setItem("select_child", "0")
             alert("Criança desativada!")
           },
@@ -287,11 +296,14 @@ function ProfileChildren() {
         <Header />
       </div>
       <Perfil
-        register_name={register("child_name")}
+        register_name={valueInputName}
+        set_register_name={setValueInputName}
         genderSelected={genderSelected}
         setGenderSelected={setGenderSelected}
         readonly={onlyRead}
         child={dataChildren}
+        preview={preview!}
+        previewImg={previewImg}
       />
 
       <form
@@ -334,7 +346,7 @@ function ProfileChildren() {
               />
             </button>
             <label htmlFor={onlyRead ? "" : "img"} className="rounded-full w-40 h-40 border-2 border-lilas-dark">
-              <img src={preview == "" ? ProfilePicture : preview} alt="Foto de perfil da criança." className=" object-cover object-center rounded-full w-full h-full" />
+              <img src={preview! == "" ? ProfilePicture : preview!} alt="Foto de perfil da criança." className=" object-cover object-center rounded-full w-full h-full" />
             </label>
             <input onChange={(e) => previewImg(e)} type="file" id="img" className="hidden" />
             <div className="relative flex w-4 h-6">
@@ -350,7 +362,10 @@ function ProfileChildren() {
                 />
               </button>
               <button
-                onClick={() => setOnlyRead(!onlyRead)}
+                onClick={() => {
+                  onlyRead ? setEditPhoto(false) : ""
+                  setOnlyRead(!onlyRead)
+                }}
                 type={onlyRead ? "submit" : "button"}
                 className="absolute"
               >
@@ -371,7 +386,8 @@ function ProfileChildren() {
                 <h3 className="flex justify-center items-center font-poppins text-primary-text font-bold text-3xl w-full h-20">
                   <InputDefault
                     readOnly={onlyRead}
-                    {...register("child_name")}
+                    value={valueInputName}
+                    onChange={(e) => setValueInputName(e.target.value)}
                     className={`w-[75%] text-center ${onlyRead ? "" : "border-2 border-primary rounded-lg"}`}
                   />
                 </h3>
