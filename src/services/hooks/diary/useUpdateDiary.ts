@@ -1,22 +1,28 @@
-import { useMutation } from "@tanstack/react-query";
-import { AxiosError } from "axios";
-import { updateDiary } from "../../diary/diary.service";
-import type { Diary } from "../../diary/diary.service"; 
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import { updateDiary } from "../../diary/diary.service";
 
 export const useUpdateDiary = () => {
-    const navigate = useNavigate()
-    return useMutation({
-        mutationFn: (data: Diary) => updateDiary(data, data.id_diary_note),
+  const navigate = useNavigate()
+  const queryClient = useQueryClient();
 
-        onSuccess: (data) => {
-            navigate(-1)
-            return data
-        },
+  return useMutation({
+    mutationFn: ({
+      formData,
+      idDiary,
+    }: {
+      formData: FormData;
+      idDiary: number;
+    }) => updateDiary(formData, idDiary),
 
-        onError: (error: AxiosError) => {
-            console.log("ERRO DA API:", error.response?.data);
-            console.log("ERRO COMPLETO:", error);
-        },
-    });
-}
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["diary"] });
+      navigate(-1)
+      return data;
+    },
+
+    onError: (error: Error) => {
+      console.log("ERRO AO ATUALIZAR DIÁRIO:", error.message);
+    },
+  });
+};
