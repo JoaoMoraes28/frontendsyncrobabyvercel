@@ -12,6 +12,8 @@ import { CarouselDots } from "../../components/CarouselDots"
 
 import { useGetArticles} from "../../services/hooks/article/useGetArticles";
 import { useGetArticleByAge } from "../../services/hooks/article/useGetArticleByAge";
+import type { Article } from "../../services/article/article.service";
+import type { ArticleWithAge } from "../../services/article/article.service";
 
 import CardCarousel from "./components/CardCarousel";
 import ArticleCard from "./components/ArticleCard";
@@ -74,83 +76,12 @@ function Articles() {
             "type": "sono"
         }
     ])
-    const [articlesMain] = useState<ArticleModel[]>([
-        {
-            "id": 1,
-            "midia": Baby1,
-            "title": "A Importância do Brincar no Desenvolvimento Cognitivo",
-            "font": "Portal Educação Infantil",
-            "date": "2024-05-10",
-            "description": "Exploramos como as brincadeiras lúdicas auxiliam na formação de conexões neurais.",
-            "author": "Dra. Mariana Lins",
-            "type": "saude"
-        },
-        {
-            "id": 2,
-            "midia": Baby2,
-            "title": "Introdução Alimentar: Guia Prático",
-            "font": "Guia Crescer Saudável",
-            "date": "2024-05-15",
-            "description": "Dicas essenciais sobre como introduzir alimentos sólidos e lidar com as seletividades.",
-            "author": "Nutricionista Roberto Alves",
-            "type": "alimentacao"
-        },
-        {
-            "id": 3,
-            "midia": Baby3,
-            "title": "Sono Infantil: Estratégias para uma Noite Tranquila",
-            "font": "Blog Família Moderna",
-            "date": "2024-05-18",
-            "description": "Os distúrbios do sono são a quarta queixa mais comum nos consultórios pediátricos.",
-            "author": "Carla Mendes",
-            "type": "sono"
-        },
-        {
-            "id": 4,
-            "midia": Baby3,
-            "title": "Sono Infantil: Estratégias para uma Noite Tranquila",
-            "font": "Blog Família Moderna",
-            "date": "2024-05-18",
-            "description": "Os distúrbios do sono são a quarta queixa mais comum nos consultórios pediátricos.",
-            "author": "Carla Mendes",
-            "type": "sono"
-        },
-        {
-            "id": 5,
-            "midia": Baby3,
-            "title": "Sono Infantil: Estratégias para uma Noite Tranquila",
-            "font": "Blog Família Moderna",
-            "date": "2024-05-18",
-            "description": "Os distúrbios do sono são a quarta queixa mais comum nos consultórios pediátricos.",
-            "author": "Carla Mendes",
-            "type": "sono"
-        },
-        {
-            "id": 6,
-            "midia": Baby3,
-            "title": "Sono Infantil: Estratégias para uma Noite Tranquila",
-            "font": "Blog Família Moderna",
-            "date": "2024-05-18",
-            "description": "Os distúrbios do sono são a quarta queixa mais comum nos consultórios pediátricos.",
-            "author": "Carla Mendes",
-            "type": "sono"
-        },
-        {
-            "id": 7,
-            "midia": Baby3,
-            "title": "Sono Infantil: Estratégias para uma Noite Tranquila",
-            "font": "Blog Família Moderna",
-            "date": "2024-05-18",
-            "description": "Os distúrbios do sono são a quarta queixa mais comum nos consultórios pediátricos.",
-            "author": "Carla Mendes",
-            "type": "sono"
-        }
-    ])
-    const [articles, setArticles] = useState<ArticleModel[]>(articlesMain)
+    const [articlesMain, setArticlesMain] = useState<Article[]>([])
+    const [articles, setArticles] = useState<Article[]>(articlesMain)
 
     function onFilterArticles(type: string) {
         if (type != filterArticles && type != 'Todos') {
-            const newArticles: ArticleModel[] = articlesMain.filter(it => it.type == type)
+            const newArticles: Article[] = articlesMain.filter(it => it.content == type)
             setArticles(newArticles)
             setFilterArticles(type)
 
@@ -252,8 +183,9 @@ function Articles() {
             return
         }
 
-        if (onGetArticles) {
-            console.log(onGetArticles)
+        if (onGetArticles && typeof onGetArticles != "string") {
+            setArticles(onGetArticles.article)
+            setArticlesMain(onGetArticles.article)
         }
     }, [onGetArticles])
 
@@ -322,10 +254,10 @@ function Articles() {
                 <ul ref={carouselArticlesDesktop} className="flex flex-col justify-around w-full h-auto gap-4 py-2
                 xl:flex-row xl:w-[calc(100%-52px)] xl:h-[calc(100%-56px)] xl:justify-start xl:gap-8 xl:overflow-x-auto scroll-smooth snap-x snap-mandatory">
                     {articles.map((article) => (
-                        <Link to={`/article/${article.id}`}
-                            key={article.id}
+                        <Link to={`/article/${article.id_article}`}
+                            key={article.id_article}
                             className="min-h-22 flex">
-                            <ArticleCard article={article} cardArticleDesktop={cardArticleDesktop} />
+                            {/* <ArticleCard article={article.media} cardArticleDesktop={cardArticleDesktop} /> */}
                         </Link>
                     ))}
                     <div className="hidden xl:absolute xl:top-[calc(50%+12px)] xl:right-0 xl:flex xl:w-full xl:h-6 xl:justify-between">
