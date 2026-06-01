@@ -4,7 +4,7 @@ import type { ResponseAgeGroups } from "../../ageGroup/ageGroup.service";
 
 export const useGetAgeGroups = () => {
     return useQuery<ResponseAgeGroups>({
-        queryKey: ['article'],
+        queryKey: ['ageGroup'],
         queryFn: async () => {
            const response = await getAllAgeGroups()
            return response

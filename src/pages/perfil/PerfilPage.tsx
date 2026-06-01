@@ -13,6 +13,7 @@ import cameraIcon from "../../assets/cameraIcon.svg";
 import logoutIcon from "../../assets/logoutIcon.svg";
 import bellIcon from "../../assets/notifications.svg";
 import backIcon from "../../assets/BackIcon.svg";
+import Profile from "../../assets/navigation/profileHeader.svg";
 
 import { inputClassName, labelClassName } from "../routines/RoutineFeeding";
 
@@ -35,7 +36,9 @@ export function PerfilPage() {
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
 
-  const [preview, setPreview] = useState<string>(localStorage.getItem("user_photo")!)
+  const [preview, setPreview] = useState<string>(localStorage.getItem("user_photo") != null
+    || localStorage.getItem("user_photo") != undefined ?
+    Profile : localStorage.getItem("user_photo")!)
   const [photoFile, setPhotoFile] = useState<File | string>("")
   const [editPhoto, setEditPhoto] = useState<boolean>(false)
 
@@ -154,7 +157,13 @@ export function PerfilPage() {
         <div className="w-full max-w-[90%] xl:max-w-2xl bg-lilas rounded-4xl px-6 py-8 md:max-w-[90%] md:py-12 relative shadow-purple-md mx-auto">
           <button
             className="xl:hidden absolute top-4 right-4 text-purple-600 hover:text-purple-800 transition-colors"
-            onClick={() => navigate("/")}
+            onClick={() => {
+              const answer = confirm("Você deseja sair de sua conta?")
+              if (answer) {
+                localStorage.clear()
+                navigate("/")
+              }
+            }}
           >
             <img src={logoutIcon} alt="Sair" className="w-6 h-6" />
           </button>
@@ -165,7 +174,7 @@ export function PerfilPage() {
                 <img
                   src={preview == "null" || preview == "" ? cameraIcon : preview}
                   alt="Mudar foto"
-                  className={`object-cover object-center md:w-15 md:h-15 xl:w-25 xl:h-25 ${preview == "null" || preview == "" ? "w-10 h-10 opacity-60 " : "w-full h-full"}`}
+                  className={`object-cover object-center md:w-full md:h-full xl:w-25 xl:h-25 ${preview == "null" || preview == "" ? "w-10 h-10 opacity-60 " : "w-full h-full"}`}
                 />
               </label>
               <input onChange={(e) => onChangePreview(e)} id="imgUser" type="file" className="hidden" />

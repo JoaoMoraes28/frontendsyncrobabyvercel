@@ -22,7 +22,6 @@ export const getAllAgeGroups = async (): Promise<ResponseAgeGroups> => {
     const response = await api.get<ResponseAgeGroups>(
       `/age`,
     );
-
     return response.data;
   } catch (error: unknown) {
     if (String(error).includes("404")) {

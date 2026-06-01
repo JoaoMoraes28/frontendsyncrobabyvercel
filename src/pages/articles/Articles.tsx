@@ -2,16 +2,15 @@ import { useEffect, useRef, useState } from "react"
 import { Link, useNavigate } from "react-router-dom";
 
 import SetBlack from '../../assets/routines/setBlack.svg'
-import Baby1 from "../../assets/articles/baby1.png"
-import Baby2 from "../../assets/articles/baby2.png"
-import Baby3 from "../../assets/articles/baby3.png"
 import Search from "../../assets/search.svg"
+import { calculateAgeChild } from "../../utils/CalculeAgeGroup";
 
 import { InputDefault } from "../../components/InputDefault"
 import { CarouselDots } from "../../components/CarouselDots"
 
-import { useGetArticles} from "../../services/hooks/article/useGetArticles";
+import { useGetArticles } from "../../services/hooks/article/useGetArticles";
 import { useGetArticleByAge } from "../../services/hooks/article/useGetArticleByAge";
+import { useGetAgeGroups } from "../../services/hooks/ageGroup/useGetAgeGroups";
 import type { Article } from "../../services/article/article.service";
 import type { ArticleWithAge } from "../../services/article/article.service";
 
@@ -35,47 +34,22 @@ const classButtonFilter: string = 'flex justify-center items-center w-[30%] h-8 
 function Articles() {
     const navigate = useNavigate()
 
-     const { data: onGetArticles } = useGetArticles()
+    const { data: onGetArticles } = useGetArticles()
+    const { data: onGetAgeGroup } = useGetAgeGroups()
+
+    const [idAgeGroup, setIdAgeGroup] = useState<number>(1)
+    const { data: onGetArticlesByAge } = useGetArticleByAge(idAgeGroup)
 
     const carousel = useRef<HTMLUListElement>(null)
     const articleCarousel = useRef<HTMLLIElement>(null)
     const carouselArticlesDesktop = useRef<HTMLUListElement>(null)
     const cardArticleDesktop = useRef<HTMLLIElement>(null)
 
+    const childName: string | null = localStorage.getItem("select_child_name") ? localStorage.getItem("select_child_name") : ""
+    const h3Text: string | null = localStorage.getItem("select_child_name") ? "Recomendados para" : "Recomendações"
     const [indexCarousel, setIndexCarousel] = useState<number>(0)
     const [filterArticles, setFilterArticles] = useState<string>("Todos")
-    const [articlesCarousel] = useState<ArticleModel[]>([
-        {
-            "id": 1,
-            "midia": Baby1,
-            "title": "A Importância do Brincar no Desenvolvimento Cognitivo",
-            "font": "Portal Educação Infantil",
-            "date": "2024-05-10",
-            "description": "Exploramos como as brincadeiras lúdicas auxiliam na formação de conexões neurais.",
-            "author": "Dra. Mariana Lins",
-            "type": "saude"
-        },
-        {
-            "id": 2,
-            "midia": Baby2,
-            "title": "Introdução Alimentar: Guia Prático para Pais de Primeira Viagem",
-            "font": "Guia Crescer Saudável",
-            "date": "2024-05-15",
-            "description": "Dicas essenciais sobre como introduzir alimentos sólidos e lidar com as seletividades.",
-            "author": "Nutricionista Roberto Alves",
-            "type": "alimentacao"
-        },
-        {
-            "id": 3,
-            "midia": Baby3,
-            "title": "Sono Infantil: Estratégias para uma Noite Tranquila",
-            "font": "Blog Família Moderna",
-            "date": "2024-05-18",
-            "description": "Os distúrbios do sono são a quarta queixa mais comum nos consultórios pediátricos.",
-            "author": "Carla Mendes",
-            "type": "sono"
-        }
-    ])
+    const [articlesCarousel, setArticlesCarousel] = useState<ArticleWithAge[]>([])
     const [articlesMain, setArticlesMain] = useState<Article[]>([])
     const [articles, setArticles] = useState<Article[]>(articlesMain)
 
@@ -178,7 +152,17 @@ function Articles() {
         navigate(`/article/${id}`)
     }
 
-      useEffect(() => {
+    useEffect(() => {
+        if (!onGetAgeGroup) {
+            return
+        }
+
+        if (onGetAgeGroup) {
+            setIdAgeGroup(calculateAgeChild(localStorage.getItem("child_birth_date")!, onGetAgeGroup.age_group))
+        }
+    }, [onGetAgeGroup])
+
+    useEffect(() => {
         if (!onGetArticles) {
             return
         }
@@ -188,6 +172,16 @@ function Articles() {
             setArticlesMain(onGetArticles.article)
         }
     }, [onGetArticles])
+
+    useEffect(() => {
+        if (!onGetArticlesByAge) {
+            return
+        }
+
+        if (onGetArticlesByAge) {
+            setArticlesCarousel(onGetArticlesByAge.article.splice(0, 3))
+        }
+    }, [onGetArticlesByAge])
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -212,13 +206,13 @@ function Articles() {
                 </div>
                 <h3 className="flex justify-center items-center text-[22px] font-semibold font-poppins text-primary-text
                 md:justify-start md:text-2xl
-                xl:hidden">Recomendados para <span className="text-primary ml-1.5">Gabryel</span>
+                xl:hidden">{h3Text} <span className="text-primary ml-1.5">{childName}</span>
                 </h3>
                 <h3 className="hidden xl:flex xl:text-primary-text xl:text-3xl">Descubra novos artigos</h3>
                 <ul onScroll={scrollCarousel} ref={carousel} className="flex items-center gap-6 w-full max-h-[calc(100%-110px)] px-0.5 overflow-x-auto scroll-smooth snap-x snap-mandatory
                 xl:min-h-[90%]">
                     {articlesCarousel.map((article) => (
-                        <CardCarousel key={article.id} article={article} handleArticlePage={handleArticlePage} articleCarousel={articleCarousel} />
+                        <CardCarousel key={article.id_article} article={article} handleArticlePage={handleArticlePage} articleCarousel={articleCarousel} />
                     ))}
                 </ul>
                 <div className="flex justify-center w-full
@@ -257,7 +251,7 @@ function Articles() {
                         <Link to={`/article/${article.id_article}`}
                             key={article.id_article}
                             className="min-h-22 flex">
-                            {/* <ArticleCard article={article.media} cardArticleDesktop={cardArticleDesktop} /> */}
+                            <ArticleCard article={article} cardArticleDesktop={cardArticleDesktop} />
                         </Link>
                     ))}
                     <div className="hidden xl:absolute xl:top-[calc(50%+12px)] xl:right-0 xl:flex xl:w-full xl:h-6 xl:justify-between">

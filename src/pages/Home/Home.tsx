@@ -17,6 +17,7 @@ import { CategorySection } from "./components/CategorySection";
 import { useNavigate, Link, useOutletContext } from "react-router-dom";
 import { useGetChildren } from "../../services/hooks/children/getChildren"
 import Date from "../../utils/Date.ts"
+import { calculateAgeChild } from "../../utils/CalculeAgeGroup.ts";
 import CardCarousel from "../articles/components/CardCarousel.tsx";
 
 import type { ResponseChild, Children } from "../../services/children/children.service";
@@ -124,8 +125,8 @@ export function Home() {
   const { data: childrenData } = useGetChildren();
   const { data: onGetAgeGroup } = useGetAgeGroups()
 
-  const [idAgeGroup, setIdAgeGroup] = useState<number | null>(null)
-  const { data: onGetArticleAge, isLoading } = useGetArticleByAge(idAgeGroup)
+  const [idAgeGroup, setIdAgeGroup] = useState<number>(1)
+  const { data: onGetArticleAge } = useGetArticleByAge(idAgeGroup)
 
   const navigate = useNavigate();
 
@@ -201,7 +202,7 @@ export function Home() {
       if (child.length > 0 && localStorage.getItem("select_child") != "0") {
         setSelectedChild(child[0]);
         setAgeGroup(onGetAgeGroup.age_group)
-        calculateAgeChild(child[0], onGetAgeGroup.age_group)
+        setIdAgeGroup(calculateAgeChild(child[0].birth_date, onGetAgeGroup.age_group))
       }
     }
   }, [childrenData, onGetAgeGroup]);
@@ -212,14 +213,13 @@ export function Home() {
     }
 
     if (onGetArticleAge) {
-      console.log(onGetArticleAge)
       setArticles(onGetArticleAge.article.slice(0, 3))
     }
   }, [onGetArticleAge])
 
   useEffect(() => {
     if (ageGroup != null && ageGroup != undefined) {
-      calculateAgeChild(selectedChild, ageGroup)
+      setIdAgeGroup(calculateAgeChild(selectedChild.birth_date, ageGroup))
     }
   }, [selectedChild])
 
@@ -231,13 +231,6 @@ export function Home() {
       setActiveIndex(currentIndex);
     }
   };
-
-  function calculateAgeChild(child: Children, ageGroup: AgeGroup[]) {
-    const babyMonths: number = Date.subMonthsFormated(child.birth_date)
-
-    const grouAge: AgeGroup[] = ageGroup.filter(it => it.min_months <= babyMonths && it.max_months >= babyMonths)
-    setIdAgeGroup(grouAge[0].id_age_group)
-  }
 
   function handleArticlePage(e: React.MouseEvent<HTMLLIElement>, id: number) {
     e.stopPropagation()
@@ -530,6 +523,7 @@ export function Home() {
                       setChildName(child.child_name)
                       localStorage.setItem("select_child_name", child.child_name)
                       setIsModalOpen(false);
+                      localStorage.setItem("child_birth_date", child.birth_date)
                     }}
                     className="w-full bg-white border border-lilas md:py-3 py-2 px-4 rounded-xl flex items-center gap-4 cursor-pointer hover:bg-lilas/20 transition-colors"
                   >

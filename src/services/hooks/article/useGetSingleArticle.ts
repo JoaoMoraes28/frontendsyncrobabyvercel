@@ -3,7 +3,7 @@ import { getSingleArticle } from "../../article/article.service";
 import type { ResponseSingleArticle } from "../../article/article.service";
 
 export const useGetSingleArticle = (id_article: number) => {
-    return useQuery<ResponseSingleArticle | string>({
+    return useQuery<ResponseSingleArticle>({
         queryKey: ['singleArticle', id_article],
         queryFn: async () => {
                 

@@ -1,10 +1,9 @@
-import type { ArticleModel } from "../Articles"
 import type { Article } from "../../../services/article/article.service.ts"
 
 import Date from "../../../utils/Date.ts"
 
 interface Props {
-    article: any
+    article: Article
     cardArticleDesktop: React.RefObject<HTMLLIElement | null>
 }
 
@@ -18,11 +17,11 @@ function ArticleCard({ article, cardArticleDesktop }: Props) {
                 <div className="flex justify-center pt-4 w-1/3 h-full bg-primary rounded-l-lg
                                         md:w-[28%]
                                         xl:relative xl:w-full xl:h-1/2 xl:rounded-bl-none xl:rounded-tl-sm xl:rounded-tr-sm xl:pt-0">
-                    <span className="flex justify-center items-center w-22 h-6 font-nunito text-primary-text bg-light font-bold rounded-md
+                    <span className={`flex justify-center items-center w-22 h-6 font-nunito text-primary-text bg-light font-bold rounded-md
                                             md:w-30 md:h-8
-                                            xl:absolute xl:bg-accent xl:text-white xl:font-normal xl:text-[12px] xl:rounded-sm xl:w-18 xl:h-6 xl:top-2 xl:right-2">{Date.formatedDate(article.publication_date)}</span>
+                                            xl:absolute xl:bg-accent xl:text-white xl:font-normal xl:rounded-sm xl:w-24 xl:h-6 xl:top-2 xl:right-2 ${article.publication_date ? "" : "text-[7px] md:text-[10px] xl:text-[8px]"}`}>{article.publication_date ? Date.formatedDate(article.publication_date!) : "Sem data de publicação"}</span>
                     <figure className="hidden xl:block xl:w-full xl:h-full xl:rounded-t-sm">
-                        <img src={article.media} alt="" className="xl:w-full xl:h-full xl:rounded-t-sm xl:object-cover xl:object-top" />
+                        <img src={article.media!} alt="" className="xl:w-full xl:h-full xl:rounded-t-sm xl:object-cover xl:object-top" />
                     </figure>
                 </div>
                 <div className="flex flex-col justify-between w-2/3 h-full bg-lilas py-2 rounded-r-lg

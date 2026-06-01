@@ -1,4 +1,3 @@
-import type { ArticleModel } from "../Articles"
 import type { ArticleWithAge } from "../../../services/article/article.service.ts";
 import type { Article } from "../../../services/article/article.service.ts";
 
@@ -21,11 +20,11 @@ function CardCarousel({ article, articleCarousel, handleArticlePage }: Props) {
                 <figure className="w-full h-[calc(100%-40px)]
                                     xl:flex xl:h-full xl:rounded-xl">
                     <img aria-hidden="true" src={article.media!} alt="" className="w-full h-[70%] rounded-t-xl object-top object-cover
-                                        md:h-[55%]
+                                        md:h-[55%] md:object-center
                                         xl:w-1/2 xl:h-full xl:rounded-tr-none xl:rounded-bl-xl" />
-                    <figcaption className="px-4 pt-2 space-y-10 font-poppins h-[30%] bg-lilas
+                    <figcaption className="px-4 pt-2 space-y-1 font-poppins h-[30%] bg-lilas
                                         md:h-[45%]
-                                        xl:w-1/2 xl:h-full xl:rounded-tr-xl xl:rounded-br-xl xl:px-10 xl:pt-6">
+                                        xl:w-1/2 xl:space-y-10 xl:h-full xl:rounded-tr-xl xl:rounded-br-xl xl:px-10 xl:pt-6">
                         <div className={`hidden xl:flex xl:font-semibold xl:justify-start xl:items-center xl:min-w-30 xl:w-auto xl:h-10 xl:font-nunito `}>
                             <span className="xl:px-4 bg-white xl:rounded-md xl:h-8 xl:flex xl:justify-center xl:items-center xl:text-primary-darker">
                                 {article.author}
