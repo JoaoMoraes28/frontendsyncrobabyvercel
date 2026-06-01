@@ -1,32 +1,32 @@
 import { api } from "../api";
 
 export interface Article {
-     "id_article": number,
-      "title": string,
-      "content": string,
-      "publication_date": string | null,
-      "author": string,
-      "media": string | null,
-      "source_link": string,
-      "description":  string
+  "id_article": number,
+  "title": string,
+  "content": string,
+  "publication_date": string | null,
+  "author": string,
+  "media": string | null,
+  "source_link": string,
+  "description": string
 }
 
 export interface ArticleWithAge {
-     "id_article": number,
-      "title": string,
-      "content": string,
-      "publication_date": string | null,
-      "author": string,
-      "media": string | null,
-      "source_link": string,
-      "description":  string
-      "fk_id_age_group": number,
-      "age_group_name": string
+  "id_article": number,
+  "title": string,
+  "content": string,
+  "publication_date": string | null,
+  "author": string,
+  "media": string | null,
+  "source_link": string,
+  "description": string
+  "fk_id_age_group": number,
+  "age_group_name": string
 }
 
-export interface ResponseArticles{
-    status_code: number;
-    article: Article[];
+export interface ResponseArticles {
+  status_code: number;
+  article: Article[];
 }
 
 export interface ResponseSingleArticle {
@@ -36,7 +36,7 @@ export interface ResponseSingleArticle {
 
 export interface ResponseArticlesWithAge {
   status_code: number;
-  article_with_age: ArticleWithAge[];
+  article: ArticleWithAge[];
 }
 
 export const getAllArticles = async (): Promise<ResponseArticles> => {
@@ -54,29 +54,29 @@ export const getAllArticles = async (): Promise<ResponseArticles> => {
   }
 };
 
-export const getSingleArticle = async ( idArticle: number): Promise<ResponseSingleArticle> => {
+export const getSingleArticle = async (idArticle: number): Promise<ResponseSingleArticle> => {
   try {
     const response = await api.get<ResponseSingleArticle>(
-        `/article/${idArticle}`
+      `/article/${idArticle}`
     );
     return response.data;
   } catch (error: unknown) {
-   if (String(error).includes("404")) {
+    if (String(error).includes("404")) {
       return { status_code: 404, article: [] };
     }
     throw error;
   }
 };
 
-export const getArticlesWithAge = async ( idAgeGroup: number): Promise<ResponseArticlesWithAge> => {
+export const getArticlesWithAge = async (idAgeGroup: number | null): Promise<ResponseArticlesWithAge> => {
   try {
     const response = await api.get<ResponseArticlesWithAge>(
-        `/article/age/${idAgeGroup}`
+      `/article/age/${idAgeGroup}`
     );
     return response.data;
   } catch (error: unknown) {
-   if (String(error).includes("404")) {
-      return { status_code: 404, article_with_age: [] };
+    if (String(error).includes("404")) {
+      return { status_code: 404, article: [] };
     }
     throw error;
   }

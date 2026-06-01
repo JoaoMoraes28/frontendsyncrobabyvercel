@@ -78,8 +78,19 @@ export const getChild = async (id: number): Promise<ResponseChildId> => {
 };
 
 export const getChildren = async (): Promise<ResponseChild> => {
-  const response = await api.get<ResponseChild>(`user/child`);
-  return response.data;
+  try {
+    const response = await api.get<ResponseChild>(`user/child`);
+    return response.data;
+
+  } catch (error: any) {
+    if (String(error).includes("404")) {
+      return {
+        status_code: 404,
+        children: []
+      }
+    }
+    throw error
+  }
 };
 
 export const getChildDeactivate = async (): Promise<ResponseChild[]> => {

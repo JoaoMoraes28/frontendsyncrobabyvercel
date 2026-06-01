@@ -3,14 +3,11 @@ import { getAllAgeGroups } from "../../ageGroup/ageGroup.service";
 import type { ResponseAgeGroups } from "../../ageGroup/ageGroup.service";
 
 export const useGetAgeGroups = () => {
-    return useQuery<ResponseAgeGroups | string>({
+    return useQuery<ResponseAgeGroups>({
         queryKey: ['article'],
         queryFn: async () => {
-                
            const response = await getAllAgeGroups()
-        
            return response
-              
        }
     });
 }

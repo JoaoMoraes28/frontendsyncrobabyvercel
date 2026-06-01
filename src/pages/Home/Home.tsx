@@ -17,7 +17,15 @@ import { CategorySection } from "./components/CategorySection";
 import { useNavigate, Link, useOutletContext } from "react-router-dom";
 import { useGetChildren } from "../../services/hooks/children/getChildren"
 import Date from "../../utils/Date.ts"
+import CardCarousel from "../articles/components/CardCarousel.tsx";
+
 import type { ResponseChild, Children } from "../../services/children/children.service";
+
+import { useGetAgeGroups } from "../../services/hooks/ageGroup/useGetAgeGroups.ts";
+import type { AgeGroup } from "../../services/ageGroup/ageGroup.service.ts";
+
+import { useGetArticleByAge } from "../../services/hooks/article/useGetArticleByAge.ts";
+import type { ArticleWithAge } from "../../services/article/article.service.ts";
 
 const articlesData = [
   {
@@ -114,6 +122,10 @@ const inventoryStatusData = [
 
 export function Home() {
   const { data: childrenData } = useGetChildren();
+  const { data: onGetAgeGroup } = useGetAgeGroups()
+
+  const [idAgeGroup, setIdAgeGroup] = useState<number | null>(null)
+  const { data: onGetArticleAge, isLoading } = useGetArticleByAge(idAgeGroup)
 
   const navigate = useNavigate();
 
@@ -129,6 +141,9 @@ export function Home() {
     }
   };
 
+  const [articles, setArticles] = useState<ArticleWithAge[]>([])
+
+  const [ageGroup, setAgeGroup] = useState<AgeGroup[]>()
   const [activeIndex, setActiveIndex] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedChild, setSelectedChild] = useState<Children>({
@@ -175,11 +190,8 @@ export function Home() {
       return
     }
 
-    if (typeof childrenData === 'string') {
-      return
-    }
 
-    if (Array.isArray(childrenData.children)) {
+    if (childrenData && onGetAgeGroup) {
       setListChildren(childrenData);
 
       const idChild: number = Number(localStorage.getItem("select_child"));
@@ -188,9 +200,28 @@ export function Home() {
 
       if (child.length > 0 && localStorage.getItem("select_child") != "0") {
         setSelectedChild(child[0]);
+        setAgeGroup(onGetAgeGroup.age_group)
+        calculateAgeChild(child[0], onGetAgeGroup.age_group)
       }
     }
-  }, [childrenData]);
+  }, [childrenData, onGetAgeGroup]);
+
+  useEffect(() => {
+    if (!onGetArticleAge) {
+      return
+    }
+
+    if (onGetArticleAge) {
+      console.log(onGetArticleAge)
+      setArticles(onGetArticleAge.article.slice(0, 3))
+    }
+  }, [onGetArticleAge])
+
+  useEffect(() => {
+    if (ageGroup != null && ageGroup != undefined) {
+      calculateAgeChild(selectedChild, ageGroup)
+    }
+  }, [selectedChild])
 
   const handleScroll = () => {
     if (carouselRef.current) {
@@ -201,22 +232,33 @@ export function Home() {
     }
   };
 
+  function calculateAgeChild(child: Children, ageGroup: AgeGroup[]) {
+    const babyMonths: number = Date.subMonthsFormated(child.birth_date)
+
+    const grouAge: AgeGroup[] = ageGroup.filter(it => it.min_months <= babyMonths && it.max_months >= babyMonths)
+    setIdAgeGroup(grouAge[0].id_age_group)
+  }
+
+  function handleArticlePage(e: React.MouseEvent<HTMLLIElement>, id: number) {
+    e.stopPropagation()
+    navigate(`/article/${id}`)
+  }
+
   return (
     <div className="w-full flex flex-col items-center pt-14 pb-0 md:py-10 md:gap-8 xl:py-4 xl:pb-12 gap-4 xl:gap-4 relative">
       {/* Carousel */}
       <div
         ref={carouselRef}
         onScroll={handleScroll}
-        className="w-full flex gap-6 items-center overflow-x-auto overflow-y-hidden rounded-2xl snap-x snap-mandatory pb-2 [&::-webkit-scrollbar]:hidden xl:py-40"
+        className="flex items-center gap-6 w-full max-h-[calc(100%-110px)] h-60 px-0.5 overflow-x-auto scroll-smooth snap-x snap-mandatory
+        md:h-120        
+        xl:h-[40%] xl:min-h-140"
       >
-        {articlesData.map((article) => (
-          <CardPrincipal
-            key={article.id}
-            id={article.id}
-            textPre={article.textPre}
-            textHighlight={article.textHighlight}
-            description={article.description}
-            img={artigoImg}
+        {articles.map((article) => (
+          <CardCarousel
+            key={article.id_article}
+            article={article}
+            handleArticlePage={handleArticlePage}
           />
         ))}
       </div>
