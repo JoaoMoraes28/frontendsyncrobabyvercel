@@ -3,7 +3,7 @@ import { api } from "../api";
 export interface Article {
   "id_article": number,
   "title": string,
-  "content": string,
+  "content"?: string,
   "publication_date": string | null,
   "author": string,
   "media": string | null,
@@ -57,7 +57,7 @@ export const getAllArticles = async (): Promise<ResponseArticles> => {
 export const getSingleArticle = async (idArticle: number): Promise<ResponseSingleArticle> => {
   try {
     const response = await api.get<ResponseSingleArticle>(
-      `/article/${idArticle}`
+      `http://localhost:5173/syncrobaby/article/${idArticle}`
     );
     return response.data;
   } catch (error: unknown) {

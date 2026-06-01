@@ -19,11 +19,10 @@ import { useRegisterMedication } from "../../services/hooks/routines/useRegister
 import type { RegisterMedication } from "../../services/routines/routines.service.ts";
 import { useGetProductByTypeStorage } from "../../services/hooks/storage/useGetProductByTypeStorage.ts";
 import type { ProductStorage } from "../../services/storage/storage.service.ts";
-import type { ProductId } from "../../services/routines/routines.service.ts";
 
 interface DataMedicine {
     date_time: string,
-    product_id: Products,
+    product_id?: Products,
     description: string | null
 }
 
@@ -70,7 +69,7 @@ function RoutineMedicine() {
             'product_id': [
                 {
                     'id': idRemedySelected,
-                    'dosage': Number(data.product_id.quantity_product)
+                    'dosage': Number(data.product_id?.quantity_product)
                 }
             ],
             'description': data.description,

@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getArticlesWithAge } from "../../article/article.service";
 import type { ResponseArticlesWithAge} from "../../article/article.service";
 
-export const useGetArticleByAge = (id_age_group: number | null) => {
+export const useGetArticleByAge = (id_age_group: number) => {
     return useQuery<ResponseArticlesWithAge>({
         queryKey: ['articleByAge', id_age_group],
         queryFn: async () => {
