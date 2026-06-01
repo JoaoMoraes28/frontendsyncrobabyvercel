@@ -121,6 +121,37 @@ export function Vaccines() {
     return item.ageGroup === selectedAge;
   });
 
+
+  // useEffect(() => {
+  //   if (!onGetAllVaccines) {
+  //     return
+  //   }
+
+  //   if (onGetAllVaccines) {
+  //     console.log(onGetAllVaccines)
+  //   }
+  // }, [onGetAllVaccines])
+
+  // useEffect(() => {
+  //   if (!onGetVaccineByStatus) {
+  //     return
+  //   }
+
+  //   if (onGetVaccineByStatus) {
+  //     console.log(onGetVaccineByStatus)
+  //   }
+  // }, [onGetVaccineByStatus])
+
+  useEffect(() => {
+    if (!onGetVaccineAgeGroup) {
+      return
+    }
+
+    if (onGetVaccineAgeGroup) {
+      console.log(onGetVaccineAgeGroup)
+    }
+  }, [onGetVaccineAgeGroup])
+
   const renderVaccineList = (vaccines: Vaccine[]) => {
     if (vaccines.length === 0) {
       return (
@@ -130,87 +161,60 @@ export function Vaccines() {
       );
     }
 
-    useEffect(() => {
-      if (!onGetAllVaccines) {
-        return
-      }
-
-      if(onGetAllVaccines) {
-        console.log(onGetAllVaccines)
-      }
-    }, [onGetAllVaccines])
-
-    useEffect(() => {
-      if (!onGetVaccineByStatus) {
-        return
-      }
-
-      if(onGetVaccineByStatus) {
-        console.log(onGetVaccineByStatus)
-      }
-    }, [onGetVaccineByStatus])
-
-    useEffect(() => {
-      if (!onGetVaccineAgeGroup) {
-        return
-      }
-
-      if(onGetVaccineAgeGroup) {
-        console.log(onGetVaccineAgeGroup)
-      }
-    }, [onGetVaccineAgeGroup])
-
-    return vaccines.map((vaccine) => (
-      <div
-        className="w-full bg-white rounded-2xl flex flex-col gap-1 my-1 pb-4 shrink-0"
-        key={vaccine.id}
-      >
-        <div className="w-full bg-primary flex justify-between p-2 rounded-t-xl">
-          <span className="font-bold text-sm text-white">Vacina</span>
-          <div className="flex gap-4 w-[40%] justify-around">
-            <span className="text-sm md:text-lg">Status</span>
-            <span className="text-sm md:text-lg">Data</span>
+    return (
+      <div>
+        {vaccines.map((vaccine) => (
+          <div
+            className="w-full bg-white rounded-2xl flex flex-col gap-1 my-1 pb-4 shrink-0"
+            key={vaccine.id}
+          >
+            <div className="w-full bg-primary flex justify-between p-2 rounded-t-xl">
+              <span className="font-bold text-sm text-white">Vacina</span>
+              <div className="flex gap-4 w-[40%] justify-around">
+                <span className="text-sm md:text-lg">Status</span>
+                <span className="text-sm md:text-lg">Data</span>
+              </div>
+            </div>
+            {/* nome e status */}
+            <div className="w-full flex justify-between p-2">
+              <span className="font-bold text-sm w-[50%]">{vaccine.name}</span>
+              <div className="flex gap-4 w-[40%] text-center font-bold font-poppins justify-around">
+                <span
+                  className={`text-[10px] md:text-[16px] ${vaccine.status === "Pendente"
+                    ? "text-red-alert"
+                    : "text-green-alert"
+                    }`}
+                >
+                  {vaccine.status}
+                </span>
+                <span
+                  className={`text-[10px] md:text-[16px] ${vaccine.status === "Pendente"
+                    ? "text-red-alert"
+                    : "text-green-alert"
+                    }`}
+                >
+                  {vaccine.date}
+                </span>
+              </div>
+            </div>
+            {/* descrição e obs */}
+            <div className="w-full px-2 text-primary font-poppins">
+              <p className="text-[10px] md:text-[14px] lg:text-[12px]">
+                <span className="text-primary-darker font-bold">
+                  Doenças evitadas:{" "}
+                </span>
+                {vaccine.preventedDiseases}
+              </p>
+              <p className="text-[10px] md:text-[14px] lg:text-[12px]">
+                <span className="text-primary-darker font-bold">Obs: </span>
+                {vaccine.observation}
+              </p>
+            </div>
           </div>
-        </div>
-        {/* nome e status */}
-        <div className="w-full flex justify-between p-2">
-          <span className="font-bold text-sm w-[50%]">{vaccine.name}</span>
-          <div className="flex gap-4 w-[40%] text-center font-bold font-poppins justify-around">
-            <span
-              className={`text-[10px] md:text-[16px] ${
-                vaccine.status === "Pendente"
-                  ? "text-red-alert"
-                  : "text-green-alert"
-              }`}
-            >
-              {vaccine.status}
-            </span>
-            <span
-              className={`text-[10px] md:text-[16px] ${
-                vaccine.status === "Pendente"
-                  ? "text-red-alert"
-                  : "text-green-alert"
-              }`}
-            >
-              {vaccine.date}
-            </span>
-          </div>
-        </div>
-        {/* descrição e obs */}
-        <div className="w-full px-2 text-primary font-poppins">
-          <p className="text-[10px] md:text-[14px] lg:text-[12px]">
-            <span className="text-primary-darker font-bold">
-              Doenças evitadas:{" "}
-            </span>
-            {vaccine.preventedDiseases}
-          </p>
-          <p className="text-[10px] md:text-[14px] lg:text-[12px]">
-            <span className="text-primary-darker font-bold">Obs: </span>
-            {vaccine.observation}
-          </p>
-        </div>
+        ))}
       </div>
-    ));
+    )
+
   };
 
   return (

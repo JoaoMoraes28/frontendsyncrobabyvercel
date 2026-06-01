@@ -88,7 +88,7 @@ function calculateDaysFormated(dayInitial: Date | string, operator: "more" | "le
 function subHoursFormated(startTime: string, endTime: string) {
   const startTimeFormated: string = `2026-04-27T${startTime}:00.000Z`;
   const endTimeFormated: string = `2026-04-27T${endTime}:00.000Z`;
-  console.log(endTime, startTime)
+
   const dateStart: Date = parseISO(startTimeFormated);
   const dateEnd: Date = parseISO(endTimeFormated);
 
@@ -112,6 +112,12 @@ function subYearsFormated(startDate: string | undefined) {
   if (!startDate) return "0.0";
   const months: number = differenceInMonths(date, parseISO(startDate));
   return (months / 12).toFixed(1);
+}
+
+function subMonthsFormated(startDate: string | undefined) {
+  if (!startDate) return 0
+  const months: number = differenceInMonths(date, parseISO(startDate))
+  return months
 }
 
 function subDaysFormated(startTime: string) {
@@ -138,5 +144,6 @@ export default {
   getTodayFormated,
   convertISO,
   convertHourISO,
+  subMonthsFormated,
   date,
 };
