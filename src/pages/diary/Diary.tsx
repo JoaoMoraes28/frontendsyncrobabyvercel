@@ -1,4 +1,3 @@
-import type { Register } from "./components/Card.tsx"
 import { InputDefault } from "../../components/InputDefault.tsx"
 
 import Search from "../../assets/search.svg"
@@ -8,50 +7,36 @@ import Card from "./components/Card.tsx"
 
 import { Link } from "react-router-dom"
 import ChildrenSelect from "../../layouts/ChildrenSelect.tsx"
+import { useGetDiary } from "../../services/hooks/diary/useGetDiary.ts"
+import type { ModelDiary } from "../../services/diary/diary.service.ts"
 
 function Diary() {
+    const idChild:number = Number(localStorage.getItem("select_child"))
+    const {data: onGetDiary} = useGetDiary(idChild)
+
     const [childSelected, setChildSelected] = useState<number>(1)
 
-    const [registerMain] = useState<Register[]>([
-        {
-            "id": 1,
-            "title": "Os primeiros passos da Maya",
-            "creation_date": "2026-03-12T10:30:00Z",
-            "text_content": "Hoje estávamos na sala e ele soltou do sofá de repente! Deu três passinhos na minha direção antes de cair sentado rindo muito. Eu juro, foi como assistir um pequeno milagre acontecendo em câmera lenta — aqueles passinhos meio tortinhos, cheios de coragem e desequilíbrio, como se o mundo inteiro fosse grande demais pra ele e, ainda assim, ele estivesse disposto a conquistar cada centímetro. Fiquei tão surpresa que nem consegui reagir na hora, só abri um sorriso bobo enquanto ele ria, como se tivesse contado a melhor piada do universo. Depois ele bateu as mãozinhas no chão, todo orgulhoso de si mesmo, e tentou levantar de novo — claro que sem muito sucesso, mas com uma determinação que parecia maior que ele.",
-            "label_color": "#FFA9DD"
-        },
-        {
-            "id": 2,
-            "title": "Primeiro dia de aula (muito choro, mais da nossa parte)",
-            "creation_date": "2026-02-05T08:15:00Z",
-            "text_content": "Hoje estávamos na sala e ele soltou do sofá de repente! Deu três passinhos na minha direção antes de cair sentado rindo muito. Eu juro, foi como assistir um pequeno milagre acontecendo em câmera lenta — aqueles passinhos meio tortinhos, cheios de coragem e desequilíbrio, como se o mundo inteiro fosse grande demais pra ele e, ainda assim, ele estivesse disposto a conquistar cada centímetro. Fiquei tão surpresa que nem consegui reagir na hora, só abri um sorriso bobo enquanto ele ria, como se tivesse contado a melhor piada do universo. Depois ele bateu as mãozinhas no chão, todo orgulhoso de si mesmo, e tentou levantar de novo — claro que sem muito sucesso, mas com uma determinação que parecia maior que ele.",
-            "label_color": "#68DBCE"
-        },
-        {
-            "id": 3,
-            "title": "A primeira palavra foi 'Gato'!",
-            "creation_date": "2026-04-20T19:45:00Z",
-            "text_content": "Hoje estávamos na sala e ele soltou do sofá de repente! Deu três passinhos na minha direção antes de cair sentado rindo muito. Eu juro, foi como assistir um pequeno milagre acontecendo em câmera lenta — aqueles passinhos meio tortinhos, cheios de coragem e desequilíbrio, como se o mundo inteiro fosse grande demais pra ele e, ainda assim, ele estivesse disposto a conquistar cada centímetro. Fiquei tão surpresa que nem consegui reagir na hora, só abri um sorriso bobo enquanto ele ria, como se tivesse contado a melhor piada do universo. Depois ele bateu as mãozinhas no chão, todo orgulhoso de si mesmo, e tentou levantar de novo — claro que sem muito sucesso, mas com uma determinação que parecia maior que ele.",
-            "label_color": "#F3DC82"
-        },
-        {
-            "id": 4,
-            "title": "Noite difícil: febre e muitos dentes nascendo",
-            "creation_date": "2026-05-08T03:00:00Z",
-            "text_content": "Hoje estávamos na sala e ele soltou do sofá de repente! Deu três passinhos na minha direção antes de cair sentado rindo muito. Eu juro, foi como assistir um pequeno milagre acontecendo em câmera lenta — aqueles passinhos meio tortinhos, cheios de coragem e desequilíbrio, como se o mundo inteiro fosse grande demais pra ele e, ainda assim, ele estivesse disposto a conquistar cada centímetro. Fiquei tão surpresa que nem consegui reagir na hora, só abri um sorriso bobo enquanto ele ria, como se tivesse contado a melhor piada do universo. Depois ele bateu as mãozinhas no chão, todo orgulhoso de si mesmo, e tentou levantar de novo — claro que sem muito sucesso, mas com uma determinação que parecia maior que ele.",
-            "label_color": "#FF9193"
-        }
-    ])
-    const [register, setRegister] = useState<Register[]>([])
+    const [registerMain, setRegisterMain] = useState<ModelDiary[]>([])
+    const [register, setRegister] = useState<ModelDiary[]>([])
 
     function filterRegister(text: string) {
-        const newData: Register[] = registerMain.filter(it => it.title.toLowerCase().includes(text.toLowerCase()))
+        const newData: ModelDiary[] = registerMain.filter(it => it.title.toLowerCase().includes(text.toLowerCase()))
         setRegister(newData)
     }
 
     useEffect(() => {
         setRegister(registerMain)
     }, [])
+
+    useEffect(() => {
+        console.log(onGetDiary)
+        if(!onGetDiary)
+            return 
+        if(onGetDiary){
+            setRegisterMain(onGetDiary.diary)
+            setRegister(onGetDiary.diary)
+        }
+    }, [onGetDiary])
 
     return (
         <div className="relative flex flex-col items-center w-full min-h-full pb-8">
@@ -77,8 +62,8 @@ function Diary() {
             <ul className="flex flex-col w-full gap-4 py-8 overflow-y-scroll
             xl:grid xl:grid-cols-2 xl:justify-items-center">
                 {register.map((it) => (
-                    <Link to={`/anotation-diary/${it.id}?edit=false`}
-                        key={it.id}
+                    <Link to={`/anotation-diary/${it.id_diary_note}?edit=false`}
+                        key={it.id_diary_note}
                         className="xl:w-[85%] xl:h-full">
                         <Card card={it} />
                     </Link>
