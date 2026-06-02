@@ -18,7 +18,10 @@ import Header from "../../../layouts/Header";
 
 import { onInsertChild } from "../../../services/hooks/children/insertChild";
 import type { InsertChild } from "../../../services/children/children.service";
-import { useState } from "react";
+import { useGetNotificationChild } from "../../../services/hooks/notification/useGetNotificationChild";
+import type { Notification } from "../../../services/notification/notification.service";
+
+import { useEffect, useState } from "react";
 
 interface ChildData {
   name: string;
@@ -50,11 +53,14 @@ const genderList: Genders[] = [
 
 export function AddChildPage() {
   const navigate = useNavigate();
+  const idChild: number = Number(localStorage.getItem("select_child"))
 
+  const { data: onGetNotificationChild } = useGetNotificationChild(idChild)
   const { mutate: handleRegisterAPI } = onInsertChild();
 
   const [photo, setPhoto] = useState<string>("")
   const [photoFile, setPhotoFile] = useState<File | string>("")
+  const [notifications, setNotifications] = useState<Notification[]>([])
 
   const {
     register,
@@ -70,7 +76,6 @@ export function AddChildPage() {
       setPhoto(URL.createObjectURL(e.target.files[0]))
     }
   }
-
 
   function handleAddChild(data: ChildData) {
     const newData: InsertChild = {
@@ -100,16 +105,26 @@ export function AddChildPage() {
     );
   }
 
+  useEffect(() => {
+    if (!onGetNotificationChild) {
+      return
+    }
+
+    if (onGetNotificationChild) {
+      setNotifications(onGetNotificationChild.notification)
+    }
+  }, [onGetNotificationChild])
+
   return (
     <div className="flex flex-col w-full min-h-screen bg-light xl:pb-0 xl:flex-row">
       {/* Header Mobile*/}
-      <div className="xl:hidden w-full">
-        <Header />
+      <div>
+        <Header notification={notifications} />
       </div>
       <PerfilHeader preview={localStorage.getItem("user_photo")!} />
 
       <main className="flex-1 flex flex-col items-center justify-start w-full px-6 relative pt-5 pb-8">
-        <div className="hidden xl:flex justify-between items-center w-full mb-1">
+        {/* <div className="hidden xl:flex justify-between items-center w-full mb-1">
           <button
             onClick={() => navigate(-1)}
             className="p-2 rounded-full text-white"
@@ -129,7 +144,7 @@ export function AddChildPage() {
               />
             </button>
           </div>
-        </div>
+        </div> */}
 
         <div className="w-full max-w-[90%] xl:max-w-2xl bg-lilas rounded-4xl px-6 py-8 md:py-12 relative mx-auto my-auto flex flex-col items-center shadow-purple-md">
           <ul className="absolute left-6 top-6">

@@ -21,6 +21,8 @@ import { useUpdateUser } from "../../services/hooks/user/useUpdateUser";
 import { useGetUser } from "../../services/hooks/user/useGetUser";
 import type { UpdateUser } from "../../services/user/user.service";
 import { useUpdatePictureUser } from "../../services/hooks/user/useUpdatePictureUser";
+import { useGetNotificationChild } from "../../services/hooks/notification/useGetNotificationChild";
+import type { Notification } from "../../services/notification/notification.service";
 
 interface UserData {
   name: string;
@@ -29,13 +31,16 @@ interface UserData {
 }
 
 export function PerfilPage() {
+  const idChild: number = Number(localStorage.getItem("select_child"))
+
+  const { data: onGetNotificationChild } = useGetNotificationChild(idChild)
   const { mutate: onUpdateUser } = useUpdateUser()
   const { mutate: onUpdatePictureUser } = useUpdatePictureUser()
   const { data: onGetUserData, refetch } = useGetUser()
 
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
-
+  const [notifications, setNotifications] = useState<Notification[]>([])
   const [preview, setPreview] = useState<string>(localStorage.getItem("user_photo") != null
     || localStorage.getItem("user_photo") != undefined ?
     Profile : localStorage.getItem("user_photo")!)
@@ -121,37 +126,31 @@ export function PerfilPage() {
     }
   }, [onGetUserData])
 
+  useEffect(() => {
+    if (!onGetNotificationChild) {
+      return
+    }
+
+    if (onGetNotificationChild) {
+      setNotifications(onGetNotificationChild.notification)
+    }
+  }, [onGetNotificationChild])
+
   return (
     <div className="flex flex-col xl:flex-row w-full min-h-screen bg-light">
-      <div className="xl:hidden w-full">
-        <Header />
+      <div>
+        <Header notification={notifications} />
       </div>
       <PerfilHeader previewImg={onChangePreview} preview={preview} readonly={isEditing} />
 
       <main className="flex-1 flex flex-col items-center justify-center w-full relative py-8 xl:py-0 font-nunito">
-        <div className="hidden xl:flex justify-between items-center w-full absolute top-10 left-0 px-16">
-          <button
-            onClick={() => navigate(-1)}
-            className="p-2 rounded-full text-white"
-          >
-            <img src={backIcon} alt="Voltar" className="w-8 h-8" />
-          </button>
-
-          <div className="flex gap-6 items-center">
+        <div className="hidden xl:flex justify-end items-center w-full absolute top-30 left-0 px-19">
             <button onClick={() => {
               localStorage.setItem("select_child", "0")
               navigate("/")
             }}>
               <img src={logoutIcon} alt="Sair" className="w-8 h-8" />
             </button>
-            <button>
-              <img
-                src={bellIcon}
-                alt="Notificações"
-                className="w-8 h-8 text-gray-800"
-              />
-            </button>
-          </div>
         </div>
 
         <div className="w-full max-w-[90%] xl:max-w-2xl bg-lilas rounded-4xl px-6 py-8 md:max-w-[90%] md:py-12 relative shadow-purple-md mx-auto">

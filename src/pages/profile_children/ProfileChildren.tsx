@@ -35,8 +35,9 @@ import type { UpdateChild } from "../../services/children/children.service";
 
 import { useDeactivateChild } from "../../services/hooks/children/deactivateChild";
 import type { VerifyDesactivate } from "../../services/children/children.service";
-
 import { useUpdatePictureChild } from "../../services/hooks/children/useUpdatePictureChild.ts";
+import { useGetNotificationChild } from "../../services/hooks/notification/useGetNotificationChild";
+import type { Notification } from "../../services/notification/notification.service";
 
 export interface ListDescription {
   title: string;
@@ -73,10 +74,13 @@ function ProfileChildren() {
   const { mutate: onDeleteChild } = useDeactivateChild()
 
   const idChild: number = Number(localStorage.getItem("select_child"))
+
+  const { data: onGetNotificationChild } = useGetNotificationChild(idChild)
   const { data: childData } = useGetChild(idChild)
   const { mutate: onUpdateChild } = useUpdateChild()
   const { mutate: onUpdatePicture } = useUpdatePictureChild()
 
+  const [notifications, setNotifications] = useState<Notification[]>([])
   const refProfile = useRef<HTMLDivElement | null>(null)
   const [deleteModal, setDeleteModal] = useState<boolean>(false)
   const [preview, setPreview] = useState<string | null>(null)
@@ -166,6 +170,16 @@ function ProfileChildren() {
       setPreview(newData.photo)
     }
   }, [childData, reset])
+
+  useEffect(() => {
+    if (!onGetNotificationChild) {
+      return
+    }
+
+    if (onGetNotificationChild) {
+      setNotifications(onGetNotificationChild.notification)
+    }
+  }, [onGetNotificationChild])
 
   if (!childData?.child || childData.child.length === 0) {
     return (
@@ -292,8 +306,8 @@ function ProfileChildren() {
         md:pb-28
         xl:pt-0 xl:pb-0 xl:relative"
     >
-      <div className="xl:">
-        <Header />
+      <div>
+        <Header notification={notifications} />
       </div>
       <Perfil
         register_name={valueInputName}

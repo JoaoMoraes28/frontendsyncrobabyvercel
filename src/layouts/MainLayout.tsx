@@ -20,7 +20,12 @@ import HomeSelected from "../assets/navigation/homeSelected.svg";
 import RoutineSelected from "../assets/navigation/routinesSelected.svg";
 import StorageSelected from "../assets/navigation/storageSelected.svg";
 import ArticlesSelected from "../assets/navigation/articlesSelected.svg";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+import { useGetNotificationId } from "../services/hooks/notification/useGetNotificationById";
+import { useGetNotificationUser } from "../services/hooks/notification/useGetNotificationUser";
+import { useGetNotificationChild } from "../services/hooks/notification/useGetNotificationChild";
+import type { Notification } from "../services/notification/notification.service";
 
 export interface IconsNavigation {
   id: number;
@@ -99,9 +104,47 @@ export const listIcons: IconsNavigation[] = [
 export function MainLayout() {
   const [childName, setChildName] = useState<string>(localStorage.getItem("select_child_name")!)
 
+  const idChild: number = Number(localStorage.getItem("select_child"))
+
+  const { data: onGetNotificationChild } = useGetNotificationChild(idChild)
+  const { data: onGetNotificationId } = useGetNotificationId(1)
+  const { data: onGetNotificationUser } = useGetNotificationUser()
+
+  const [notifications, setNotifications] = useState<Notification[]>([])
+
+  // useEffect(() => {
+  //   if (!onGetNotificationId) {
+  //     return
+  //   }
+
+  //   if(onGetNotificationId) {
+  //     console.log(onGetNotificationId)
+  //   }
+  // }, [onGetNotificationId])
+
+  // useEffect(() => {
+  //   if (!onGetNotificationUser) {
+  //     return
+  //   }
+
+  //   if(onGetNotificationUser) {
+  //     console.log(onGetNotificationUser)
+  //   }
+  // }, [onGetNotificationUser])
+
+  useEffect(() => {
+    if (!onGetNotificationChild) {
+      return
+    }
+
+    if (onGetNotificationChild) {
+      setNotifications(onGetNotificationChild.notification)
+    }
+  }, [onGetNotificationChild])
+
   return (
     <div className="flex h-screen w-screen bg-light">
-      <Header />
+      <Header notification={notifications} />
       <NavigationBar listIcons={listIcons} child_name={childName} />
       <main className="min-w-screen h-full overflow-y-auto xl:flex xl:justify-end">
         <div
