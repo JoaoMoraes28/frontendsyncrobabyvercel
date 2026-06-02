@@ -28,7 +28,7 @@ import { PerfilPage } from "./pages/perfil/PerfilPage";
 import { AddChildPage } from "./pages/profile_children/pages/AddChild";
 import UpdateMeasures from "./pages/measures/UpdateMeasures";
 import { EditIllness } from "./pages/health/pages/EditIllness";
-import Diary from "./pages/diary/Diary";
+import ModelDiary from "./pages/diary/Diary";
 import Anotation from "./pages/diary/Anotation";
 import NewAnotation from "./pages/diary/NewAnotation";
 import AddStorage from "./pages/storage/AddStorage";
@@ -66,7 +66,7 @@ export function AppRoutes() {
           <Route path="/measures" element={<Measures />} />
           <Route path="/update-measures" element={<UpdateMeasures />} />
           <Route path="/edit-illness/:id" element={<EditIllness />} />
-          <Route path="/diary" element={<Diary />} />
+          <Route path="/diary" element={<ModelDiary />} />
           <Route path="/anotation-diary/:id" element={<Anotation />} />
           <Route path="/new-anotation" element={<NewAnotation />} />
         </Route>

@@ -1,7 +1,7 @@
 import { AxiosError, isAxiosError } from "axios";
 import { api } from "../api";
 
-export interface Diary {
+export interface ModelDiary {
   id_diary_note: number;
   title: string;
   content: string;
@@ -14,7 +14,7 @@ export interface Diary {
 export interface InsertDiary {
   title: string;
   content: string;
-  media: string;
+  media: string | null;
   date: string;
   color: string;
   fk_id_child: number;
@@ -22,7 +22,7 @@ export interface InsertDiary {
 
 export interface ResponseDiary {
   status_code: number;
-  diary: Diary[];
+  diary: ModelDiary[];
 }
 
 export interface ResponseUpdateDiary {
@@ -56,7 +56,7 @@ export const getDiary = async (childId: number): Promise<ResponseDiary> => {
 
 export const getDiaryId = async ( idDiary: number ): Promise<ResponseDiary> => {
   try {
-    const response = await api.get<ResponseDiary>(`/diary/${idDiary}`);
+    const response = await api.get<ResponseDiary>(`http://localhost:5173/syncrobaby/diary/${idDiary}`);
     return response.data;
   } catch (error: unknown) {
     if (isAxiosError(error) && error.response?.status === 404) {
