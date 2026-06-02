@@ -1,87 +1,29 @@
 import ConfirmSet from "../../assets/confirmSet.svg";
-import BirthDay from "../../assets/birthdayNotification.svg";
-import Vaccine from "../../assets/vaccineNotification.svg";
-import Storage from "../../assets/storageNotification.svg";
-import Trash from "../../assets/trash.svg";
 import SetBack from "../../assets/navigation/setBack.svg";
-import { useEffect, useState } from "react";
 
-import type { Notification } from "../../layouts/Header";
-import { useGetNotificationId } from "../../services/hooks/notification/useGetNotificationById";
-import { useGetNotificationUser } from "../../services/hooks/notification/useGetNotificationUser";
-import { useGetNotificationChild } from "../../services/hooks/notification/useGetNotificationChild";
+import type { Notification } from "../../services/notification/notification.service";
+import NotificationCard from "./components/NotificationCard";
 
 interface Props {
   visibleNotifications: boolean;
   notifications: Notification[];
+  notificationsUnread: number
   setNot: (notifications: Notification[]) => void;
   moveNotificationsBar: (state: boolean) => void;
+  deleteNotification:(id: number) => void
+  readAllNotications:() => void
+  changeRead:(id: number) => void
 }
 
 function Notifications({
   visibleNotifications,
   moveNotificationsBar,
+  notificationsUnread,
   notifications,
-  setNot,
+  deleteNotification,
+  readAllNotications,
+  changeRead
 }: Props) {
-
-  const idChild: number = Number(localStorage.getItem("select_child"))
-
-  // const { data: onGetNotificationId } = useGetNotificationId(1)
-  // const { data: onGetNotificationUser } = useGetNotificationUser()
-  // const { data: onGetNotificationChild } = useGetNotificationChild(idChild)
-
-
-  function setImage(type: string) {
-    if (type == "vacine") {
-      return Vaccine;
-    } else if (type == "storage") {
-      return Storage;
-    } else {
-      return BirthDay;
-    }
-  }
-
-  function deleteNotification(id: number) {
-    const newNot = notifications.filter((n: Notification) => n.id != id);
-
-    setNot(newNot);
-  }
-
-  function deleteAllNotications() {
-    setNot([]);
-  }
-
-  // useEffect(() => {
-  //   if (!onGetNotificationId) {
-  //     return
-  //   }
-
-  //   if(onGetNotificationId) {
-  //     console.log(onGetNotificationId)
-  //   }
-  // }, [onGetNotificationId])
-
-  // useEffect(() => {
-  //   if (!onGetNotificationUser) {
-  //     return
-  //   }
-
-  //   if(onGetNotificationUser) {
-  //     console.log(onGetNotificationUser)
-  //   }
-  // }, [onGetNotificationUser])
-
-  // useEffect(() => {
-  //   if (!onGetNotificationChild) {
-  //     return
-  //   }
-
-  //   if(onGetNotificationChild) {
-  //     console.log(onGetNotificationChild)
-  //   }
-  // }, [onGetNotificationChild])
-
   return (
     <aside className={`fixed px-6 pt-10 pb-34 top-0 w-screen h-screen z-90 overflow-auto bg-light
         md:px-14 md:mt-0
@@ -101,8 +43,8 @@ function Notifications({
           </h2>
         </div>
         <button
-          onClick={() => deleteAllNotications()}
-          className="flex w-32 h-9 justify-center items-center gap-2 rounded-lg bg-accent border-2 border-accent-dark font-poppins font-bold text-sm text-white"
+          onClick={() => readAllNotications()}
+          className={`w-32 h-9 justify-center items-center gap-2 rounded-lg bg-accent border-2 border-accent-dark font-poppins font-bold text-sm text-white ${notificationsUnread == 0 ? 'hidden' : 'flex'}`}
         >
           <img
             aria-hidden="true"
@@ -115,42 +57,8 @@ function Notifications({
       </header>
       <main>
         <ul className="flex flex-col w-full mt-14 gap-5">
-          {notifications.map((notification: Notification) => (
-            <li
-              key={notification.id}
-              className="flex w-full h-28 p-2 gap-3 rounded-sm border-2 border-primary overflow-hidden
-                    xl:hover:scale-102 xl:transition xl:duration-300"
-            >
-              <div className="flex flex-col justify-between w-auto">
-                <img
-                  aria-hidden="true"
-                  src={setImage(notification.type)}
-                  alt=""
-                  className="w-12 h-12 p-2 rounded-lg border-2 border-primary"
-                />
-                <span className="font-nunito text-primary-darker text-sm">
-                  15 min
-                </span>
-              </div>
-              <div className="flex flex-col w-[calc(100%-58px)] h-full justify-between items-end">
-                <header className="w-full">
-                  <p className="font-poppins font-bold text-text-primary text-[1rem]">
-                    {notification.title}
-                  </p>
-                </header>
-                <p className="w-full bg-blu font-nunito grow pt-1 text-primary-dark font-extralight text-[0.9rem] overflow-hidden line-clamp-2 text-ellipsis">
-                  {notification.description}
-                </p>
-                <button onClick={() => deleteNotification(notification.id)}>
-                  <img
-                    src={Trash}
-                    alt="Icone para excluir uma notificação."
-                    className="w-auto h-4
-                                md:h-5"
-                  />
-                </button>
-              </div>
-            </li>
+          {notifications.map((notification) => (
+            <NotificationCard key={notification.id_notification} notification={notification} changeRead={changeRead} deleteNotification={deleteNotification} />
           ))}
           <p
             className={`w-full h-15 flex justify-center items-center mt-[50%] font-bold text-primary text-xl text-center ${notifications.length == 0 ? "flex" : "hidden"}`}

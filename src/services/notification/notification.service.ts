@@ -9,7 +9,8 @@ export interface Notification {
     fk_id_child: number,
     fk_id_guardian: number,
     fk_id_notification_type: number,
-    notification_type_name: string
+    notification_type_name: string,
+    img_type?: string
 }
 
 export interface ResponseGetNotificationById {

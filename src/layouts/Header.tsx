@@ -13,15 +13,16 @@ import Moon from "../assets/moon.svg"
 import Sun from "../assets/sun.svg"
 
 import { useLocation, useNavigate, Link } from "react-router-dom";
+import type { Notification } from "../services/notification/notification.service.ts";
+import { usePatchNotificationRead } from "../services/hooks/notification/usePatchNotificationRead";
 
-export interface Notification {
-  id: number;
-  title: string;
-  type: string;
-  description: string;
+interface Props {
+  notification: Notification[]
 }
 
-function Header() {
+function Header({ notification }: Props) {
+  const { mutate: onReadNotification } = usePatchNotificationRead()
+
   const [DateHour, setDateHour] = useState<string>(Date.getDateFormated());
   const [layoutColor, setLayoutColor] = useState<boolean>(true)
   const [photoUser] = useState<string | null>(
@@ -31,69 +32,8 @@ function Header() {
       ? Profile
       : localStorage.getItem("user_photo"),
   );
-  const [notifications, setNotifications] = useState<Notification[]>([
-    {
-      id: 1,
-      title: "Lembrete de Vacina: amanhã!",
-      type: "vacine",
-      description:
-        "Olá! A sua vacina Febre Amarela está agendada para dia 28/02/2026",
-    },
-    {
-      id: 2,
-      title: "Fraldas acabando!",
-      type: "storage",
-      description: "Olá! Seu item: Fraldas acabará em breve!",
-    },
-    {
-      id: 3,
-      title: "Aniversário a vista!",
-      type: "birthday",
-      description: "Parabéns! Pedro completará 2 aninhos em 3 dias!",
-    },
-    {
-      id: 4,
-      title: "Aniversário a vista!",
-      type: "birthday",
-      description: "Parabéns! Pedro completará 2 aninhos em 3 dias!",
-    },
-    {
-      id: 5,
-      title: "Aniversário a vista!",
-      type: "birthday",
-      description: "Parabéns! Pedro completará 2 aninhos em 3 dias!",
-    },
-    {
-      id: 6,
-      title: "Aniversário a vista!",
-      type: "birthday",
-      description: "Parabéns! Pedro completará 2 aninhos em 3 dias!",
-    },
-    {
-      id: 7,
-      title: "Aniversário a vista!",
-      type: "birthday",
-      description: "Parabéns! Pedro completará 2 aninhos em 3 dias!",
-    },
-    {
-      id: 8,
-      title: "Aniversário a vista!",
-      type: "birthday",
-      description: "Parabéns! Pedro completará 2 aninhos em 3 dias!",
-    },
-    {
-      id: 9,
-      title: "Aniversário a vista!",
-      type: "birthday",
-      description: "Parabéns! Pedro completará 2 aninhos em 3 dias!",
-    },
-    {
-      id: 10,
-      title: "Aniversário a vista!",
-      type: "birthday",
-      description: "Parabéns! Pedro completará 2 aninhos em 3 dias!",
-    },
-  ]);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const notificationsUnread: number = notifications.filter(it => it.read_status == false).length
 
   const [windowWidth, setWindowWidth] = useState<boolean>(
     window.matchMedia("(max-width: 1279px)").matches,
@@ -173,7 +113,7 @@ function Header() {
       doc.setProperty("--color-primary-text", "#41354c")
       doc.setProperty("--color-white", "#ffffff")
       doc.setProperty("--color-lilas-medium", "#d2beff")
-      
+
     } else {
       doc.setProperty("--color-light", "#3C334F")
       doc.setProperty("--color-lilas", "#73609F")
@@ -183,6 +123,34 @@ function Header() {
 
     }
 
+  }
+
+  function deleteNotification(id: number) {
+    setNotifications(current => current.filter((n: Notification) => n.id_notification != id));
+  }
+
+  function readAllNotications() {
+    setNotifications(current => current.map((it) => {
+      return { ...it, read_status: true }
+    }));
+  }
+
+  function changeRead(id: number) {
+    onReadNotification(
+      id,
+      {
+        onSuccess: () => {
+          setNotifications(current => current.map((it) => {
+            if (it.id_notification == id) {
+              return { ...it, read_status: true }
+            }
+            return it
+          }))
+        }, onError: () => {
+          alert("Erro ao visualizar notificação!")
+        }
+      }
+    )
   }
 
   useEffect(() => {
@@ -205,23 +173,27 @@ function Header() {
     return () => clearInterval(handleTime);
   }, []);
 
+  useEffect(() => {
+    setNotifications(notification)
+  }, [notification])
+
   return (
     <header
       className={`fixed top-0 flex flex-col justify-between items-center w-screen px-6 pt-6 z-90 bg-light ${setTitleHeader(location.pathname) != "Home" ? "h-24" : "h-32"}
       md:px-14
-      xl:h-24 xl:flex-row xl:px-20 xl:pt-8 xl:items-start xl:right-0 ${location.pathname == "/profile-children" || location.pathname == "/profile-user" ? "xl:w-[calc(100%-20%)]" : "xl:max-w-[calc(100%-200px)]"}`}
+      xl:h-24 xl:flex-row xl:px-20 xl:pt-8 xl:items-start xl:right-0 ${location.pathname == "/profile-children" || location.pathname == "/profile-user" || location.pathname == "/add-child" ? "xl:w-[calc(100%-20%)]" : "xl:max-w-[calc(100%-200px)]"}`}
     >
       <div
         onClick={moveNoticationsBar}
-        className={`xl:absolute xl:top-0 xl:z-80 xl:right-0 xl:w-screen xl:h-screen xl:bg-black/60 xl:backdrop-blur-[1px]  ${visibleNotifications ? "xl:block" : "hidden"}`}
+        className={`xl:absolute xl:top-0 xl:z-80 xl:right-0 xl:w-screen xl:h-screen xl:bg-black/60 ${visibleNotifications ? "xl:block" : "hidden"}`}
       ></div>
       <button
         onClick={() => navigate(-1)}
-        className={`xl:ml-58 ${(location.pathname == "/profile-children" && !windowWidth) || (location.pathname == "/profile-user" && !windowWidth) ? "flex" : "hidden"}`}
+        className={`xl:ml-58 ${(location.pathname == "/profile-children" && !windowWidth) || (location.pathname == "/profile-user" && !windowWidth) || (location.pathname == "/add-child" && !windowWidth) ? "flex" : "hidden"}`}
       >
         <img src={SetBackProfile} alt="Retorna a tela anterior." />
       </button>
-      <div className={`w-full flex justify-between items-center xl:justify-start xl:gap-6 ${(setTitleHeader(location.pathname) != "Home" && windowWidth) || location.pathname == "/profile-children" || location.pathname == "/profile-user" ? "hidden" : "block"}`}>
+      <div className={`w-full flex justify-between items-center xl:justify-start xl:gap-6 ${(setTitleHeader(location.pathname) != "Home" && windowWidth) || location.pathname == "/profile-children" || location.pathname == "/profile-user" || location.pathname == "/add-child" ? "hidden" : "block"}`}>
         <div
           className={`flex w-[calc(100%-90px)] h-9 rounded-2xl bg-lilas shadow-purple-sm px-2 ${(setTitleHeader(location.pathname) != "Home" && windowWidth) || location.pathname == "/profile-children" || location.pathname == "/profile-user" ? "hidden" : "block"}
           md:h-11
@@ -286,17 +258,17 @@ function Header() {
               className="flex justify-center items-center"
             >
               <div
-                className={`absolute justify-center items-center rounded-full bg-primary w-5.5 h-5.5 -right-2 -top-2 z-90 ${notifications.length != 0 ? "flex" : "hidden"}
+                className={`absolute justify-center items-center rounded-full bg-primary w-5.5 h-5.5 -right-2 -top-2 z-90 ${notificationsUnread != 0 ? "flex" : "hidden"}
                 md:h-6 md:w-6`}
               >
                 <span className="font-bold text-white text-[14px]">
-                  {notifications.length}
+                  {notificationsUnread}
                 </span>
               </div>
               <img
                 src={Notifications}
                 alt="Icone de redirecionamento para notificações."
-                className={`w-auto h-6 ${notifications.length != 0 ? "animate-bell" : ""}
+                className={`w-auto h-6 ${notificationsUnread != 0 ? "animate-bell" : ""}
                 md:h-8`}
               />
             </button>
@@ -304,8 +276,8 @@ function Header() {
           <Link
             to="/profile-user"
             className={`w-auto h-10 -mt-2.5 border-2 border-lilas-dark rounded-full
-            md:h-8 md:mt-0
-            xl:hidden ${location.pathname == "/profile-children" || location.pathname == "/profile-user" ? "hidden" : "block"}`}
+            md:h-11 md:-mt-2
+            xl:hidden ${location.pathname == "/profile-children" || location.pathname == "/profile-user" || location.pathname == "/add-child" ? "hidden" : "block"}`}
           >
             <img
               src={photoUser!}
@@ -320,6 +292,10 @@ function Header() {
         moveNotificationsBar={moveNoticationsBar}
         notifications={notifications}
         setNot={setNotifications}
+        deleteNotification={deleteNotification}
+        readAllNotications={readAllNotications}
+        changeRead={changeRead}
+        notificationsUnread={notificationsUnread}
       />
     </header>
   );
