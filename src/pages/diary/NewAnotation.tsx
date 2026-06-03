@@ -15,10 +15,15 @@ import BtnPrimary from "../../components/BtnPrimary"
 
 import { useNavigate } from "react-router-dom"
 
+import { useInsertDiary } from "../../services/hooks/diary/useInsertDiary.ts"
+import type { InsertDiary } from "../../services/diary/diary.service.ts"
+
 const labelClass: string = 'font-poppins text-primary-darker font-semibold text-[14px] md:text-[16px]'
 const inputClass: string = 'font-poppins text-primary text-[16px] border border-primary-darker rounded-sm w-full h-10 pl-2 md:text-[18px]'
 
 function NewAnotation() {
+    const { mutate: onInsertDiary } = useInsertDiary()
+
     const {
         register,
         handleSubmit,
@@ -33,21 +38,39 @@ function NewAnotation() {
 
     const [colorLabel, setColorLabel] = useState<string>("")
     const [preview, setPreview] = useState<string | null>(null)
+    const [fileImg, setFileImg] = useState<File | string>()
 
     function sendData(data: Register) {
-        const fullData: Register = {
-            id: 0,
+        const fullData: InsertDiary = {
+            fk_id_child: Number(localStorage.getItem("select_child")),
             title: data.title,
-            midia:  preview != null ? preview : "",
-            creation_date: data.creation_date,
-            label_color: colorLabel,
-            text_content: data.text_content
+            media: fileImg != null ? fileImg : "",
+            date: data.creation_date,
+            color: colorLabel,
+            content: data.text_content
         }
-        console.log(fullData)
+
+        const formData = new FormData()
+
+        Object.entries(fullData).forEach(([name, value]) => {
+            formData.append(name, value)
+        })
+
+        onInsertDiary(
+            formData,
+            {
+                onSuccess: () => {
+                    alert("Diário criado com sucesso!")
+                }, onError: () => {
+                    
+                }
+            }
+        )
     }
 
     function changePreview(e: React.ChangeEvent<HTMLInputElement>) {
         if (e.target.files) {
+            setFileImg(e.target.files[0])
             setPreview(URL.createObjectURL(e.target.files[0]))
         }
     }
@@ -56,7 +79,7 @@ function NewAnotation() {
         <div className="w-full min-h-full
         xl:flex xl:justify-center">
             <form onSubmit={handleSubmit(sendData)} className="flex flex-col items-center w-full h-full bg-white rounded-md shadow-purple-sm gap-1.5
-            xl:w-[85%]">
+            xl:w-[65%]">
                 <div className="flex flex-col items-center bg-linear-to-l from-[#f4ebfb] to-[#ffefef] w-full rounded-t-md">
                     <div className="flex justify-center items-center w-8 h-8 rounded-full shadow-purple-md">
                         <img aria-hidden="true" src={CloudPurple} alt="" className="w-auto h-5" />
@@ -68,7 +91,7 @@ function NewAnotation() {
                 </div>
                 <div className="flex flex-col w-full h-grow items-center px-4 h-full">
                     <label htmlFor="image" className="flex flex-col justify-center items-center w-full h-50 font-poppins font-semibold border-2 border-dotted border-accent rounded-2xl
-                    md:min-h-[40%]">
+                    md:min-h-[60%]">
                         <p className={`text-darker-purple ${preview == null ? 'block' : 'hidden'}`}>Clique para enviar ou arraste os ficheiros</p>
                         <span className={`text-gray-medium text-sm ${preview == null ? 'block' : 'hidden'}`}>Suporta JPG ou PNG</span>
                         <img src={preview == null ? "*" : preview} alt="Imagem escolhida para registro." className={`w-full h-full object-cover object-center rounded-2xl ${preview == null ? 'hidden' : 'block'}`} />

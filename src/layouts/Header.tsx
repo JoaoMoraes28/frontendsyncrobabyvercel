@@ -174,7 +174,13 @@ function Header({ notification }: Props) {
   }, []);
 
   useEffect(() => {
-    setNotifications(notification)
+    if (!notification) {
+      return
+    }
+
+    if (notification) {
+      setNotifications(notification)
+    }
   }, [notification])
 
   return (
@@ -189,7 +195,7 @@ function Header({ notification }: Props) {
       ></div>
       <button
         onClick={() => navigate(-1)}
-        className={`xl:ml-58 ${(location.pathname == "/profile-children" && !windowWidth) || (location.pathname == "/profile-user" && !windowWidth) || (location.pathname == "/add-child" && !windowWidth) ? "flex" : "hidden"}`}
+        className={`xl:ml-[calc(220px)] ${(location.pathname == "/profile-children" && !windowWidth) || (location.pathname == "/profile-user" && !windowWidth) || (location.pathname == "/add-child" && !windowWidth) ? "flex" : "hidden"}`}
       >
         <img src={SetBackProfile} alt="Retorna a tela anterior." />
       </button>

@@ -338,7 +338,7 @@ function ProfileChildren() {
 
       <div
         className="flex w-full h-full relative
-            xl:justify-center xl:items-center xl:pt-10 bg-light"
+            xl:justify-center xl:items-center xl:pt-10 xl:w-[calc(100%-632px)] bg-light"
       >
         <div className={`absolute bg-black/50 backdrop-blur-sm w-full h-full z-40 ${deleteModal ? "block" : "hidden"}`}></div>
         <form

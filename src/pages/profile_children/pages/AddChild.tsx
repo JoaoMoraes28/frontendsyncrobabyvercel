@@ -123,30 +123,8 @@ export function AddChildPage() {
       </div>
       <PerfilHeader preview={localStorage.getItem("user_photo")!} />
 
-      <main className="flex-1 flex flex-col items-center justify-start w-full px-6 relative pt-5 pb-8">
-        {/* <div className="hidden xl:flex justify-between items-center w-full mb-1">
-          <button
-            onClick={() => navigate(-1)}
-            className="p-2 rounded-full text-white"
-          >
-            <img src={backIcon} alt="Voltar" className="w-8 h-8" />
-          </button>
-
-          <div className="flex gap-6 items-center">
-            <button onClick={() => navigate("/")}>
-              <img src={logoutIcon} alt="Sair" className="w-8 h-8" />
-            </button>
-            <button>
-              <img
-                src={bellIcon}
-                alt="Notificações"
-                className="w-8 h-8 text-gray-800"
-              />
-            </button>
-          </div>
-        </div> */}
-
-        <div className="w-full max-w-[90%] xl:max-w-2xl bg-lilas rounded-4xl px-6 py-8 md:py-12 relative mx-auto my-auto flex flex-col items-center shadow-purple-md">
+      <main className="flex-1 flex flex-col items-center justify-start w-full px-6 relative pt-25 pb-8">
+        <div className="w-full max-w-[90%] xl:h-[calc(100%-40px)] xl:max-w-2xl xl:max-h-180 bg-lilas rounded-4xl px-6 py-8 md:py-12 relative mx-auto my-auto flex flex-col items-center shadow-purple-md">
           <ul className="absolute left-6 top-6">
             {genderList.map((gender) => (
               <li key={gender.id} className={`w-14 h-14 ${genderSelected != gender.id ? 'hidden' : 'flex'}`}>
@@ -156,7 +134,7 @@ export function AddChildPage() {
               </li>
             ))}
           </ul>
-          <div className="w-36 h-36 rounded-full border-[3px] border-primary bg-transparent flex items-center justify-center mb-8 xl:w-48 xl:h-48 cursor-pointer hover:bg-white/40 transition-colors">
+          <div className="w-36 h-36 rounded-full border-[3px] border-primary bg-transparent flex items-center justify-center mb-8 xl:min-w-38 xl:min-h-38 cursor-pointer hover:bg-white/40 transition-colors">
             <label htmlFor="fileImage" className={`text-primary text-center w-full h-full flex justify-center items-center rounded-full text-6xl font-light xl:text-8xl ${photo == "" ? "pb-4 xl:pb-8" : ""}`}>
               {photo == "" ? (<span>+</span>) : (<img src={photo} alt="Foto selecionada." className="w-full h-full object-center object-cover rounded-full" />)}
             </label>

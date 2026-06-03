@@ -17,7 +17,7 @@ export interface Register {
     creation_date: string
     label_color?: string
     midia?: string
-    text_content?: string
+    text_content: string
 }
 
 function Card({ card }: Props) {

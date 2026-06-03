@@ -4,7 +4,7 @@ function WelcomeBar() {
   return (
     <aside
       className="hidden xl:fixed xl:flex xl:flex-col xl:items-center xl:w-1/3 xl:min-w-130 xl:h-screen 
-        xl:pt-16 xl:rounded-tr-2xl xl:rounded-br-2xl xl:bg-primary xl:space-y-2"
+        xl:pt-16 xl:bg-primary xl:space-y-2"
     >
       <img
         src={Logo}

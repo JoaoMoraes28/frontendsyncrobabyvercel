@@ -5,19 +5,22 @@ import Plus from "../../assets/plusWhite.svg"
 import { useEffect, useState } from "react"
 import Card from "./components/Card.tsx"
 
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import ChildrenSelect from "../../layouts/ChildrenSelect.tsx"
 import { useGetDiary } from "../../services/hooks/diary/useGetDiary.ts"
 import type { ModelDiary } from "../../services/diary/diary.service.ts"
+import { LoadingBaby } from "../../components/LoadingBaby.tsx"
+import { EmptyState } from "../../components/EmptyState.tsx"
 
 function Diary() {
-    const idChild:number = Number(localStorage.getItem("select_child"))
-    const {data: onGetDiary} = useGetDiary(idChild)
+    const idChild: number = Number(localStorage.getItem("select_child"))
+    const { data: onGetDiary, isLoading, isError } = useGetDiary(idChild)
 
     const [childSelected, setChildSelected] = useState<number>(1)
 
     const [registerMain, setRegisterMain] = useState<ModelDiary[]>([])
     const [register, setRegister] = useState<ModelDiary[]>([])
+    const navigate = useNavigate()
 
     function filterRegister(text: string) {
         const newData: ModelDiary[] = registerMain.filter(it => it.title.toLowerCase().includes(text.toLowerCase()))
@@ -29,10 +32,9 @@ function Diary() {
     }, [])
 
     useEffect(() => {
-        console.log(onGetDiary)
-        if(!onGetDiary)
-            return 
-        if(onGetDiary){
+        if (!onGetDiary)
+            return
+        if (onGetDiary) {
             setRegisterMain(onGetDiary.diary)
             setRegister(onGetDiary.diary)
         }
@@ -61,13 +63,35 @@ function Diary() {
             </div>
             <ul className="flex flex-col w-full gap-4 py-8 overflow-y-scroll
             xl:grid xl:grid-cols-2 xl:justify-items-center">
-                {register.map((it) => (
-                    <Link to={`/anotation-diary/${it.id_diary_note}?edit=false`}
-                        key={it.id_diary_note}
-                        className="xl:w-[85%] xl:h-full">
-                        <Card card={it} />
-                    </Link>
-                ))}
+                {isLoading && !isError && <LoadingBaby text="Buscando lembranças" />}
+
+                {!isLoading && isError && <p className="text-red-500 font-poppins col-span-full text-center mt-4">
+                    Erro ao buscar lembranças. Tente novamente mais tarde.
+                </p>}
+
+                {!isLoading && !isError && register.length == 0 &&
+                    <EmptyState
+                        buttonText="Adicionar lembrança"
+                        onButtonClick={() => navigate("/new-anotation")}
+                        description="Pareçe que nenhum lembrança foi criada..."
+                        title="Sem registros no diário"
+                        show404Background={false}
+                        isFullPage={false}
+                    />
+                }
+
+                {!isLoading && !isError && register.length > 0 &&
+                    register.map((it) => {
+                        return (
+                            <Link to={`/anotation-diary/${it.id_diary_note}?edit=false`}
+                                key={it.id_diary_note}
+                                className="xl:w-[85%] xl:h-full">
+                                <Card card={it} />
+                            </Link>
+                        )
+                    })
+                }
+
             </ul>
             <div className="fixed bottom-22 w-full h-14 flex justify-center items-center bg-light
             md:bottom-28
