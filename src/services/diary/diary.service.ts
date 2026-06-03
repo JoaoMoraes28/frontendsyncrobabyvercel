@@ -14,7 +14,7 @@ export interface ModelDiary {
 export interface InsertDiary {
   title: string;
   content: string;
-  media: string | null;
+  media: File | string;
   date: string;
   color: string;
   fk_id_child: number;
@@ -54,21 +54,20 @@ export const getDiary = async (childId: number): Promise<ResponseDiary> => {
   }
 };
 
-export const getDiaryId = async ( idDiary: number ): Promise<ResponseDiary> => {
+export const getDiaryId = async (idDiary: number): Promise<ResponseDiary> => {
   try {
     const response = await api.get<ResponseDiary>(`http://localhost:5173/syncrobaby/diary/${idDiary}`);
     return response.data;
   } catch (error: unknown) {
     if (isAxiosError(error) && error.response?.status === 404) {
-      return {  
+      return {
         status_code: 404,
-         diary: []
+        diary: []
       };
     }
     throw error;
   }
 };
-
 
 export const insertDiary = async (
   data: FormData,
@@ -91,12 +90,33 @@ export const insertDiary = async (
 };
 
 export const updateDiary = async (
-  data: FormData,
+  data: InsertDiary,
   idDiary: number,
 ): Promise<ResponseUpdateDiary> => {
   try {
     const response = await api.put<ResponseUpdateDiary>(
-      `/diary/${idDiary}`,
+      `http://localhost:5173/syncrobaby/diary/${idDiary}`,
+      data
+    );
+    return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError && error.response) {
+      throw new Error(
+        error.response.data.message ||
+        "Erro ao atualizar o registro no diário.",
+      );
+    }
+    throw new Error("Erro de conexão com o servidor ao atualizar o registro.");
+  }
+};
+
+export const updatPictureDiary = async (
+  idDiary: number,
+  data: FormData
+): Promise<ResponseUpdateDiary> => {
+  try {
+    const response = await api.patch<ResponseUpdateDiary>(
+      `http://localhost:5173/syncrobaby/diary/media/${idDiary}`,
       data,
       {
         headers: {
@@ -109,14 +129,12 @@ export const updateDiary = async (
     if (error instanceof AxiosError && error.response) {
       throw new Error(
         error.response.data.message ||
-          "Erro ao atualizar o registro no diário.",
+        "Erro ao atualizar o a foto no diário.",
       );
     }
     throw new Error("Erro de conexão com o servidor ao atualizar o registro.");
   }
 };
-
-
 
 export const deleteDiary = async (
   idDiary: number,

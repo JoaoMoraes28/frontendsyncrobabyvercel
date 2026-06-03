@@ -12,6 +12,9 @@ import SetBack from "../../assets/navigation/setBack.svg"
 import { useGetDiaryId } from "../../services/hooks/diary/useGetDiaryId.ts"
 import type { ModelDiary } from "../../services/diary/diary.service.ts"
 import type { InsertDiary } from "../../services/diary/diary.service.ts"
+import { useUpdatePictureDiary } from "../../services/hooks/diary/useUpdatePictureDiary.ts"
+import { useUpdateDiary } from "../../services/hooks/diary/useUpdateDiary.ts"
+
 import { useForm } from "react-hook-form"
 
 export interface Color {
@@ -42,6 +45,9 @@ export const colors: Color[] = [
 function Anotation() {
     const { id } = useParams()
     const { data: onGetDiaryId } = useGetDiaryId(Number(id))
+    const { mutate: onUpdateDiary } = useUpdateDiary()
+    const { mutate: onUpdatePicture } = useUpdatePictureDiary()
+
     const idChild: number = Number(localStorage.getItem("select_child"))
     const navigate = useNavigate()
     const [params] = useSearchParams()
@@ -58,22 +64,19 @@ function Anotation() {
         fk_id_child: 0
     })
 
-    const [previewImg, setPreviewImg] = useState<string | null>(anotation?.media == undefined || anotation?.media == null ? null : anotation.media)
+    const [fileImg, setFileImg] = useState<File | string>()
+    const [previewImg, setPreviewImg] = useState<string | null>()
 
     const {
         register,
         handleSubmit,
+        setValue,
         formState: { errors }
-    } = useForm<ResponseForm>({
-        defaultValues: {
-            title: anotation?.title,
-            content: anotation?.content,
-            date: anotation?.date.split("T")[0]
-        }
-    })
+    } = useForm<ResponseForm>()
 
     function changePreview(e: React.ChangeEvent<HTMLInputElement>) {
         if (e.target.files) {
+            setFileImg(e.target.files[0])
             setPreviewImg(URL.createObjectURL(e.target.files[0]))
         }
     }
@@ -83,24 +86,66 @@ function Anotation() {
 
         const fullData: InsertDiary = {
             title: data.title,
-            media: previewImg,
             date: data.date,
+            media: "",
             fk_id_child: idChild,
             content: data.content,
             color: colorSelected != "" ? colorSelected : idColor[0].color
         }
 
+        onUpdateDiary(
+            {
+                idDiary: Number(id),
+                data: fullData
+            },
+            {
+                onSuccess: () => {
+                    if (fileImg) {
+                        const formData = new FormData()
+                        formData.append("media", fileImg)
+
+                        onUpdatePicture(
+                            {
+                                id_diary: Number(id),
+                                data: formData
+                            },
+                            {
+                                onSuccess: () => {
+                                    alert("Diário atualizado com sucesso!")
+                                    navigate(-1)
+                                }, onError: () => {
+                                    alert("Erro ao atualizar imagem!")
+                                }
+                            }
+                        )
+                    }
+
+
+                }, onError: () => {
+                    alert("Erro ao atualizar diário!")
+                }
+            }
+        )
+
         console.log(fullData)
     }
 
     useEffect(() => {
-        if (!onGetDiaryId)
+        if (!onGetDiaryId) {
             return
-        if (onGetDiaryId)
-            console.log(onGetDiaryId)
+        }
+
+        if (onGetDiaryId) {
             setAnotation(onGetDiaryId.diary[0])
-        
-    }, [onGetDiaryId])
+        }
+    })
+
+    useEffect(() => {
+        setValue("title", anotation?.title)
+        setValue("content", anotation?.content)
+        setValue("date", anotation?.date.split("T")[0])
+        setPreviewImg(anotation.media)
+    }, [anotation])
 
     return (
         <div className={`relative w-full text-primary-text
@@ -124,7 +169,11 @@ function Anotation() {
                 {errors.title && <p className="flex justify-center text-red-600/70 text-sm font-nunito">{errors.title.message}</p>}
                 <label htmlFor={edit == "true" ? 'image' : 'none'} className="relative flex flex-col items-end w-full h-58
                 md:h-[60%]">
-                    <img src={previewImg!} alt="Imagem do registro." className={`w-full h-50 object-cover object-center md:h-[calc(100%-36px)] ${edit == "true" ? 'opacity-70' : ''}`} />
+                    {onGetDiaryId?.diary[0].media ? (
+                        <img src={previewImg!} alt="Imagem do registro." className={`w-full h-50 object-cover object-center md:h-[calc(100%-36px)] ${edit == "true" ? 'opacity-70' : ''}`} />
+                    ) : (
+                        <div className="w-full h-50 bg-primary"></div>
+                    )}
                     <div className="flex justify-between items-center w-full h-8 font-nunito text-primary italic">
                         <InputDefault {...register("date", { required: "Data inválida!" })} readOnly={edit == "false"} type="date" className={`h-7 mt-1 font-semibold ${edit == "true" ? 'border-2 border-primary rounded-sm w-28 text-center' : ''}`} />
                         {errors.date && <p className="text-red-600/70 text-sm font-nunito">{errors.date.message}</p>}

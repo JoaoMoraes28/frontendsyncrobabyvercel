@@ -41,8 +41,8 @@ export function PerfilPage() {
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([])
-  const [preview, setPreview] = useState<string>(localStorage.getItem("user_photo") != null
-    || localStorage.getItem("user_photo") != undefined ?
+  const [preview, setPreview] = useState<string>(localStorage.getItem("user_photo") == null
+    || localStorage.getItem("user_photo") == undefined ?
     Profile : localStorage.getItem("user_photo")!)
   const [photoFile, setPhotoFile] = useState<File | string>("")
   const [editPhoto, setEditPhoto] = useState<boolean>(false)
@@ -144,13 +144,16 @@ export function PerfilPage() {
       <PerfilHeader previewImg={onChangePreview} preview={preview} readonly={isEditing} />
 
       <main className="flex-1 flex flex-col items-center justify-center w-full relative py-8 xl:py-0 font-nunito">
-        <div className="hidden xl:flex justify-end items-center w-full absolute top-30 left-0 px-19">
-            <button onClick={() => {
-              localStorage.setItem("select_child", "0")
+        <div className="hidden xl:flex justify-end items-center w-full absolute top-25 left-0 px-19">
+          <button onClick={() => {
+            const answer = confirm("Você deseja sair de sua conta?")
+            if (answer) {
+              localStorage.clear()
               navigate("/")
-            }}>
-              <img src={logoutIcon} alt="Sair" className="w-8 h-8" />
-            </button>
+            }
+          }}>
+            <img src={logoutIcon} alt="Sair" className="w-8 h-8" />
+          </button>
         </div>
 
         <div className="w-full max-w-[90%] xl:max-w-2xl bg-lilas rounded-4xl px-6 py-8 md:max-w-[90%] md:py-12 relative shadow-purple-md mx-auto">

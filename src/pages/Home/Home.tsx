@@ -307,7 +307,7 @@ export function Home() {
             </div>
 
             <Link
-              to={selectedChild?.id_child == 0 && localStorage.getItem("select_child") == "0" ? "/home" : "/profile-children"}
+              to={selectedChild.id_child == 0 || localStorage.getItem("select_child") == "0" ? "/home" : "/profile-children"}
               className="w-full xl:w-[320px] bg-primary xl:bg-white xl:border xl:border-gray-200 xl:border-t-4 xl:border-t-primary py-1 md:py-4 xl:py-4 px-6 md:px-8 xl:px-6 rounded-sm shadow-purple-md xl:shadow-sm flex flex-col cursor-pointer hover:opacity-90 transition-all"
             >
               <div className="flex gap-4 md:gap-6 items-center w-full">
