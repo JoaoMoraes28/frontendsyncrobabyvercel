@@ -148,7 +148,7 @@ export function MainLayout() {
       <NavigationBar listIcons={listIcons} child_name={childName} />
       <main className="min-w-screen h-full overflow-y-auto xl:flex xl:justify-end">
         <div
-          className="content flex w-full min-h-full px-6 pt-25 pb-24
+          className="content flex w-full min-h-full h-full px-6 pt-25 pb-24
         md:px-14 md:pb-30
         xl:px-20 xl:w-[calc(100%-200px)] xl:pb-8"
         >

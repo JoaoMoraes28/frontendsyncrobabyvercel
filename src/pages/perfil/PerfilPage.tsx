@@ -41,9 +41,11 @@ export function PerfilPage() {
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([])
-  const [preview, setPreview] = useState<string>(localStorage.getItem("user_photo") == null
-    || localStorage.getItem("user_photo") == undefined ?
-    Profile : localStorage.getItem("user_photo")!)
+  const [preview, setPreview] = useState<string | null>(localStorage.getItem("user_photo") == undefined
+    || localStorage.getItem("user_photo") == null
+    || localStorage.getItem("user_photo") == "null"
+    || localStorage.getItem("user_photo") == "" ?
+    Profile : localStorage.getItem("user_photo"))
   const [photoFile, setPhotoFile] = useState<File | string>("")
   const [editPhoto, setEditPhoto] = useState<boolean>(false)
 
@@ -141,7 +143,7 @@ export function PerfilPage() {
       <div>
         <Header notification={notifications} />
       </div>
-      <PerfilHeader previewImg={onChangePreview} preview={preview} readonly={isEditing} />
+      <PerfilHeader previewImg={onChangePreview} preview={preview!} readonly={isEditing} />
 
       <main className="flex-1 flex flex-col items-center justify-center w-full relative py-8 xl:py-0 font-nunito">
         <div className="hidden xl:flex justify-end items-center w-full absolute top-25 left-0 px-19">
@@ -174,7 +176,7 @@ export function PerfilPage() {
             <div className="w-32 h-32 rounded-full border-2 border-purple-300 bg-white relative overflow-hidden md:w-40 md:h-40 xl:w-60 xl:h-60">
               <label htmlFor={isEditing ? "imgUser" : ""} className="w-full h-full rounded-full flex items-center justify-center">
                 <img
-                  src={preview == "null" || preview == "" ? cameraIcon : preview}
+                  src={preview == "null" || preview == "" || preview == undefined ? cameraIcon : preview}
                   alt="Mudar foto"
                   className={`object-cover object-center md:w-full md:h-full xl:w-25 xl:h-25 ${preview == "null" || preview == "" ? "w-10 h-10 opacity-60 " : "w-full h-full"}`}
                 />

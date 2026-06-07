@@ -28,7 +28,8 @@ function Header({ notification }: Props) {
   const [photoUser] = useState<string | null>(
     localStorage.getItem("user_photo") == "null" ||
       localStorage.getItem("user_photo") == null ||
-      localStorage.getItem("user_photo") == ""
+      localStorage.getItem("user_photo") == "" ||
+      localStorage.getItem("user_photo") == undefined
       ? Profile
       : localStorage.getItem("user_photo"),
   );

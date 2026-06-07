@@ -32,8 +32,11 @@ function Diary() {
     }, [])
 
     useEffect(() => {
-        if (!onGetDiary)
-            return
+        if (!onGetDiary) {
+            setRegisterMain([])
+            setRegister([])
+        }
+        
         if (onGetDiary) {
             setRegisterMain(onGetDiary.diary)
             setRegister(onGetDiary.diary)

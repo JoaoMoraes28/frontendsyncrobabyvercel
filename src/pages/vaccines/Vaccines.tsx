@@ -2,283 +2,227 @@ import {
   DropdownFilter,
   type FilterOption,
 } from "../../components/DropDownFilter";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import Date from "../../utils/Date";
+
+import SetBlack from '../../assets/routines/setBlack.svg'
+import EditIcon from "../../assets/editIcon.svg";
 
 import { useGetAllVaccine } from "../../services/hooks/vaccine/useGetAllVaccine";
-import { useGetVaccineStatus } from "../../services/hooks/vaccine/useGetVaccineByStatus";
-import { useGetVaccineAgeGroup } from "../../services/hooks/vaccine/useGetVaccineByAgeGroup";
+import type { UpdateVaccine } from "../../services/vaccine/vaccine.service";
+import { useUpdateVaccineStatus } from "../../services/hooks/vaccine/useUpdateVaccineStatus";
+import type { JSONAgeGroup } from "../../services/vaccine/vaccine.service";
+import { LoadingBaby } from "../../components/LoadingBaby";
+import { InputDefault } from "../../components/InputDefault";
+import BtnPrimary from "../../components/BtnPrimary";
+import { useForm } from "react-hook-form";
 
-export type VaccineStatus = "Pendente" | "Aplicada";
-
-export interface Vaccine {
-  id: string;
-  ageGroup: string;
-  name: string;
-  status: VaccineStatus;
-  date: string;
-  preventedDiseases: string;
-  observation: string;
+interface Form {
+  application_date: string
 }
-
-const vaccinesData: Vaccine[] = [
-  {
-    id: "1",
-    ageGroup: "0 - 6 meses",
-    name: "Pneumocócica 23-valente (1ª dose)",
-    status: "Pendente",
-    date: "Pendente",
-    preventedDiseases:
-      "doenças pneumocócicas invasivas pelos sorogrupos contidos na vacina.",
-    observation:
-      "Sem histórico vacinal com pneumo conjugada. Uma segunda dose deve ser administrada com intervalo de 5 anos após a 1ª dose. Somente povos indígenas.",
-  },
-  {
-    id: "2",
-    ageGroup: "0 - 6 meses",
-    name: "Rotavírus (1ª dose)",
-    status: "Aplicada",
-    date: "28/02/2026",
-    preventedDiseases: "Diarreia por rotavírus.",
-    observation: "Administração oral.",
-  },
-  {
-    id: "3",
-    ageGroup: "7 - 12 meses",
-    name: "Febre Amarela (1ª dose)",
-    status: "Pendente",
-    date: "Pendente",
-    preventedDiseases: "Febre amarela.",
-    observation: "Dose única recomendada aos 9 meses de idade.",
-  },
-  {
-    id: "4",
-    ageGroup: "7 - 12 meses",
-    name: "Meningocócica C (Reforço)",
-    status: "Aplicada",
-    date: "10/02/2026",
-    preventedDiseases: "Doença meningocócica do sorogrupo C.",
-    observation: "Administrar aos 12 meses.",
-  },
-  {
-    id: "5",
-    ageGroup: "1 - 2 anos",
-    name: "Hepatite A",
-    status: "Pendente",
-    date: "Pendente",
-    preventedDiseases: "Hepatite A.",
-    observation: "Dose única aos 15 meses.",
-  },
-];
-
-const statusOptions: FilterOption[] = [
-  { id: "todas", label: "Todas" },
-  { id: "pendentes", label: "Pendentes" },
-  { id: "aplicadas", label: "Aplicadas" },
-];
-
-const ageOptions: FilterOption[] = [
-  { id: "todas-idades", label: "Todas as idades" },
-  { id: "0-6", label: "0 - 6 meses" },
-  { id: "7-12", label: "7 - 12 meses" },
-  { id: "1-2", label: "1 - 2 anos" },
-];
 
 export function Vaccines() {
   const idChild: number = Number(localStorage.getItem("select_child"))
-  const { data: onGetAllVaccines } = useGetAllVaccine()
-  const { data: onGetVaccineByStatus } = useGetVaccineStatus(0, idChild)
-  const { data: onGetVaccineAgeGroup } = useGetVaccineAgeGroup(idChild, 1)
+  const { data: onGetAllVaccines, isLoading, isError, refetch } = useGetAllVaccine(idChild)
+  const { mutate: onUpdateVaccine } = useUpdateVaccineStatus()
 
-  const [selectedStatus, setSelectedStatus] = useState("Todas");
-  const [selectedAge, setSelectedAge] = useState("0 - 6 meses");
+  const {
+    register,
+    handleSubmit,
+    formState: { errors }
+  } = useForm<Form>()
 
-  const uniqueAgeGroups = Array.from(
-    new Set(vaccinesData.map((v) => v.ageGroup)),
-  );
+  const [vaccines, setVaccines] = useState<JSONAgeGroup[]>()
+  const [useVaccines, setUseVaccines] = useState<JSONAgeGroup[]>()
+  const [ageGroup, setAgeGroup] = useState<string>()
+  const [titleAgeGroup, setTitleAgeGroup] = useState<string>()
+  const [options, setOptions] = useState<FilterOption[]>([])
+  const [modalOpen, setModalOpen] = useState<boolean>(false)
+  const [vaccineSelectedId, setVaccineDataSelectedId] = useState<number>()
+  const [vaccineSelectedName, setVaccineDataSelectedName] = useState<string>()
 
-  const statusFilteredVaccines = vaccinesData.filter((item) => {
-    let matchesStatus = false;
-    if (selectedStatus === "Todas" || selectedStatus === "todas") {
-      matchesStatus = true;
-    } else if (
-      (selectedStatus === "Pendentes" || selectedStatus === "pendentes") &&
-      item.status === "Pendente"
-    ) {
-      matchesStatus = true;
-    } else if (
-      (selectedStatus === "Aplicadas" || selectedStatus === "aplicadas") &&
-      item.status === "Aplicada"
-    ) {
-      matchesStatus = true;
+  const containerVaccine = useRef<HTMLUListElement>(null)
+  const vaccine = useRef<HTMLLIElement>(null)
+
+  function getAgeGroup(data: JSONAgeGroup[]) {
+    let ageGroups: FilterOption[] = data.map((it) => {
+      return { id: it.age_group_name, label: it.age_group_name }
+    })
+    ageGroups.unshift({ id: "Todas", label: "Todas" })
+    setOptions(ageGroups)
+  }
+
+  function filterVaccine(option: string) {
+    if (option == "Todas") {
+      setUseVaccines(vaccines)
+      return
     }
-    return matchesStatus;
-  });
+    setTitleAgeGroup(option)
+    setUseVaccines(vaccines?.filter(it => it.age_group_name == option))
+  }
 
-  const mobileFilteredVaccines = statusFilteredVaccines.filter((item) => {
-    if (selectedAge === "Todas as idades" || selectedAge === "todas-idades") {
-      return true;
+  function changeTitleAgeGroup() {
+    const container = containerVaccine.current
+    const vaccin = vaccine.current
+
+    if (container && vaccin) {
+      const containerPosition: number = container.scrollLeft
+      const widthVaccin: number = vaccin.offsetWidth
+
+      const index: number = Math.round(containerPosition / widthVaccin)
+
+      setTitleAgeGroup(options[index + 1].label)
     }
-    return item.ageGroup === selectedAge;
-  });
 
+  }
 
-  // useEffect(() => {
-  //   if (!onGetAllVaccines) {
-  //     return
-  //   }
+  function changeVaccineCarousel(direction: 'left' | 'right') {
+    const container = containerVaccine.current
+    const vaccin = vaccine.current
 
-  //   if (onGetAllVaccines) {
-  //     console.log(onGetAllVaccines)
-  //   }
-  // }, [onGetAllVaccines])
+    if (container && vaccin) {
+      const widthVaccin: number = vaccin.offsetWidth
 
-  // useEffect(() => {
-  //   if (!onGetVaccineByStatus) {
-  //     return
-  //   }
+      if (direction == 'left') {
+        container.scrollBy({
+          left: widthVaccin * -1,
+          behavior: 'smooth'
+        })
 
-  //   if (onGetVaccineByStatus) {
-  //     console.log(onGetVaccineByStatus)
-  //   }
-  // }, [onGetVaccineByStatus])
+      } else {
+        container.scrollBy({
+          left: widthVaccin,
+          behavior: 'smooth'
+        })
+
+      }
+    }
+  }
+
+  function updateVaccineDate(date: Form) {
+    const updateData: UpdateVaccine = {
+      fk_id_child: idChild,
+      application_status: 1,
+      application_date: date.application_date,
+      fk_id_vaccine: vaccineSelectedId!
+    }
+
+    onUpdateVaccine(
+      updateData,
+      {
+        onSuccess: () => {
+          alert("Vacina atualizada com sucesso!")
+          setModalOpen(false)
+          refetch()
+
+        }, onError: () => {
+
+        }
+      }
+    )
+  }
 
   useEffect(() => {
-    if (!onGetVaccineAgeGroup) {
+    if (!onGetAllVaccines) {
       return
     }
 
-    if (onGetVaccineAgeGroup) {
-      console.log(onGetVaccineAgeGroup)
+    if (onGetAllVaccines) {
+      setVaccines(onGetAllVaccines.vaccine)
+      setUseVaccines(onGetAllVaccines.vaccine)
+      setAgeGroup("Todas")
+      getAgeGroup(onGetAllVaccines.vaccine)
+
+      if (ageGroup == undefined) {
+        setTitleAgeGroup(onGetAllVaccines.vaccine[0].age_group_name)
+      }
     }
-  }, [onGetVaccineAgeGroup])
-
-  const renderVaccineList = (vaccines: Vaccine[]) => {
-    if (vaccines.length === 0) {
-      return (
-        <div className="w-full h-full flex items-center justify-center text-primary-darker/60 font-bold mt-10 text-center">
-          Nenhuma vacina encontrada para este filtro.
-        </div>
-      );
-    }
-
-    return (
-      <div>
-        {vaccines.map((vaccine) => (
-          <div
-            className="w-full bg-white rounded-2xl flex flex-col gap-1 my-1 pb-4 shrink-0"
-            key={vaccine.id}
-          >
-            <div className="w-full bg-primary flex justify-between p-2 rounded-t-xl">
-              <span className="font-bold text-sm text-white">Vacina</span>
-              <div className="flex gap-4 w-[40%] justify-around">
-                <span className="text-sm md:text-lg">Status</span>
-                <span className="text-sm md:text-lg">Data</span>
-              </div>
-            </div>
-            {/* nome e status */}
-            <div className="w-full flex justify-between p-2">
-              <span className="font-bold text-sm w-[50%]">{vaccine.name}</span>
-              <div className="flex gap-4 w-[40%] text-center font-bold font-poppins justify-around">
-                <span
-                  className={`text-[10px] md:text-[16px] ${vaccine.status === "Pendente"
-                    ? "text-red-alert"
-                    : "text-green-alert"
-                    }`}
-                >
-                  {vaccine.status}
-                </span>
-                <span
-                  className={`text-[10px] md:text-[16px] ${vaccine.status === "Pendente"
-                    ? "text-red-alert"
-                    : "text-green-alert"
-                    }`}
-                >
-                  {vaccine.date}
-                </span>
-              </div>
-            </div>
-            {/* descrição e obs */}
-            <div className="w-full px-2 text-primary font-poppins">
-              <p className="text-[10px] md:text-[14px] lg:text-[12px]">
-                <span className="text-primary-darker font-bold">
-                  Doenças evitadas:{" "}
-                </span>
-                {vaccine.preventedDiseases}
-              </p>
-              <p className="text-[10px] md:text-[14px] lg:text-[12px]">
-                <span className="text-primary-darker font-bold">Obs: </span>
-                {vaccine.observation}
-              </p>
-            </div>
-          </div>
-        ))}
-      </div>
-    )
-
-  };
+  }, [onGetAllVaccines])
 
   return (
-    <div className="w-full flex flex-col gap-6 pr-4">
-      <div className="flex justify-between items-center">
-        <DropdownFilter
-          options={statusOptions}
-          selectedFilter={selectedStatus}
-          onSelect={setSelectedStatus}
-        />
-
-        <div className="block lg:hidden">
-          <DropdownFilter
-            options={ageOptions}
-            selectedFilter={selectedAge}
-            onSelect={setSelectedAge}
-          />
-        </div>
-      </div>
-
-      <div className="flex lg:hidden relative bg-primary rounded-2xl p-4 flex-col gap-4 min-h-140 shadow-black mt-2 md:min-h-180">
-        <div className="absolute top-0 -left-3 z-8 drop-shadow-[5px_4px_4px_rgba(0,0,0,0.50)]">
-          <div
-            className="bg-lilas-light text-primary min-w-55 py-2.5 font-bold text-lg 
-                  rounded-l-xl rounded-br-0
-                  [clip-path:polygon(0_0,50%_0,100%_100%,100%_100%,0_100%)]"
-          >
-            <span className="w-full flex pl-4">{selectedAge}</span>
+    <div className="flex flex-col w-full h-full
+    xl:items-center">
+      <div className={`fixed bg-black/50 backdrop-blur-sm left-0 top-0 w-full h-full flex justify-center items-center z-40 ${modalOpen ? "block" : "hidden"}`}>
+        <form onSubmit={handleSubmit(updateVaccineDate)} className="flex flex-col items-center w-[90%] bg-lilas-bg h-60 rounded-xl justify-evenly font-poppins">
+          <p className="text-primary-text font-semibold text-center">Digite a data de aplicação da {vaccineSelectedName}</p>
+          <InputDefault {...register("application_date", { required: "Data obrigatória" })} type="date" className="pl-2 text-primary bg-white rounded-sm w-[80%] h-10" />
+          {errors.application_date?.message && <p className="text-red-600/70 text-sm font-nunito">{errors.application_date.message}</p>}
+          <span className="text-[13px] italic text-primary-darker">Obs: A data não poderá ser alterada após a confirmação</span>
+          <div className="w-full flex justify-center gap-12">
+            <BtnPrimary onClick={() => setModalOpen(false)} type="button" text="Cancelar" className="bg-white" />
+            <BtnPrimary type="submit" text="Confirmar" className="bg-accent text-white" />
           </div>
-        </div>
-
-        <div className="w-full min-h-110 max-h-125 bg-lilas-medium absolute top-8 z-7 rounded-2xl drop-shadow-[0px_4px_4px_rgba(0,0,0,0.50)] overflow-y-auto p-4 flex flex-col md:min-h-168">
-          {renderVaccineList(mobileFilteredVaccines)}
-        </div>
+        </form>
       </div>
+      <div className="w-full h-12 flex justify-between items-start">
+        <DropdownFilter options={options} onSelect={setAgeGroup} functionExtra={filterVaccine} selectedFilter={ageGroup ? ageGroup : "Todas"} />
+        <h3 className="bg-primary text-white font-semibold w-22 h-10 flex justify-center items-center shadow-purple-md">{titleAgeGroup}</h3>
+      </div>
+      <div className="bg-primary w-full min-h-[calc(100%-48px)] max-h-[calc(100%-48px)] p-2
+      xl:relative">
+        <button onClick={() => changeVaccineCarousel('left')} className="hidden xl:flex xl:absolute xl:-left-10 xl:top-[calc(50%-25px)] xl:w-10 xl:h-10 xl:justify-center xl:items-center">
+          <img src={SetBlack} alt="Retrocede os cards de vacine." className="xl:w-auto h-6" />
+        </button>
+        <button onClick={() => changeVaccineCarousel('right')} className="hidden xl:flex xl:absolute xl:-right-10 xl:top-[calc(50%-25px)] xl:w-10 xl:h-10 xl:justify-center xl:items-center">
+          <img src={SetBlack} alt="Avança os cards de vacina." className="xl:rotate-180 xl:w-auto xl:h-6" />
+        </button>
+        <ul ref={containerVaccine} onScroll={changeTitleAgeGroup} className="h-full min-w-full overflow-x-auto flex scroll-smooth snap-x snap-mandatory">
+          {isLoading && !isError && <LoadingBaby text="Procurando vacinas" />}
 
-      <div className="hidden lg:grid grid-cols-2 gap-x-10 gap-y-6 mt-2">
-        {uniqueAgeGroups.map((groupName) => {
-          const groupVaccines = statusFilteredVaccines.filter(
-            (v) => v.ageGroup === groupName,
-          );
+          {!isLoading && isError && <p className="text-red-500 font-poppins col-span-full text-center mt-4">Erro na API</p>}
 
-          return (
-            <div
-              key={groupName}
-              className="relative bg-primary rounded-2xl p-4 flex flex-col gap-4 min-h-115 shadow-black"
-            >
-              <div className="absolute top-0 -left-3 z-8 drop-shadow-[5px_4px_4px_rgba(0,0,0,0.50)]">
-                <div
-                  className="bg-lilas-light text-primary min-w-55 py-2.5 font-bold text-lg 
-                        rounded-l-xl rounded-br-0
-                        [clip-path:polygon(0_0,50%_0,100%_100%,100%_100%,0_100%)]"
-                >
-                  <span className="w-full flex pl-4">{groupName}</span>
-                </div>
-              </div>
-
-              <div className="w-full min-h-80 max-h-100 bg-lilas-medium absolute top-8 z-6  rounded-2xl drop-shadow-[0px_4px_4px_rgba(0,0,0,0.50)] overflow-y-auto p-4 flex flex-col">
-                {renderVaccineList(groupVaccines)}
-              </div>
-            </div>
-          );
-        })}
+          {!isLoading && !isError &&
+            useVaccines?.map((age_group_vaccine) => {
+              return (
+                <li ref={vaccine} key={age_group_vaccine.id_age_group} className="bg-lilas-bg min-w-full min-h-full h-full overflow-y-scroll snap-center">
+                  <ul className="min-w-full min-h-full max-h-full overflow-y-scroll">
+                    {age_group_vaccine.vaccines.map((vaccine) => (
+                      <li key={vaccine.id_vaccine} className="relative flex flex-col pb-10 font-nunito bg-white min-h-40
+                      md:gap-3
+                      xl:pb-12">
+                        <header className="px-2 w-full h-8 flex items-center font-poppins bg-primary text-light font-semibold
+                                xl:text-[18px]">
+                          <p className="w-[55%]">Vacina</p>
+                          <p className="w-[22%]">Status</p>
+                          <p className="w-[23%]">Data</p>
+                        </header>
+                        <div className="w-full h-[calc(100%-32px)] gap-2 flex flex-col p-2
+                        xl:p-4 ">
+                          <div className="flex w-full text-[14px]
+                          md:text-[16px]
+                          xl:text-[18px]">
+                            <p className="w-[55%] truncate text-primary-text font-semibold pr-4">{vaccine.vaccine}</p>
+                            <p className={`w-[22%] ${vaccine.application_status == 0 ? 'text-red-500' : 'text-primary-text'}`}>{vaccine.application_status == 0 ? 'Pendente' : 'Aplicada'}</p>
+                            <p className={`w-[23%] ${vaccine.application_status == 0 ? 'text-red-500' : 'text-primary-text'}`}>{vaccine.application_date == null ? 'Pendente' : Date.formatedDate(vaccine.application_date)}</p>
+                          </div>
+                          <p className="text-[12px] text-primary
+                          md:text-[14px]>
+                          xl:text-[16px]">
+                            <span className="text-primary-darker font-semibold">Doenças evitadas: </span> {vaccine.prevented_diseases}
+                          </p>
+                          <p className="text-[12px] text-primary italic
+                          md:text-[14px]
+                          xl:text-[16px]">
+                            <span className="text-primary-darker font-semibold not-italic">Obs: </span> {vaccine.observation ? vaccine.observation : "Sem observações"}
+                          </p>
+                        </div>
+                        <button onClick={() => {
+                          setModalOpen(true)
+                          setVaccineDataSelectedId(vaccine.id_vaccine)
+                          setVaccineDataSelectedName(vaccine.vaccine)
+                        }} className={`absolute bottom-3 right-3 w-6 h-6 justify-center items-center bg-primary/30 rounded-md shadow-purple-sm ${vaccine.application_status ? 'hidden' : 'flex'}
+                        xl:bottom-4 xl:right-4 xl:w-8 xl:h-8`}>
+                          <img src={EditIcon} alt="Habilita a atribuição de uma data a vacina selecionada." className="xl:w-auto xl:h-3.5" />
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </li>
+              )
+            })
+          }
+        </ul>
       </div>
     </div>
-  );
+  )
 }
