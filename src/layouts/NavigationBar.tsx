@@ -15,7 +15,9 @@ function NavigationBar({ listIcons, child_name }: Props) {
   const location = useLocation();
 
   const photoUser = localStorage.getItem("user_photo") == undefined
-    || localStorage.getItem("user_photo") == null ?
+    || localStorage.getItem("user_photo") == null
+    || localStorage.getItem("user_photo") == "null"
+    || localStorage.getItem("user_photo") == "" ?
     Profile : localStorage.getItem("user_photo")
 
   return (

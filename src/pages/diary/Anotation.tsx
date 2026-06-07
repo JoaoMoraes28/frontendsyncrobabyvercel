@@ -170,7 +170,7 @@ function Anotation() {
                 <label htmlFor={edit == "true" ? 'image' : 'none'} className="relative flex flex-col items-end w-full h-58
                 md:h-[60%]">
                     {onGetDiaryId?.diary[0].media ? (
-                        <img src={previewImg!} alt="Imagem do registro." className={`w-full h-50 object-cover object-center md:h-[calc(100%-36px)] ${edit == "true" ? 'opacity-70' : ''}`} />
+                        <img src={previewImg || undefined} alt="Imagem do registro." className={`w-full h-50 object-cover object-center rounded-xl md:h-[calc(100%-36px)] ${edit == "true" ? 'opacity-70' : ''}`} />
                     ) : (
                         <div className="w-full h-50 bg-primary"></div>
                     )}

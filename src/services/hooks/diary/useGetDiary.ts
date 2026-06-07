@@ -8,10 +8,9 @@ export const useGetDiary = (child_id: number) => {
     return useQuery<ResponseDiary>({
         queryKey: ['diary', child_id],
         queryFn: async () => {
-            await delay(700)
             const response = await getDiary(child_id)
+            await delay(700)
             return response
-
         }
     });
 }

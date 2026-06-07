@@ -32,16 +32,18 @@ function Card({ card }: Props) {
     }
 
     return (
-        <li onMouseEnter={() => setCardHover(card.id_diary_note)} onMouseLeave={() => setCardHover(0)} className="w-full h-28 flex rounded-sm bg-white shadow-purple-sm
-        xl:relative xl:h-62">
-            <div style={{ backgroundColor: card.color }} className="w-15 h-full rounded-l-sm
-            xl:absolute xl:w-full xl:h-8 xl:flex xl:items-center xl:pl-2 xl:rounded-tr-sm xl:rounded-l-none xl:rounded-tl-sm">
-                <div className="hidden xl:flex xl:pl-3 xl:w-full xl:h-[85%] xl:text-white xl:font-semibold xl:justify-center xl:items-center">
-                    <span className="xl:w-full xl:text-[18px]">{Date.formatedDayYear(card.date)}</span>
+        <li onMouseEnter={() => setCardHover(card.id_diary_note)} onMouseLeave={() => setCardHover(0)} className="relative w-full h-28 flex rounded-sm bg-white shadow-purple-sm
+        xl:relative xl:h-82 xl:rounded-lg xl:bg-cover xl:bg-no-repeat xl:bg-center xl:hover:scale-101 xl:hover:shadow-purple-md xl:transition xl:duration-300">
+            <div className="xl:absolute xl:w-full xl:h-full xl:bg-cover xl:opacity-60 xl:rounded-lg xl:bg-no-repeat xl:bg-center z-10" style={{backgroundImage: `url(${card.media})`}}></div>
+            <div className="z-20 w-15 h-full rounded-l-sm
+            xl:absolute xl:w-full xl:h-12 xl:flex xl:items-center xl:justify-end xl:rounded-tr-sm xl:rounded-l-none xl:rounded-tl-sm xl:px-4">
+                <div style={{ backgroundColor: card.color }} className="h-full w-15 rounded-l-lg xl:hidden"></div>
+                <div style={{ backgroundColor: card.color }} className="hidden xl:flex xl:px-2 xl:w-auto xl:h-[85%] xl:rounded-lg xl:text-[#A49B9B] xl:font-semibold xl:justify-center xl:items-center">
+                    <span className="xl:w-full xl:text-center xl:text-[18px]">{Date.formatedDayYear(card.date)}</span>
                 </div>
             </div>
-            <div className="flex flex-col w-[calc(100%-60px)] px-2 pt-2
-            xl:pt-9 xl:w-full xl:h-full xl:px-4"> 
+            <div className="z-20 flex flex-col w-[calc(100%-60px)] px-2 pt-2
+            xl:pt-14 xl:w-full xl:h-full xl:px-4"> 
                 <header className="w-full h-4 flex justify-end
                 xl:h-[10%]">
                     <button onClick={(e) => handleAnotationPage(card.id_diary_note, e)}>
@@ -49,13 +51,13 @@ function Card({ card }: Props) {
                         xl:h-4.5" />
                     </button>
                 </header>
-                <div className="flex flex-col w-full h-16 justify-center items-center mt-1
-                xl:h-[70%] xl:justify-between xl:items-start">
-                    <h4 className="font-poppins text-primary-text font-semibold text-[14px] text-center
+                <div className="flex flex-col w-full xl:gap-4 h-16 justify-center items-center mt-1
+                xl:h-[calc(80%-16px)] xl:items-start xl:mt-0">
+                    <h4 className="font-poppins text-darker-purple font-semibold text-[14px] text-center
                     xl:text-start xl:text-xl">{card.title}</h4>
                     <span className="font-nunito text-primary italic text-[14px]
                     xl:hidden">{Date.formatedDate(card.date)}</span>
-                    <p className="hidden xl:block xl:font-nunito xl:w-full xl:h-22 xl:overflow-hidden xl:text-[14px]">{card.content}</p>
+                    <p className="hidden xl:block xl:font-nunito xl:w-full xl:h-22 xl:text-black xl:overflow-hidden xl:text-[16px] xl:font-semibold">{card.content}</p>
                 </div>
                 <footer className="flex justify-end items-center h-[20%]">
                     <span className="font-nunito text-primary italic text-[12px] xl:hidden">{`${Date.subDaysFormated(card.date)}`}</span>
