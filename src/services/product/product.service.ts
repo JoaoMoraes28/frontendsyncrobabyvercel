@@ -31,6 +31,6 @@ export const getProductsByType = async (id_product: number): Promise<ResponsePro
 };
 
 export const getTypeProduct = async (): Promise<ResponseTypeProduct> => {
-  const response = await api.get<ResponseTypeProduct>(`/type/product`);
+  const response = await api.get<ResponseTypeProduct>(`http://localhost:5173/syncrobaby/type/product`);
   return response.data;
 };

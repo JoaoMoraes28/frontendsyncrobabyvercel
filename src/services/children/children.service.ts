@@ -79,7 +79,7 @@ export const getChild = async (id: number): Promise<ResponseChildId> => {
 
 export const getChildren = async (): Promise<ResponseChild> => {
   try {
-    const response = await api.get<ResponseChild>(`user/child`);
+    const response = await api.get<ResponseChild>(`http://localhost:5173/syncrobaby/user/child`);
     return response.data;
 
   } catch (error: any) {

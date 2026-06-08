@@ -1,6 +1,5 @@
 import { useEffect, useState, useRef } from "react";
 import { createPortal } from "react-dom";
-import artigoImg from "../../assets/artigoImg.png";
 import VaccinesIcon from "../../assets/vaccines.svg";
 import StorageIcon from "../../assets/storageIcon.svg";
 import RoutinesIcon from "../../assets/routinesIcon.svg";
@@ -11,7 +10,6 @@ import plusIcon from "../../assets/plusIcon.svg";
 import childrenPhoto from "../../assets/childrenPhoto.svg";
 import manageChildIcon from "../../assets/manageChildIcon.svg";
 import healthIcon from "../../assets/healthIcon.svg";
-import { CardPrincipal } from "../../components/CarouselCard";
 import { CarouselDots } from "../../components/CarouselDots";
 import { CategorySection } from "./components/CategorySection";
 import { useNavigate, Link, useOutletContext } from "react-router-dom";
@@ -27,6 +25,13 @@ import type { AgeGroup } from "../../services/ageGroup/ageGroup.service.ts";
 
 import { useGetArticleByAge } from "../../services/hooks/article/useGetArticleByAge.ts";
 import type { ArticleWithAge } from "../../services/article/article.service.ts";
+
+import { useGetStorage } from "../../services/hooks/storage/useGetStorage.ts";
+import type { ProductStorage } from "../../services/storage/storage.service.ts";
+
+import { useGetRoutinesByChild } from "../../services/hooks/routines/useGetRoutines.ts";
+import type { Routine } from "../../services/routines/routines.service.ts";
+import { subDays } from "date-fns";
 
 const articlesData = [
   {
@@ -96,7 +101,7 @@ const upcomingEventsData = [
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
         fill="currentColor"
-        className="w-6 h-6 text-orange-500"
+        className="w-6 h-6 text-accent"
       >
         <path
           fillRule="evenodd"
@@ -107,18 +112,6 @@ const upcomingEventsData = [
     ),
     bgClass: "bg-orange-50",
   },
-];
-
-const inventoryStatusData = [
-  { id: 1, label: "Fraldas tamanho (M)", amount: 128, alert: false },
-  {
-    id: 2,
-    label: "Creme de Assadura",
-    amount: 1,
-    alert: true,
-    subLabel: "Comprar mais Creme",
-  },
-  { id: 3, label: "Lenços Umedecidos", amount: 64, alert: false },
 ];
 
 export function Home() {
@@ -163,6 +156,14 @@ export function Home() {
   const [listChildren, setListChildren] = useState<ResponseChild>()
   const carouselRef = useRef<HTMLDivElement>(null);
 
+  const [inventoryStatusData, setInventory] = useState<ProductStorage[]>([]);
+  const { data: onGetStorage } = useGetStorage(selectedChild.id_child, true)
+
+  const date = Date.getDateUTC().split("-")
+  const newDate = `${date[0]}-${date[1]}-${Number(date[2]) - 1}`
+  const { data: onGetRoutines } = useGetRoutinesByChild(selectedChild.id_child, newDate)
+  const [routines, setRoutines] = useState<Routine[]>([])
+
   useEffect(() => {
     const interval = setInterval(() => {
       if (carouselRef.current) {
@@ -181,6 +182,17 @@ export function Home() {
 
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    if (!onGetRoutines) {
+      return
+    }
+
+    if (onGetRoutines) {
+      console.log(onGetRoutines)
+      setRoutines(onGetRoutines.routines.slice(0, 2))
+    }
+  }, [onGetRoutines])
 
   useEffect(() => {
     if (localStorage.getItem("select_child") == null) {
@@ -223,6 +235,16 @@ export function Home() {
     }
   }, [selectedChild])
 
+  useEffect(() => {
+    if (!onGetStorage) {
+      return
+    }
+
+    if (onGetStorage) {
+      setInventory(onGetStorage.stock.splice(0, 3))
+    }
+  }, [onGetStorage])
+
   const handleScroll = () => {
     if (carouselRef.current) {
       const scrollPosition = carouselRef.current.scrollLeft;
@@ -237,8 +259,36 @@ export function Home() {
     navigate(`/article/${id}`)
   }
 
+  function formaterTitle(title: string) {
+    if (title == "banho") {
+      return "Banho"
+
+    } else if (title == "stool") {
+      return "Fraldas (Cocô)"
+
+    } else if (title == "urine") {
+      return "Fraldas (Xixi)"
+
+    } else if (title == "Alimentação (Alimento sólido)") {
+      return "Alimento sólido"
+
+    } else if (title == "Alimentação (Papinha ou purê)") {
+      return "Papinha ou purê"
+
+    } else if (title == "Alimentação (Leite e derivados)") {
+      return "Leite e derivados"
+
+    } else if (title == "medication") {
+      return "Medicação"
+
+    } else if (title == "soneca") {
+      return "Soneca"
+
+    }
+  }
+
   return (
-    <div className="w-full flex flex-col items-center pt-14 pb-0 md:py-10 md:gap-8 xl:py-4 xl:pb-12 gap-4 xl:gap-4 relative">
+    <div className="w-full flex flex-col items-center pt-14 pb-0 md:py-10 md:gap-8 xl:py-4 xl:pb-16 gap-4 xl:gap-4 relative">
       {/* Carousel */}
       <div
         ref={carouselRef}
@@ -383,7 +433,7 @@ export function Home() {
         </div>
 
         {/* SEÇÃO INFERIOR */}
-        <div className="hidden xl:grid grid-cols-2 gap-10 mt-6 w-full">
+        <div className="hidden xl:grid grid-cols-2 gap-10 mt-6 w-full xl:pb-4">
           {/* Próximos Eventos */}
           <div className="flex flex-col gap-4">
             <h4 className="font-poppins font-bold text-primary-text text-lg">
@@ -393,20 +443,31 @@ export function Home() {
               </span>
             </h4>
             <div className="flex flex-col gap-3">
-              {upcomingEventsData.map((event) => (
+              {routines.map((event) => (
                 <div
                   key={event.id}
                   className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between"
                 >
                   <div className="flex items-center gap-4">
                     <div
-                      className={`w-12 h-12 rounded-xl flex items-center justify-center ${event.bgClass}`}
+                      className={`w-12 h-12 rounded-xl flex items-center justify-center`}
                     >
-                      {event.icon}
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        className="w-6 h-6 text-accent"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 6a.75.75 0 00-1.5 0v6c0 .414.336.75.75.75h4.5a.75.75 0 000-1.5h-3.75V6z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
                     </div>
                     <div className="flex flex-col">
                       <span className="font-poppins font-bold text-primary-text text-sm">
-                        {event.title}
+                        {formaterTitle(event.title)}
                       </span>
                       <span className="font-poppins text-xs text-gray-400 mt-0.5">
                         {event.description}
@@ -422,55 +483,61 @@ export function Home() {
           </div>
 
           {/* Estado do Estoque */}
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 xl:pb-4">
             <h4 className="font-poppins font-bold text-primary-text text-lg">
               Estado do Estoque
             </h4>
-            <div className="grid grid-cols-3 gap-3">
-              {inventoryStatusData.map((item) => (
-                <div
-                  key={item.id}
-                  className={`flex flex-col items-center justify-center p-4 rounded-xl shadow-sm border text-center ${item.alert
-                    ? "bg-red-50 border-red-100"
-                    : "bg-white border-gray-100"
-                    }`}
-                >
+            {inventoryStatusData.length == 0 &&
+              <p className="italic font-semibold text-lg w-full h-full flex justify-start text-accent items-center">Sem produtos no estoque</p>
+            }
+
+            {inventoryStatusData.length > 0 &&
+              <div className="grid grid-cols-3 gap-3">
+                {inventoryStatusData.map((item) => (
                   <div
-                    className={`w-10 h-10 mb-2 rounded-full flex items-center justify-center ${item.alert ? "bg-red-100 text-red-500" : "bg-gray-50 text-gray-500"}`}
+                    key={item.id}
+                    className={`flex flex-col items-center justify-center p-4 gap-2 rounded-xl shadow-sm border text-center ${item.quantity <= 1
+                      ? "bg-red-50 border-red-100"
+                      : "bg-white border-gray-100"
+                      }`}
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="w-5 h-5"
+                    <div
+                      className={`w-10 h-10 mb-2 rounded-full flex items-center justify-center ${item.quantity <= 1 ? "bg-red-100 text-red-500" : "bg-gray-50 text-gray-500"}`}
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"
-                      />
-                    </svg>
-                  </div>
-                  <span
-                    className={`font-poppins font-bold text-xl ${item.alert ? "text-red-500" : "text-primary-text"}`}
-                  >
-                    {item.amount}
-                  </span>
-                  <span
-                    className={`font-poppins text-xs mt-1 leading-tight ${item.alert ? "text-red-400 font-medium" : "text-gray-500"}`}
-                  >
-                    {item.label}
-                  </span>
-                  {item.subLabel && (
-                    <span className="text-[10px] text-red-400 mt-2 font-poppins">
-                      {item.subLabel}
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="w-5 h-5"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"
+                        />
+                      </svg>
+                    </div>
+                    <span
+                      className={`font-poppins font-bold text-[16px] ${item.quantity <= 1 ? "text-red-500" : "text-primary-text"}`}
+                    >
+                      {item.product_name}
                     </span>
-                  )}
-                </div>
-              ))}
-            </div>
+                    <span
+                      className={`font-poppins text-xs mt-1 leading-tight ${item.quantity <= 1 ? "text-red-400 font-medium" : "text-gray-500"}`}
+                    >
+                      Quantidade: {item.quantity}
+                    </span>
+                    {item.description && (
+                      <span className="text-[10px] text-red-400 mt-2 font-poppins">
+                        {item.description}
+                      </span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            }
           </div>
         </div>
       </div>

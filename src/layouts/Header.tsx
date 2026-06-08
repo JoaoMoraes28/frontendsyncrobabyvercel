@@ -15,6 +15,7 @@ import Sun from "../assets/sun.svg"
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import type { Notification } from "../services/notification/notification.service.ts";
 import { usePatchNotificationRead } from "../services/hooks/notification/usePatchNotificationRead";
+import { useDeleteNotification } from "../services/hooks/notification/useDeleteNotification.ts";
 
 interface Props {
   notification: Notification[]
@@ -22,6 +23,7 @@ interface Props {
 
 function Header({ notification }: Props) {
   const { mutate: onReadNotification } = usePatchNotificationRead()
+  const { mutate: onDeleteNotification } = useDeleteNotification()
 
   const [DateHour, setDateHour] = useState<string>(Date.getDateFormated());
   const [layoutColor, setLayoutColor] = useState<boolean>(true)
@@ -127,18 +129,61 @@ function Header({ notification }: Props) {
   }
 
   function deleteNotification(id: number) {
-    setNotifications(current => current.filter((n: Notification) => n.id_notification != id));
+    onDeleteNotification(
+      id,
+      {
+        onSuccess: () => {
+          setNotifications(current => current.filter((n: Notification) => n.id_notification != id));
+
+        }, onError: () => {
+          alert("Erro ao deletar notificação!")
+          
+        }
+      }
+    )
   }
 
   function readAllNotications() {
-    setNotifications(current => current.map((it) => {
-      return { ...it, read_status: true }
-    }));
+    const allNotificationsForRead: Notification[] = notification.filter(it => !it.read_status)
+    const idNotifications: number[] = allNotificationsForRead.map((it) => {
+      return it.id_notification
+    })
+
+    let notifications = []
+
+    for (let i = 0; i < idNotifications.length; i++) {
+      notifications.push({
+        id: idNotifications[i]
+      })
+
+    }
+
+    onReadNotification(
+      {
+        notifications
+      },
+      {
+        onSuccess: () => {
+          setNotifications(current => current.map((it) => {
+            return { ...it, read_status: true }
+          }));
+
+        }, onError: () => {
+          alert("Erro ao ler todas as notificações!")
+        }
+      }
+    )
   }
 
   function changeRead(id: number) {
     onReadNotification(
-      id,
+      {
+        notifications: [
+          {
+            id: id
+          }
+        ]
+      },
       {
         onSuccess: () => {
           setNotifications(current => current.map((it) => {
@@ -196,7 +241,7 @@ function Header({ notification }: Props) {
       ></div>
       <button
         onClick={() => navigate(-1)}
-        className={`xl:ml-[calc(220px)] ${(location.pathname == "/profile-children" && !windowWidth) || (location.pathname == "/profile-user" && !windowWidth) || (location.pathname == "/add-child" && !windowWidth) ? "flex" : "hidden"}`}
+        className={`xl:ml-[26%] ${(location.pathname == "/profile-children" && !windowWidth) || (location.pathname == "/profile-user" && !windowWidth) || (location.pathname == "/add-child" && !windowWidth) ? "flex" : "hidden"}`}
       >
         <img src={SetBackProfile} alt="Retorna a tela anterior." />
       </button>

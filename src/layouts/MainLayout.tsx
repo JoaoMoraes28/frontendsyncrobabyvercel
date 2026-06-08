@@ -22,8 +22,6 @@ import StorageSelected from "../assets/navigation/storageSelected.svg";
 import ArticlesSelected from "../assets/navigation/articlesSelected.svg";
 import { useState, useEffect } from "react";
 
-import { useGetNotificationId } from "../services/hooks/notification/useGetNotificationById";
-import { useGetNotificationUser } from "../services/hooks/notification/useGetNotificationUser";
 import { useGetNotificationChild } from "../services/hooks/notification/useGetNotificationChild";
 import type { Notification } from "../services/notification/notification.service";
 
@@ -106,31 +104,9 @@ export function MainLayout() {
 
   const idChild: number = Number(localStorage.getItem("select_child"))
 
-  const { data: onGetNotificationChild } = useGetNotificationChild(idChild)
-  const { data: onGetNotificationId } = useGetNotificationId(1)
-  const { data: onGetNotificationUser } = useGetNotificationUser()
+  const { data: onGetNotificationChild, refetch } = useGetNotificationChild(idChild)
 
   const [notifications, setNotifications] = useState<Notification[]>([])
-
-  // useEffect(() => {
-  //   if (!onGetNotificationId) {
-  //     return
-  //   }
-
-  //   if(onGetNotificationId) {
-  //     console.log(onGetNotificationId)
-  //   }
-  // }, [onGetNotificationId])
-
-  // useEffect(() => {
-  //   if (!onGetNotificationUser) {
-  //     return
-  //   }
-
-  //   if(onGetNotificationUser) {
-  //     console.log(onGetNotificationUser)
-  //   }
-  // }, [onGetNotificationUser])
 
   useEffect(() => {
     if (!onGetNotificationChild) {
@@ -141,6 +117,12 @@ export function MainLayout() {
       setNotifications(onGetNotificationChild.notification)
     }
   }, [onGetNotificationChild])
+
+  useEffect(() => {
+    setInterval(() => {
+      refetch()
+    }, 30000);
+  })
 
   return (
     <div className="flex h-screen w-screen bg-light">

@@ -48,11 +48,11 @@ export function AppRoutes() {
         <Route path="/" element={<MainLayout />}>
           <Route path="/home" element={<Home />} />
           <Route path="/routines" element={<Routines />} />
-          <Route path="/feeding" element={<RoutineFeeding />} />
-          <Route path="/sleep" element={<RoutineSleep />} />
-          <Route path="/diaper" element={<RoutineDiaper />} />
-          <Route path="/shower" element={<RoutineShower />} />
-          <Route path="/medicine" element={<RoutineMedicine />} />
+          <Route path="/feeding/:id" element={<RoutineFeeding />} />
+          <Route path="/sleep/:id" element={<RoutineSleep />} />
+          <Route path="/diaper/:id" element={<RoutineDiaper />} />
+          <Route path="/shower/:id" element={<RoutineShower />} />
+          <Route path="/medicine/:id" element={<RoutineMedicine />} />
           <Route path="/storage" element={<Storage />} />
           <Route path="/add-storage" element={<AddStorage />} />
           <Route path="/health" element={<Health />} />

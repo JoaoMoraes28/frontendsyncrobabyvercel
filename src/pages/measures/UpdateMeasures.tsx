@@ -73,7 +73,8 @@ function UpdateMeasures() {
                 xl:h-[90%] xl:">
                 <header className="flex flex-col gap-5
                 md:items-center">
-                    <div className="flex flex-col items-center w-full gap-0.5 h-36 pt-4 px-4 rounded-t-md bg-linear-to-l from-[#f4ebfb] to-[#ffefef]">
+                    <div className="flex flex-col items-center w-full gap-0.5 h-36 pt-4 px-4 rounded-t-md bg-linear-to-l from-[#f4ebfb] to-[#ffefef]
+                    xl:h-30">
                         <div className="flex justify-center items-center w-8 h-8 rounded-full shadow-purple-md
                         md:w-10 md:h-10">
                             <img aria-hidden="true" src={MeasuresIcon} alt="" className="w-auto h-4.5
@@ -110,7 +111,7 @@ function UpdateMeasures() {
                             <span className="flex items-center text-primary font-semibold">KG</span>
                         </div>
                         <span className={`text-gray-light h-4 text-[12px]
-                            md:text-[16px]`}>{errors.weight ? errors.weight.message : 'Ultima: 7,2'}</span>
+                            md:text-[16px]`}>{errors.weight ? errors.weight.message : ''}</span>
                     </div>
                     <div className="w-[30%] h-18 flex flex-col">
                         <label htmlFor="height" className={`text-[15px] ${labelClass}`}>Altura</label>
@@ -119,7 +120,7 @@ function UpdateMeasures() {
                             <span className="flex items-center text-primary font-semibold">CM</span>
                         </div>
                         <span className={`text-gray-light h-4 text-[12px]
-                            md:text-[16px]`}>{errors.height ? errors.height.message : 'Ultima: 7,2'}</span>
+                            md:text-[16px]`}>{errors.height ? errors.height.message : ''}</span>
                     </div>
                     <div className="w-[30%] h-18 flex flex-col">
                         <label htmlFor="perimeter" className={`text-[11px] ${labelClass}`}>Perímetro Cefálico</label>
@@ -128,14 +129,14 @@ function UpdateMeasures() {
                             <span className="flex items-center text-primary font-semibold">CM</span>
                         </div>
                         <span className={`text-gray-light text-[12px] h-4
-                            md:text-[16px]`}>{errors.head_circumference ? errors.head_circumference.message : 'Ultima: 7,2'}</span>
+                            md:text-[16px]`}>{errors.head_circumference ? errors.head_circumference.message : ''}</span>
                     </div>
                 </div>
-                <div className="flex flex-col px-4">
+                <div className="flex flex-col px-4 h-full">
                     <label htmlFor="description" className={`text-[15px] ${labelClass}`}>Descrição</label>
                     <textarea {...register("description")} id="description" className={`h-35 outline-none ${containerInput} ${inputClass}
                     md:h-45
-                    xl:h-30`}></textarea>
+                    xl:h-full`}></textarea>
                 </div>
                 <div className="flex justify-center px-4 gap-8 mt-7 w-full font-poppins
                 md:gap-20 md:mt-0">

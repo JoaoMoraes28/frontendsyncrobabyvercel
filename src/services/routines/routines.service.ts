@@ -89,28 +89,28 @@ export const deleteRegisterRoutines = async (idRegister: number, type_delete: st
 
 
 export const insertRegisterSleep = async (data: RegisterSleep): Promise<RegisterSleep> => {
-  const response = await api.post<RegisterSleep>("/routines/sleep", data);
+  const response = await api.post<RegisterSleep>("http://localhost:5173/syncrobaby/routines/sleep", data);
   return response.data;
 };
 
 export const insertRegisterDiaper = async (data: RegisterDiaper): Promise<RegisterDiaper> => {
-  const response = await api.post<RegisterDiaper>("/routines/diaper", data);
+  const response = await api.post<RegisterDiaper>("http://localhost:5173/syncrobaby/routines/diaper", data);
   return response.data;
 };
 
 
 export const insertRegisterBath = async (data: RegisterBath): Promise<RegisterBath> => {
-  const response = await api.post<RegisterBath>("/routines/bath", data);
+  const response = await api.post<RegisterBath>("http://localhost:5173/syncrobaby/routines/bath", data);
   return response.data;
 };
 
 export const insertRegisterMedication = async (data: RegisterMedication): Promise<RegisterMedication> => {
-  const response = await api.post<RegisterMedication>("/routines/medication", data);
+  const response = await api.post<RegisterMedication>("http://localhost:5173/syncrobaby/routines/medication", data);
   return response.data;
 };
 
 
 export const insertRegisterFeeding = async (data: RegisterFeeding): Promise<RegisterFeeding> => {
-  const response = await api.post<RegisterFeeding>("/routines/feeding", data);
+  const response = await api.post<RegisterFeeding>("http://localhost:5173/syncrobaby/routines/feeding", data);
   return response.data;
 };

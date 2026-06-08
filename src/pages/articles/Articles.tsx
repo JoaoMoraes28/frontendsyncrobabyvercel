@@ -14,6 +14,8 @@ import { useGetAgeGroups } from "../../services/hooks/ageGroup/useGetAgeGroups";
 import type { Article } from "../../services/article/article.service";
 import type { ArticleWithAge } from "../../services/article/article.service";
 
+import type { AgeGroup } from "../../services/ageGroup/ageGroup.service";
+
 import CardCarousel from "./components/CardCarousel";
 import ArticleCard from "./components/ArticleCard";
 
@@ -29,7 +31,7 @@ export interface ArticleModel {
     text_content?: string
 }
 
-const classButtonFilter: string = 'flex justify-center items-center w-[30%] h-8 font-semibold rounded-lg md:h-10 xl:w-[15%] xl:rounded-lg border border-accent'
+const classButtonFilter: string = 'flex justify-center items-center w-full h-full font-semibold rounded-lg border bordr-'
 
 function Articles() {
     const navigate = useNavigate()
@@ -45,13 +47,14 @@ function Articles() {
     const carouselArticlesDesktop = useRef<HTMLUListElement>(null)
     const cardArticleDesktop = useRef<HTMLLIElement>(null)
 
-    const childName: string | null = localStorage.getItem("select_child_name") ? localStorage.getItem("select_child_name") : ""
+    const childName: string | null = localStorage.getItem("select_child_name") ? localStorage.getItem("select_child_name")!.split(" ")[0] : ""
     const h3Text: string | null = localStorage.getItem("select_child_name") ? "Recomendados para" : "Recomendações"
     const [indexCarousel, setIndexCarousel] = useState<number>(0)
     const [filterArticles, setFilterArticles] = useState<string>("Todos")
     const [articlesCarousel, setArticlesCarousel] = useState<ArticleWithAge[]>([])
     const [articlesMain, setArticlesMain] = useState<Article[]>([])
     const [articles, setArticles] = useState<Article[]>(articlesMain)
+    const [filterAgeGroups, setFilterAgeGroups] = useState<AgeGroup[]>([])
 
     function onFilterArticles(type: string) {
         if (type != filterArticles && type != 'Todos') {
@@ -159,6 +162,7 @@ function Articles() {
 
         if (onGetAgeGroup) {
             setIdAgeGroup(calculateAgeChild(localStorage.getItem("child_birth_date")!, onGetAgeGroup.age_group))
+            setFilterAgeGroups(onGetAgeGroup.age_group.splice(0, 6))
         }
     }, [onGetAgeGroup])
 
@@ -225,28 +229,22 @@ function Articles() {
                 <h3 className="text-primary-text font-semibold text-xl
                 md:text-2xl
                 xl:hidden">Categorias</h3>
-                <ul className="flex justify-between items-center w-full h-14
-                md:h-16
-                xl:justify-start xl:gap-5">
-                    <button onClick={() => onFilterArticles("Todos")} className={`hidden xl:flex xl:border ${classButtonFilter} ${filterArticles == "Todos" ? "bg-accent text-white border-accent shadow-sm"
-                        : "bg-white text-gray-500 border-gray-200 hover:border-accent hover:text-accent"}`}>
-                        <li>Todos</li>
-                    </button>
-                    <button onClick={() => onFilterArticles("sono")} className={`border ${classButtonFilter} ${filterArticles == "sono" ? "bg-accent text-white border-accent shadow-sm"
-                        : "bg-white text-gray-500 border-gray-200 hover:border-accent hover:text-accent"}`}>
-                        <li>Sono</li>
-                    </button>
-                    <button onClick={() => onFilterArticles("alimentacao")} className={`border ${classButtonFilter} ${filterArticles == "alimentacao" ? "bg-accent text-white border-accent shadow-sm"
-                        : "bg-white text-gray-500 border-gray-200 hover:border-accent hover:text-accent"}`}>
-                        <li>Alimentação</li>
-                    </button>
-                    <button onClick={() => onFilterArticles("saude")} className={`border ${classButtonFilter} ${filterArticles == "saude" ? "bg-accent text-white border-accent shadow-sm"
-                        : "bg-white text-gray-500 border-gray-200 hover:border-accent hover:text-accent"}`}>
-                        <li>Saúde</li>
-                    </button>
+                <ul className="flex justify-between items-center w-full h-26 flex-wrap
+                md:h-28">
+                    {filterAgeGroups.map((age) => (
+                        <li key={age.id_age_group} className="w-[30%] h-8
+                        md:h-10
+                        xl:w-[15%]">
+                            <button onClick={() => onFilterArticles(age.age_group_name)} className={`xl:flex xl:border ${classButtonFilter} ${filterArticles == age.age_group_name ? "bg-accent text-white border-accent shadow-sm"
+                                : "bg-white text-gray-500 border-gray-200 hover:border-accent hover:text-accent"}`}>
+                                {age.age_group_name}
+                            </button>
+                        </li>
+                    ))}
                 </ul>
-                <ul ref={carouselArticlesDesktop} className="flex flex-col justify-around w-full h-auto gap-4 py-2
-                xl:flex-row xl:w-[calc(100%-52px)] xl:h-[calc(100%-56px)] xl:justify-start xl:gap-8 xl:overflow-x-auto scroll-smooth snap-x snap-mandatory">
+                <ul ref={carouselArticlesDesktop} className="flex flex-col justify-around w-full h-auto gap-4 py-2 pb-24
+                md:pb-28
+                xl:flex-row xl:w-[calc(100%-52px)] xl:h-[calc(100%-56px)] xl:pb-0 xl:justify-start xl:gap-8 xl:overflow-x-auto xl:scroll-smooth xl:snap-x xl:snap-mandatory">
                     {articles.map((article) => (
                         <Link to={`/article/${article.id_article}`}
                             key={article.id_article}
