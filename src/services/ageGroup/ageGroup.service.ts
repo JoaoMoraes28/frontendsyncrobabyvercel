@@ -2,7 +2,7 @@ import { api } from "../api";
 
 export interface AgeGroup {
   id_age_group: number,
-  age_group_name: number,
+  age_group_name: string,
   min_months: number,
   max_months: number
 }

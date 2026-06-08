@@ -92,10 +92,11 @@ const iconsRoutine: IconsRoutine[] = [
 function Routines() {
     const idChild: number = Number(localStorage.getItem("select_child"))
     const [searchDateRoutine, setSearchDateRoutine] = useState<string>(DateUtils.getDateUTC().split("T")[0])
-    const { data: onGetRoutines, isLoading, isError } = useGetRoutinesByChild(idChild, searchDateRoutine)
     const { mutate: onDeleteRoutines } = useDeleteRoutines()
 
-    const [childrenSelected, setChildSelected] = useState<number>(1)
+    const [childrenSelected, setChildSelected] = useState<number>(idChild)
+    const { data: onGetRoutines, isLoading, isError } = useGetRoutinesByChild(childrenSelected, searchDateRoutine)
+
     const [routineData, setRoutineData] = useState<Routine[]>([])
     const [hourRoutine, setHourRoutine] = useState<string>("")
     const [visibilityTrash, setVisibilityTrash] = useState<boolean>(true)
@@ -262,7 +263,7 @@ function Routines() {
             type = "medication"
 
         }
-        
+
         onDeleteRoutines(
             {
                 id_register: Number(values[1]),
@@ -346,7 +347,7 @@ function Routines() {
                         <ul className="flex justify-between w-full h-22
                                 xl:w-full xl:h-2/3 xl:flex-wrap xl:flex-row xl:justify-center xl:gap-2 xl:px-3">
                             {iconsRoutine.map((icon) => (
-                                <Link key={icon.id} to={icon.path} className="w-15 h-15 bg-primary rounded-lg
+                                <Link key={icon.id} to={`${icon.path}/${childrenSelected}`} className="w-15 h-15 bg-primary rounded-lg
                                                 md:h-22 md:w-22
                                                 xl:w-[30%] xl:h-[34%] xl:bg-lilas xl:rounded-2xl xl:hover:bg-white xl:hover:scale-103 xl:transition xl:duration-300">
                                     <li className="flex w-full h-full justify-center items-center

@@ -71,7 +71,6 @@ export function Storage() {
 
   const refProducts = useRef<HTMLDivElement | null>(null);
 
-  const [selectedFilter, setSelectedFilter] = useState("Todas");
   const [inventoryItems, setInventoryItems] = useState<ProductStorage[] | undefined>([]);
   const [inventoryItemsFilter, setInventoryItemsFilter] = useState<ProductStorage[] | undefined>([]);
   const [expandedCardId, setExpandedCardId] = useState<number | null>(null);
@@ -167,6 +166,7 @@ export function Storage() {
     }
 
     if (onGetStorage) {
+      console.log(onGetStorage)
       setInventoryItems(onGetStorage.stock)
       setInventoryItemsFilter(onGetStorage.stock)
     }
@@ -174,8 +174,9 @@ export function Storage() {
 
   return (
     <div className="w-full h-full flex flex-col gap-6 lg:p-8">
-      <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
-        <div className="flex w-full h-9 rounded-2xl bg-lilas shadow-purple-sm px-2 md:h-11 lg:max-w-md">
+      <div className="flex flex-col lg:flex-row lg:justify-end lg:items-center gap-4">
+        <div className="flex w-full h-9 rounded-2xl bg-lilas shadow-purple-sm px-2 md:h-11 lg:max-w-md
+        xl:hidden">
           <img src={Search} alt="" className="w-4" />
           <InputDefault
             className="w-full pl-2 bg-transparent outline-none border-none font-poppins text-text-primary"
@@ -197,12 +198,7 @@ export function Storage() {
         </Link>
       </div>
 
-      <div className="w-full flex justify-between items-center z-89">
-        <DropdownFilter
-          options={filterOptions}
-          selectedFilter={selectedFilter}
-          onSelect={setSelectedFilter}
-        />
+      <div className="w-full flex justify-end items-center z-89">
         <button
           onClick={() =>
             ConvertImg.DownloadElement(refProducts.current!, "storage")

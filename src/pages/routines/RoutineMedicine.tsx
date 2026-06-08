@@ -9,7 +9,7 @@ import CloseElement from "../../utils/CloseElementClick.ts"
 
 import { useEffect, useState, useRef } from "react"
 import { useForm } from "react-hook-form"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, Link, useParams } from "react-router-dom"
 
 import Close from "../../assets/closeModal.svg"
 
@@ -27,9 +27,9 @@ interface DataMedicine {
 }
 
 function RoutineMedicine() {
+    const { id } = useParams()
     const { mutate: onRegisterMedication } = useRegisterMedication()
-    const idChild: number = Number(localStorage.getItem("select_child"))
-    const { data: onGetProducts } = useGetProductByTypeStorage(6, idChild)
+    const idChild: number = Number(id)
 
     const {
         register,
@@ -44,12 +44,14 @@ function RoutineMedicine() {
     const refChild = useRef<HTMLInputElement | null>(null)
 
     const [childrenSelected, setChildSelected] = useState<number>(1)
+    const { data: onGetProducts } = useGetProductByTypeStorage(6, childrenSelected)
+
     const [expandRemedy, setExpandRemedy] = useState<boolean>(false)
     const [remedyListSelected, setRemedyListSelected] = useState<string>("")
     const [idRemedySelected, setIdRemedySelected] = useState<number>(0)
     const [disableInput, setDisableInput] = useState<boolean>(true)
     const [measure, setMeasure] = useState<string>("")
-    const [remedyMain, setRemedyMain] = useState <ProductStorage[]>([])
+    const [remedyMain, setRemedyMain] = useState<ProductStorage[]>([])
     const [remedy, setRemedy] = useState<ProductStorage[]>([])
 
     function selectRemedy(remedy: ProductStorage) {
@@ -73,9 +75,9 @@ function RoutineMedicine() {
                 }
             ],
             'description': data.description,
-            'fk_id_child': idChild
+            'fk_id_child': childrenSelected
         }
-        console.log(fullData)
+
         onRegisterMedication(
             fullData,
             {
@@ -142,6 +144,15 @@ function RoutineMedicine() {
 
                     <fieldset className={`absolute flex-col w-full h-68 top-16 md:top-18 overflow-y-scroll bg-lightest pt-4 gap-2 rounded-bl-lg rounded-br-lg border-b border-l border-r border-primary-darker z-40 ${expandRemedy ? 'flex' : 'hidden'}
                     xl:h-46`}>
+                        {remedy.length == 0 &&
+                            <div className="flex flex-col w-full h-full pt-10 gap-5 items-center">
+                                <span className="text-[15px] font-semibold text-primary-text">Parece que não há nenhum produto deste tipo...</span>
+                                <Link to="/add-storage"
+                                    className="bg-accent rounded-md text-white font-semibold w-40 h-9 flex justify-center items-center"
+                                >Registrar Produto</Link>
+                            </div>
+                        }
+
                         {remedy.map((it) => (
                             <div key={it.id} className="flex items-center w-full h-8 pl-2 gap-2">
                                 <InputDefault onChange={() => selectRemedy(it)} type="radio" id={`remedy${it.id}`} name="remedy" className={radioButton} />

@@ -11,8 +11,6 @@ import PerfilHeader from "../../layouts/Perfil";
 
 import cameraIcon from "../../assets/cameraIcon.svg";
 import logoutIcon from "../../assets/logoutIcon.svg";
-import bellIcon from "../../assets/notifications.svg";
-import backIcon from "../../assets/BackIcon.svg";
 import Profile from "../../assets/navigation/profileHeader.svg";
 
 import { inputClassName, labelClassName } from "../routines/RoutineFeeding";

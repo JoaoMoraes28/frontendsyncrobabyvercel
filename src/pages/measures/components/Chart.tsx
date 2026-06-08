@@ -1,8 +1,8 @@
 import Date from "../../../utils/Date.ts"
 
 import {
-    LineChart,
-    Line,
+    BarChart,
+    Bar,
     XAxis,
     YAxis,
     CartesianGrid,
@@ -31,14 +31,15 @@ function Chart({ data, value_type }: Props) {
 
     return (
         <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={formatedData(data)}
+            <BarChart data={formatedData(data)}
                 margin={{ left: -40, right: 5, top: 0, bottom: 0 }}
                 className="bg-lilas-bg py-2 shadow-purple-md">
                 <CartesianGrid stroke="#9d87d2" strokeDasharray="3 3" />
                 <XAxis dataKey="update_date"
                     tick={{ fill: "#41354c", fontSize: 12 }}
                     axisLine={{ stroke: "#000000" }}
-                    tickLine={false} />
+                    tickLine={false}
+                    padding={{left: 0, right: 0}} />
                 <YAxis
                     tick={{ fill: "#41354c", fontSize: 12 }}
                     axisLine={{ stroke: "#000000" }}
@@ -49,8 +50,8 @@ function Chart({ data, value_type }: Props) {
                     border: "1px solid #9334ea",
                 }}
                     labelStyle={{ fontWeight: "bold", color: "#41354c" }} />
-                <Line activeDot={{ r: 7 }} type="linear" dataKey={value_type} stroke="#722cb2" strokeWidth={2} />
-            </LineChart>
+                <Bar fill="#8c76bd" dataKey={value_type} barSize={70} stroke="#722cb2" strokeWidth={2} />
+            </BarChart>
         </ResponsiveContainer>
     )
 

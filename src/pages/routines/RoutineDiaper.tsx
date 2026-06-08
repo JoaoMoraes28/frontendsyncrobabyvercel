@@ -9,7 +9,7 @@ import CloseElement from "../../utils/CloseElementClick.ts"
 
 import { useEffect, useState, useRef } from "react"
 import { useForm } from "react-hook-form"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 
 import Pee from "../../assets/routines/pee.svg"
 import Poop from "../../assets/routines/poop.svg"
@@ -22,7 +22,6 @@ import { Link } from "react-router-dom";
 import { useRegisterDiaper } from "../../services/hooks/routines/useRegisterDiaper.ts";
 import type { RegisterDiaper } from "../../services/routines/routines.service.ts";
 import { useGetProductByTypeStorage } from "../../services/hooks/storage/useGetProductByTypeStorage.ts";
-import { useDeleteRoutines } from "../../services/hooks/routines/useDeleteRoutines.ts";
 import type { ProductStorage } from "../../services/storage/storage.service.ts";
 import type { ProductId } from "../../services/routines/routines.service.ts";
 
@@ -41,9 +40,9 @@ export interface Products {
 }
 
 function RoutineDiaper() {
+    const { id } = useParams()
     const { mutate: onRegisterDiaper } = useRegisterDiaper()
-    const idChild: number = Number(localStorage.getItem("select_child"))
-    const { data: onGetProducts } = useGetProductByTypeStorage(4, idChild)
+    const idChild: number = Number(id)
 
     const {
         register,
@@ -56,7 +55,9 @@ function RoutineDiaper() {
     const refChild = useRef<HTMLInputElement | null>(null)
 
     const navigate = useNavigate()
-    const [childrenSelected, setChildSelected] = useState<number>(1)
+    const [childrenSelected, setChildSelected] = useState<number>(idChild)
+    const { data: onGetProducts } = useGetProductByTypeStorage(4, childrenSelected)
+
     const [expandSelectorProduct, setExpandSelectorProduct] = useState<boolean>(false)
     const [valueProduct, setValueProduct] = useState<string>("")
     const [productSelected, setProductSelected] = useState<ProductStorage[]>([])
@@ -124,7 +125,7 @@ function RoutineDiaper() {
                 type: typeSelected,
                 product_id: newProductList,
                 description: datas.description,
-                fk_id_child: idChild
+                fk_id_child: childrenSelected
             }
             console.log(fullDatas)
 
@@ -132,7 +133,7 @@ function RoutineDiaper() {
                 fullDatas,
                 {
                     onSuccess: () => {
-                        
+
                     }, onError: () => {
 
                     }

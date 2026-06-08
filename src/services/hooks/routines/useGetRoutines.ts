@@ -8,8 +8,9 @@ export const useGetRoutinesByChild = (childId: number, date: string) => {
     return useQuery<ResponseRoutines>({
         queryKey: ["routines", "child", childId, "date", date],
         queryFn: async () => {
+            const response = await getRoutines(childId, date)
             await delay(700);
-            return await getRoutines(childId, date);
+            return response;
         },
     });
 };

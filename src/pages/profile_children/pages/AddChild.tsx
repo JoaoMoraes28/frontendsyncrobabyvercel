@@ -7,11 +7,9 @@ import NavigationBar from "../../../layouts/NavigationBar";
 import { listIcons } from "../../../layouts/MainLayout";
 import PerfilHeader from "../../../layouts/Perfil";
 
-import bellIcon from "../../../assets/notifications.svg";
-import backIcon from "../../../assets/BackIcon.svg";
-import logoutIcon from "../../../assets/logoutIcon.svg";
 import Male from "../../../assets/profileChildren/male.svg";
 import Fem from "../../../assets/profileChildren/fem.svg";
+import Profile from "../../../assets/navigation/profileHeader.svg";
 
 import { inputClassName } from "../../routines/RoutineFeeding";
 import Header from "../../../layouts/Header";
@@ -58,6 +56,11 @@ export function AddChildPage() {
   const { data: onGetNotificationChild } = useGetNotificationChild(idChild)
   const { mutate: handleRegisterAPI } = onInsertChild();
 
+  const [userPhoto] = useState<string | null>(localStorage.getItem("user_photo") == undefined
+    || localStorage.getItem("user_photo") == null
+    || localStorage.getItem("user_photo") == "null"
+    || localStorage.getItem("user_photo") == "" ?
+    Profile : localStorage.getItem("user_photo"))
   const [photo, setPhoto] = useState<string>("")
   const [photoFile, setPhotoFile] = useState<File | string>("")
   const [notifications, setNotifications] = useState<Notification[]>([])
@@ -121,7 +124,7 @@ export function AddChildPage() {
       <div>
         <Header notification={notifications} />
       </div>
-      <PerfilHeader preview={localStorage.getItem("user_photo")!} />
+      <PerfilHeader preview={userPhoto!} />
 
       <main className="flex-1 flex flex-col items-center justify-start w-full px-6 relative pt-25 pb-8">
         <div className="w-full max-w-[90%] xl:h-[calc(100%-40px)] xl:max-w-2xl xl:max-h-180 bg-lilas rounded-4xl px-6 py-8 md:py-12 relative mx-auto my-auto flex flex-col items-center shadow-purple-md">

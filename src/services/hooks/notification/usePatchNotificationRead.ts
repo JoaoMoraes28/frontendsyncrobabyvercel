@@ -1,10 +1,11 @@
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { patchNotificationRead } from "../../notification/notification.service";
+import type { JSONPatchNotification } from "../../notification/notification.service";
 
 export const usePatchNotificationRead = () => {
     return useMutation({
-        mutationFn: (id_notification: number) => patchNotificationRead(id_notification),
+        mutationFn: (data: JSONPatchNotification) => patchNotificationRead(data),
 
         onSuccess: (response) => {
             return response

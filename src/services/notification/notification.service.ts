@@ -13,6 +13,14 @@ export interface Notification {
     img_type?: string
 }
 
+export interface PatchNotification {
+    id: number
+}
+
+export interface JSONPatchNotification {
+    notifications: PatchNotification[]
+}
+
 export interface ResponseGetNotificationById {
     status_code: number,
     notification: Notification[]
@@ -85,9 +93,9 @@ export const getNotificationByChild = async (id_child: number): Promise<Response
     }
 };
 
-export const patchNotificationRead = async (id_notification: number): Promise<ResponsePatchNotificationRead> => {
+export const patchNotificationRead = async (data: JSONPatchNotification): Promise<ResponsePatchNotificationRead> => {
     try {
-        const response = await api.patch<ResponsePatchNotificationRead>(`/notification/${id_notification}`);
+        const response = await api.patch<ResponsePatchNotificationRead>(`/notification/read`, data);
         return response.data;
 
     } catch (error: any) {

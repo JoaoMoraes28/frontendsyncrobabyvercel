@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { InputDefault } from "../../components/InputDefault";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 
 import Date from "../../utils/Date.ts";
@@ -60,7 +60,8 @@ export const listProductsClass: string =
   "flex flex-col w-full min-h-34 border border-primary-darker bg-white rounded-lg px-4 py-3 gap-2 overflow-y-auto md:gap-4 xl:bg-white xl:min-h-24 xl:max-h-24 xl:px-6";
 
 function RoutineFeeding() {
-  const idChild: number = Number(localStorage.getItem("select_child"))
+  const { id } = useParams()
+  const idChild: number = Number(id)
   const { data: onGetType } = useGetTypeProduct()
   const { mutate: onInsertFeeding } = useRegisterFeeding()
 
@@ -79,8 +80,7 @@ function RoutineFeeding() {
   const refDiv = useRef<HTMLDivElement | null>(null)
   const refChild = useRef<HTMLInputElement | null>(null)
 
-  const [childrenSelected, setChildSelected] = useState<number>(1);
-  const [dateUTC, setDateUTC] = useState<string>("");
+  const [childrenSelected, setChildSelected] = useState<number>(idChild);
   const [typeFood, setTypeFood] = useState<number | null>(null);
   const [foodSelected, setFoodSelected] = useState<string>("");
   const [listFood, setListFood] = useState<ProductStorage[]>([]);
@@ -94,7 +94,7 @@ function RoutineFeeding() {
   const [foodsMain, setFoodsMain] = useState<ProductStorage[]>([]);
   const [foods, setFoods] = useState<ProductStorage[]>([])
 
-  const { data: onGetProduct } = useGetProductByTypeStorage(typeFood, idChild)
+  const { data: onGetProduct } = useGetProductByTypeStorage(typeFood, childrenSelected)
 
   function removeItemRegister(id: number) {
     const newData: ProductStorage[] = listFood.filter(it => it.id != id)
@@ -170,7 +170,7 @@ function RoutineFeeding() {
 
     if (typeFood != 0) {
       const fullDatas: RegisterFeeding = {
-        fk_id_child: Number(localStorage.getItem("select_child")),
+        fk_id_child: childrenSelected,
         date_time: Date.convertISO(datas.date_time),
         fk_id_product_type: typeFood!,
         description: datas.description,

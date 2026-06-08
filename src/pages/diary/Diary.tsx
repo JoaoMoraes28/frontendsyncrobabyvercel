@@ -28,10 +28,6 @@ function Diary() {
     }
 
     useEffect(() => {
-        setRegister(registerMain)
-    }, [])
-
-    useEffect(() => {
         if (!onGetDiary) {
             setRegisterMain([])
             setRegister([])

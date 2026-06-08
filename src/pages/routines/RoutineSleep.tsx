@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import Date from "../../utils/Date.ts"
 
@@ -15,7 +15,8 @@ import { useRegisterSleep } from "../../services/hooks/routines/useRegisterSleep
 import type { RegisterSleep } from "../../services/routines/routines.service";
 
 function RoutineSleep() {
-    const idChild: number = Number(localStorage.getItem("select_child"))
+    const { id } = useParams()
+    const idChild: number = Number(id)
     const { mutate: onRegisterSleep } = useRegisterSleep()
 
     const {
@@ -26,7 +27,7 @@ function RoutineSleep() {
     } = useForm<RegisterSleep>()
 
     const navigate = useNavigate()
-    const [childrenSelected, setChildSelected] = useState<number>(1)
+    const [childrenSelected, setChildSelected] = useState<number>(idChild)
     const [timeSleep, setTimeSleep] = useState<string>("")
 
     function setSleepTimeInput() {
@@ -48,7 +49,7 @@ function RoutineSleep() {
         const fullDatas: RegisterSleep = {
             start_time: Date.convertISO(datas.start_time),
             end_time: Date.convertISO(datas.end_time),
-            fk_id_child: idChild,
+            fk_id_child: childrenSelected,
             description: datas.description == undefined ? null : datas.description
         }
         console.log(fullDatas)

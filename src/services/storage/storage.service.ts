@@ -68,7 +68,7 @@ export const getProductsIdChild = async (childId: number): Promise<ResponseGetSt
 
 export const getProductsByType = async (childId: number, type_id: number): Promise<ResponseGetStorage> => {
     try {
-        const response = await api.get<ResponseGetStorage>(`/stock/type?child=${childId}&type=${type_id}`);
+        const response = await api.get<ResponseGetStorage>(`http://localhost:5173/syncrobaby/stock/type?child=${childId}&type=${type_id}`);
         return response.data;
     } catch (error: any) {
         if (String(error).includes("404")) {

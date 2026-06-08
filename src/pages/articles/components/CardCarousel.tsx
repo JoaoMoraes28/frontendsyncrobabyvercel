@@ -24,16 +24,18 @@ function CardCarousel({ article, articleCarousel, handleArticlePage }: Props) {
                                         xl:w-1/2 xl:h-full xl:rounded-tr-none xl:rounded-bl-xl" />
                     <figcaption className="px-4 pt-2 space-y-1 font-poppins h-[30%] bg-lilas
                                         md:h-[45%]
-                                        xl:w-1/2 xl:space-y-10 xl:h-full xl:rounded-tr-xl xl:rounded-br-xl xl:px-10 xl:pt-6">
-                        <div className={`hidden xl:flex xl:font-semibold xl:justify-start xl:items-center xl:min-w-30 xl:w-auto xl:h-10 xl:font-nunito `}>
-                            <span className="xl:px-4 bg-white xl:rounded-md xl:h-8 xl:flex xl:justify-center xl:items-center xl:text-primary-darker">
+                                        xl:w-1/2 xl:space-y-2 xl:h-full xl:flex xl:flex-col xl:rounded-tr-xl xl:rounded-br-xl xl:px-10 xl:pt-6">
+                        <div className={`hidden xl:flex xl:font-semibold xl:justify-between xl:items-center xl:min-w-30 xl:w-auto xl:h-10 xl:font-nunito `}>
+                            <span className="xl:px-4 bg-white xl:rounded-md xl:max-w-2/3 xl:h-10 xl:text-[90%] xl:flex xl:justify-center xl:items-center xl:text-primary-darker">
                                 {article.author}
                             </span>
+                            <a onClick={(e) => e.stopPropagation()} href={article.source_link} className="hidden 
+                            xl:pointer-events-auto xl:text-[14px] xl:text-primary/80 xl:block">Material original</a>
                         </div>
                         <p className="text-primary-text font-semibold
-                                                md:text-xl xl:text-[1.5rem]">{article.title}</p>
+                                                md:text-xl xl:text-[120%]">{article.title}</p>
                         <p className="hidden md:block md:text-lg md:font-medium md:text-primary
-                                            xl:text-black xl:text-[1.2rem]">{article.description}</p>
+                                            xl:text-black xl:text-[100%] xl:flex xl:grow">{article.description}</p>
                     </figcaption>
                 </figure>
                 <footer className="flex justify-between items-center px-4 w-full h-10 rounded-b-xl font-nunito text-[10px] bg-lilas
@@ -47,7 +49,7 @@ function CardCarousel({ article, articleCarousel, handleArticlePage }: Props) {
                         <span className="text-primary
                                             md:text-[12px]">{article.author}</span>
                     </div>
-                    <div className="hidden xl:flex xl:justify-between xl:items-end pb-5 xl:w-full">
+                    <div className="hidden xl:flex xl:justify-between xl:items-end xl:pb-5 xl:w-full">
                         <Link to={`/article/${article.id_article}`}
                             className="xl:rounded-lg xl:pointer-events-auto xl:hover:bg-accent-darker xl:flex xl:justify-center xl:items-center xl:bg-accent xl:shadow-purple-md xl:text-white xl:text-[125%] xl:w-2/5 xl:h-12"
                         >

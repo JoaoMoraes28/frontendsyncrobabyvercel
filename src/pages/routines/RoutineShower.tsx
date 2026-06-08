@@ -9,7 +9,7 @@ import CloseElement from "../../utils/CloseElementClick.ts"
 
 import { useEffect, useState, useRef } from "react"
 import { useForm } from "react-hook-form"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, Link, useParams } from "react-router-dom"
 
 import Close from "../../assets/closeModal.svg"
 import Trash from "../../assets/routines/trashPurple.svg"
@@ -31,9 +31,9 @@ interface DataShower {
 }
 
 function RoutineShower() {
-    const idChild: number = Number(localStorage.getItem("select_child"))
+    const { id } = useParams()
+    const idChild: number = Number(id)
     const { mutate: onRegisterBath } = useRegisterBath()
-    const { data: onGeteProducts } = useGetProductByTypeStorage(4, idChild)
 
     const {
         register,
@@ -48,7 +48,9 @@ function RoutineShower() {
     const refDiv = useRef<HTMLDivElement | null>(null)
     const refChild = useRef<HTMLInputElement | null>(null)
 
-    const [childrenSelected, setChildSelected] = useState<number>(1)
+    const [childrenSelected, setChildSelected] = useState<number>(idChild)
+    const { data: onGeteProducts } = useGetProductByTypeStorage(4, childrenSelected)
+
     const [expandSelectorProduct, setExpandSelectorProduct] = useState<boolean>(false)
     const [productSelected, setProductSelected] = useState<string>("")
     const [listProductSelected, setListProductSelected] = useState<ProductStorage[]>([])
@@ -118,9 +120,9 @@ function RoutineShower() {
                 "end_time": Date.convertISO(data.end_time),
                 "product_id": newListProduct,
                 "description": data.description,
-                "fk_id_child": idChild
+                "fk_id_child": childrenSelected
             }
-            
+
             onRegisterBath(
                 fullDatas,
                 {
@@ -198,6 +200,15 @@ function RoutineShower() {
 
                     <fieldset className={`absolute flex-col w-full h-68 top-21 overflow-y-scroll bg-lightest pt-4 gap-2 rounded-bl-lg rounded-br-lg border-b border-l border-r border-primary-darker z-40 ${expandSelectorProduct ? 'flex' : 'hidden'}
                     xl:h-46 xl:top-17`}>
+                        {products.length == 0 &&
+                            <div className="flex flex-col w-full h-full pt-10 gap-5 items-center">
+                                <span className="text-[15px] font-semibold text-primary-text">Parece que não há nenhum produto deste tipo...</span>
+                                <Link to="/add-storage"
+                                    className="bg-accent rounded-md text-white font-semibold w-40 h-9 flex justify-center items-center"
+                                >Registrar Produto</Link>
+                            </div>
+                        }
+
                         {products.map((product) => (
                             <div key={product.id} className="flex items-center w-full h-8 pl-2 gap-2">
                                 <InputDefault onChange={() => setListProducts(product)} type="radio" id={`product${product.id}`} name="product" className={radioButton} />
@@ -207,6 +218,7 @@ function RoutineShower() {
                     </fieldset>
                 </div>
                 <ul className={listProductsClass}>
+
                     {listProductSelected.map((product) => (
                         <li key={product.id} className="flex justify-between items-center">
                             <span className="text-lilas-dark font-semibold text-lg
