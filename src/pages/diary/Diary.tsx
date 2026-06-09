@@ -6,7 +6,6 @@ import { useEffect, useState } from "react"
 import Card from "./components/Card.tsx"
 
 import { Link, useNavigate } from "react-router-dom"
-import ChildrenSelect from "../../layouts/ChildrenSelect.tsx"
 import { useGetDiary } from "../../services/hooks/diary/useGetDiary.ts"
 import type { ModelDiary } from "../../services/diary/diary.service.ts"
 import { LoadingBaby } from "../../components/LoadingBaby.tsx"
@@ -15,8 +14,6 @@ import { EmptyState } from "../../components/EmptyState.tsx"
 function Diary() {
     const idChild: number = Number(localStorage.getItem("select_child"))
     const { data: onGetDiary, isLoading, isError } = useGetDiary(idChild)
-
-    const [childSelected, setChildSelected] = useState<number>(1)
 
     const [registerMain, setRegisterMain] = useState<ModelDiary[]>([])
     const [register, setRegister] = useState<ModelDiary[]>([])
@@ -41,10 +38,7 @@ function Diary() {
 
     return (
         <div className="relative flex flex-col items-center w-full min-h-full pb-8">
-            <div className="hidden xl:w-full xl:h-14 xl:flex xl:justify-between xl:items-center xl:bg-light">
-                <div className="xl:flex">
-                    <ChildrenSelect idChild={childSelected} setChild={setChildSelected} />
-                </div>
+            <div className="hidden xl:w-full xl:h-14 xl:flex xl:justify-end xl:items-center xl:bg-light">
                 <Link
                     to="/new-anotation"
                     className="xl:flex xl:justify-center xl:items-center xl:w-[30%] xl:max-w-90 xl:h-10 xl:bg-accent xl:rounded-sm xl:text-white xl:font-poppins xl:font-semibold xl:relative">

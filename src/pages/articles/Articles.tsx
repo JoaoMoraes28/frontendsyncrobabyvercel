@@ -40,7 +40,7 @@ function Articles() {
     const { data: onGetAgeGroup } = useGetAgeGroups()
 
     const [idAgeGroup, setIdAgeGroup] = useState<number>(1)
-    const { data: onGetArticlesByAge } = useGetArticleByAge(idAgeGroup)
+    const { data: onGetArticlesByAge, refetch } = useGetArticleByAge(idAgeGroup)
 
     const carousel = useRef<HTMLUListElement>(null)
     const articleCarousel = useRef<HTMLLIElement>(null)
@@ -50,23 +50,13 @@ function Articles() {
     const childName: string | null = localStorage.getItem("select_child_name") ? localStorage.getItem("select_child_name")!.split(" ")[0] : ""
     const h3Text: string | null = localStorage.getItem("select_child_name") ? "Recomendados para" : "Recomendações"
     const [indexCarousel, setIndexCarousel] = useState<number>(0)
-    const [filterArticles, setFilterArticles] = useState<string>("Todos")
+    const [filterArticlesId, setFilterArticlesId] = useState<number>()
     const [articlesCarousel, setArticlesCarousel] = useState<ArticleWithAge[]>([])
     const [articlesMain, setArticlesMain] = useState<Article[]>([])
     const [articles, setArticles] = useState<Article[]>(articlesMain)
     const [filterAgeGroups, setFilterAgeGroups] = useState<AgeGroup[]>([])
 
-    function onFilterArticles(type: string) {
-        if (type != filterArticles && type != 'Todos') {
-            const newArticles: Article[] = articlesMain.filter(it => it.content == type)
-            setArticles(newArticles)
-            setFilterArticles(type)
-
-        } else {
-            setArticles(articlesMain)
-            setFilterArticles("Todos")
-        }
-    }
+    const [articlesFilter, setArticlesFilter] = useState<boolean>(false)
 
     function onFilterInputArticles(text: string) {
         const lowerText = text.toLowerCase()
@@ -91,10 +81,10 @@ function Articles() {
 
             const index = Math.round(positionCarousel / (widthArticle + 24))
 
-            if (index == 2) {
+            if (index == 3) {
                 carouselElement.scrollTo({
                     left: 0,
-                    behavior: "smooth"
+                    behavior: "instant"
                 })
 
                 setIndexCarousel(0)
@@ -122,7 +112,13 @@ function Articles() {
 
             const index = Math.round(positionCarousel / (widthArticle + 24))
 
-            setIndexCarousel(index)
+            if (index == 3) {
+                setIndexCarousel(0)
+
+            } else {
+                setIndexCarousel(index)
+
+            }
 
         }
     }
@@ -155,6 +151,20 @@ function Articles() {
         navigate(`/article/${id}`)
     }
 
+    function filterArticles(id: number) {
+        if (id != idAgeGroup) {
+            setArticlesFilter(true)
+            setIdAgeGroup(id)
+            setFilterArticlesId(id)
+            refetch()
+
+        } else {
+            setArticles(articlesMain)
+            setFilterArticlesId(0)
+
+        }
+    }
+
     useEffect(() => {
         if (!onGetAgeGroup) {
             return
@@ -162,7 +172,7 @@ function Articles() {
 
         if (onGetAgeGroup) {
             setIdAgeGroup(calculateAgeChild(localStorage.getItem("child_birth_date")!, onGetAgeGroup.age_group))
-            setFilterAgeGroups(onGetAgeGroup.age_group.splice(0, 6))
+            setFilterAgeGroups(onGetAgeGroup.age_group.slice(0, 6))
         }
     }, [onGetAgeGroup])
 
@@ -171,7 +181,7 @@ function Articles() {
             return
         }
 
-        if (onGetArticles && typeof onGetArticles != "string") {
+        if (onGetArticles) {
             setArticles(onGetArticles.article)
             setArticlesMain(onGetArticles.article)
         }
@@ -182,8 +192,15 @@ function Articles() {
             return
         }
 
+        if (articlesFilter && onGetArticlesByAge) {
+            setArticles(onGetArticlesByAge.article)
+            return
+        }
+
         if (onGetArticlesByAge) {
-            setArticlesCarousel(onGetArticlesByAge.article.splice(0, 3))
+            const articles: ArticleWithAge[] = onGetArticlesByAge.article.slice(0, 3)
+            articles.push(articles[0])
+            setArticlesCarousel(articles)
         }
     }, [onGetArticlesByAge])
 
@@ -215,8 +232,8 @@ function Articles() {
                 <h3 className="hidden xl:flex xl:text-primary-text xl:text-3xl">Descubra novos artigos</h3>
                 <ul onScroll={scrollCarousel} ref={carousel} className="flex items-center gap-6 w-full max-h-[calc(100%-110px)] px-0.5 overflow-x-auto scroll-smooth snap-x snap-mandatory
                 xl:min-h-[90%]">
-                    {articlesCarousel.map((article) => (
-                        <CardCarousel key={article.id_article} article={article} handleArticlePage={handleArticlePage} articleCarousel={articleCarousel} />
+                    {articlesCarousel.map((article, index) => (
+                        <CardCarousel key={`${article.id_article}-${index}`} article={article} handleArticlePage={handleArticlePage} articleCarousel={articleCarousel} />
                     ))}
                 </ul>
                 <div className="flex justify-center w-full
@@ -235,7 +252,7 @@ function Articles() {
                         <li key={age.id_age_group} className="w-[30%] h-8
                         md:h-10
                         xl:w-[15%]">
-                            <button onClick={() => onFilterArticles(age.age_group_name)} className={`xl:flex xl:border ${classButtonFilter} ${filterArticles == age.age_group_name ? "bg-accent text-white border-accent shadow-sm"
+                            <button onClick={() => filterArticles(age.id_age_group)} className={`xl:flex xl:border ${classButtonFilter} ${filterArticlesId == age.id_age_group ? "bg-accent text-white border-accent shadow-sm"
                                 : "bg-white text-gray-500 border-gray-200 hover:border-accent hover:text-accent"}`}>
                                 {age.age_group_name}
                             </button>

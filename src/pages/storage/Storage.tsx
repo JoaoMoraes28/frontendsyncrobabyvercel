@@ -1,7 +1,6 @@
 import exportIcon from "../../assets/exportIcon.svg";
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import {
-  DropdownFilter,
   type FilterOption,
 } from "../../components/DropDownFilter";
 import { InputDefault } from "../../components/InputDefault";

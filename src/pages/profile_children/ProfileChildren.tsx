@@ -322,7 +322,7 @@ function ProfileChildren() {
 
       <form
         onSubmit={deleteSubmit(deleteChild)}
-        className={`absolute flex justify-center items-center top-[calc(50%-110px)] z-60 w-full h-50 ${deleteModal ? 'flex' : 'hidden'}`}>
+        className={`absolute flex justify-center items-center top-[calc(50%-110px)] z-92 w-full h-50 ${deleteModal ? 'flex' : 'hidden'}`}>
         <div className="flex flex-col items-center w-[90%] bg-lilas-bg h-full rounded-xl justify-evenly font-poppins">
           <span className="text-primary-text font-semibold">Deseja desativar esta criança?</span>
           <span className="text-[14px] text-primary-darker">Ela poderá ser reativada no menu de filhos</span>
@@ -340,7 +340,7 @@ function ProfileChildren() {
         className="flex w-full h-full relative
             xl:justify-center xl:items-center xl:pt-10 xl:w-[calc(100%-632px)] bg-light"
       >
-        <div className={`absolute bg-black/50 backdrop-blur-sm w-full h-full z-40 ${deleteModal ? "block" : "hidden"}`}></div>
+        <div className={`fixed bg-black/50 backdrop-blur-sm w-full h-full z-91 top-0 ${deleteModal ? "block" : "hidden"}`}></div>
         <form
           onSubmit={handleSubmit(sendDatas)}
           className="flex flex-col w-full h-full pb-2 overflow-y-auto px-6

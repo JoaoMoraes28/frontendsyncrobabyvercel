@@ -5,6 +5,7 @@ import Remedy from "../../assets/iconRemedy.svg"
 import Acessory from "../../assets/iconAcessory.svg"
 import Hygiene from "../../assets/purpleHygiene.svg"
 import Close from "../../assets/closeModal.svg"
+import setSelector from "../../assets/setExpandSelector.svg";
 
 import { useForm } from "react-hook-form"
 
@@ -253,14 +254,24 @@ function AddStorage() {
                 <div className="flex flex-col w-full">
                     <label htmlFor="product" className={labelClass}>Produto</label>
                     <div className="relative flex flex-col w-full">
-                        <input ref={refChild}
-                            readOnly={typeProduct == null} onChange={(e) => {
-                                filterProduct(e.target.value)
-                                setValueProduct(e.target.value)
-                            }
-                            }
-                            onClick={() => setSelectProduct(!selectProduct)}
-                            id="product" value={valueProduct} placeholder={nameProduct} className={`z-40 ${inputClassName}`} />
+                        <div className={`z-40 flex justify-between items-center ${inputClassName}`}>
+                            <input ref={refChild}
+                                readOnly={typeProduct == null} onChange={(e) => {
+                                    filterProduct(e.target.value)
+                                    setValueProduct(e.target.value)
+                                }
+                                }
+                                onClick={() => setSelectProduct(!selectProduct)}
+                                id="product" value={valueProduct} placeholder={nameProduct}
+                                className="w-full"
+                            />
+                            <img
+                                aria-hidden="true"
+                                src={setSelector}
+                                alt=""
+                                className={`xl:w-6 xl:h-6 ${selectProduct ? "turn-set" : "return-set"}`}
+                            />
+                        </div>
                         {errors.product_name && (
                             <p className="text-red-600/70 text-sm font-nunito">
                                 {errors.product_name.message}

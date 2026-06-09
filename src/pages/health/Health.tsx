@@ -102,15 +102,8 @@ export function Health() {
         </div>
       </div>
 
-      <div className="hidden md:flex flex-col gap-6 w-full">
+      <div className="hidden md:flex md:justify-between gap-6 w-full">
         <div className="flex flex-row items-center gap-6">
-          <div className="flex">
-            <ChildrenSelect
-              idChild={childSelected}
-              setChild={setChildSelected}
-            />
-          </div>
-
           <div className="flex items-center gap-3">
             {filterOptions.map((opt) => (
               <button

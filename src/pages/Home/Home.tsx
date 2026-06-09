@@ -170,7 +170,7 @@ export function Home() {
         const { scrollLeft, scrollWidth, clientWidth } = carouselRef.current;
 
         if (scrollLeft + clientWidth >= scrollWidth - 50) {
-          carouselRef.current.scrollTo({ left: 0, behavior: "smooth" });
+          carouselRef.current.scrollTo({ left: 0, behavior: "instant" });
         } else {
           carouselRef.current.scrollBy({
             left: clientWidth,
@@ -225,7 +225,9 @@ export function Home() {
     }
 
     if (onGetArticleAge) {
-      setArticles(onGetArticleAge.article.slice(0, 3))
+      const articles: ArticleWithAge[] = onGetArticleAge.article.slice(0, 3)
+      articles.push(articles[0])
+      setArticles(articles)
     }
   }, [onGetArticleAge])
 
@@ -241,7 +243,7 @@ export function Home() {
     }
 
     if (onGetStorage) {
-      setInventory(onGetStorage.stock.splice(0, 3))
+      setInventory(onGetStorage.stock.slice(0, 3))
     }
   }, [onGetStorage])
 
@@ -250,7 +252,14 @@ export function Home() {
       const scrollPosition = carouselRef.current.scrollLeft;
       const cardWidth = carouselRef.current.clientWidth;
       const currentIndex = Math.round(scrollPosition / cardWidth);
-      setActiveIndex(currentIndex);
+
+      if (currentIndex == 3) {
+        setActiveIndex(0)
+
+      } else {
+        setActiveIndex(currentIndex);
+
+      }
     }
   };
 
@@ -294,12 +303,12 @@ export function Home() {
         ref={carouselRef}
         onScroll={handleScroll}
         className="flex items-center gap-6 w-full max-h-[calc(100%-110px)] h-60 px-0.5 overflow-x-auto scroll-smooth snap-x snap-mandatory
-        md:h-120        
+        md:min-h-120        
         xl:h-[40%] xl:min-h-140"
       >
-        {articles.map((article) => (
+        {articles.map((article, index) => (
           <CardCarousel
-            key={article.id_article}
+            key={`${article.id_article}-${index}`}
             article={article}
             handleArticlePage={handleArticlePage}
           />
@@ -320,12 +329,11 @@ export function Home() {
         </div>
 
         {/* children section */}
-        <div className="flex flex-col gap-2 md:gap-6">
+        <div className="flex flex-col gap-2 md:gap-6
+        md:min-h-95
+        xl:min-h-0">
           <div className="flex justify-between items-end">
-            <h3 onClick={() => {
-              console.log(selectedChild)
-              console.log(localStorage.getItem("select_child"))
-            }} className="text-xl md:text-2xl font-bold font-poppins text-primary-text xl:text-2xl">
+            <h3 className="text-xl md:text-2xl font-bold font-poppins text-primary-text xl:text-2xl">
               <span className="xl:hidden">Filhos</span>
               <span className="hidden xl:inline">Meus Filhos</span>
             </h3>
@@ -443,42 +451,47 @@ export function Home() {
               </span>
             </h4>
             <div className="flex flex-col gap-3">
-              {routines.map((event) => (
-                <div
-                  key={event.id}
-                  className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between"
-                >
-                  <div className="flex items-center gap-4">
-                    <div
-                      className={`w-12 h-12 rounded-xl flex items-center justify-center`}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        fill="currentColor"
-                        className="w-6 h-6 text-accent"
+              {routines.length == 0 &&
+                <p className="italic font-semibold text-lg w-full h-full flex justify-start text-accent items-center">Nenhum registro feito</p>
+              }
+
+              {routines.length > 0 &&
+                routines.map((event) => (
+                  <div
+                    key={event.id}
+                    className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div
+                        className={`w-12 h-12 rounded-xl flex items-center justify-center`}
                       >
-                        <path
-                          fillRule="evenodd"
-                          d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 6a.75.75 0 00-1.5 0v6c0 .414.336.75.75.75h4.5a.75.75 0 000-1.5h-3.75V6z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          className="w-6 h-6 text-accent"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 6a.75.75 0 00-1.5 0v6c0 .414.336.75.75.75h4.5a.75.75 0 000-1.5h-3.75V6z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="font-poppins font-bold text-primary-text text-sm">
+                          {formaterTitle(event.title)}
+                        </span>
+                        <span className="font-poppins text-xs text-gray-400 mt-0.5">
+                          {event.description}
+                        </span>
+                      </div>
                     </div>
-                    <div className="flex flex-col">
-                      <span className="font-poppins font-bold text-primary-text text-sm">
-                        {formaterTitle(event.title)}
-                      </span>
-                      <span className="font-poppins text-xs text-gray-400 mt-0.5">
-                        {event.description}
-                      </span>
-                    </div>
+                    <span className="text-xs font-poppins text-gray-500 font-bold bg-gray-50 px-3 py-1.5 rounded-md border border-gray-100">
+                      {event.time}
+                    </span>
                   </div>
-                  <span className="text-xs font-poppins text-gray-500 font-bold bg-gray-50 px-3 py-1.5 rounded-md border border-gray-100">
-                    {event.time}
-                  </span>
-                </div>
-              ))}
+                ))}
             </div>
           </div>
 

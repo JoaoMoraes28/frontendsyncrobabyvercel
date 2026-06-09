@@ -1,6 +1,8 @@
 import type { ArticleWithAge } from "../../../services/article/article.service.ts";
 import type { Article } from "../../../services/article/article.service.ts";
 
+import BabyDefault from "../../../assets/articles/defaultBaby.jpg"
+
 import Date from "../../../utils/Date.ts"
 
 import { Link } from "react-router-dom";
@@ -19,7 +21,7 @@ function CardCarousel({ article, articleCarousel, handleArticlePage }: Props) {
                                 xl:relative">
                 <figure className="w-full h-[calc(100%-40px)]
                                     xl:flex xl:h-full xl:rounded-xl">
-                    <img aria-hidden="true" src={article.media!} alt="" className="w-full h-[70%] rounded-t-xl object-top object-cover
+                    <img aria-hidden="true" src={article.media ? article.media : BabyDefault} alt="" className="w-full h-[70%] rounded-t-xl object-top object-cover
                                         md:h-[55%] md:object-center
                                         xl:w-1/2 xl:h-full xl:rounded-tr-none xl:rounded-bl-xl" />
                     <figcaption className="px-4 pt-2 space-y-1 font-poppins h-[30%] bg-lilas
