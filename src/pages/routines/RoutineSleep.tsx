@@ -1,10 +1,9 @@
 import { useState } from "react"
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import Date from "../../utils/Date.ts"
 
 import BtnPrimary from "../../components/BtnPrimary"
-import ChildrenSelect from "../../layouts/ChildrenSelect";
 import { InputDefault } from "../../components/InputDefault"
 import { inputClassName, labelClassName, buttonCancel, buttonSubmit } from "./RoutineFeeding"
 import { useForm } from "react-hook-form"
@@ -15,8 +14,7 @@ import { useRegisterSleep } from "../../services/hooks/routines/useRegisterSleep
 import type { RegisterSleep } from "../../services/routines/routines.service";
 
 function RoutineSleep() {
-    const { id } = useParams()
-    const idChild: number = Number(id)
+    const idChild: number = Number(localStorage.getItem("select_child"))
     const { mutate: onRegisterSleep } = useRegisterSleep()
 
     const {
@@ -27,7 +25,7 @@ function RoutineSleep() {
     } = useForm<RegisterSleep>()
 
     const navigate = useNavigate()
-    const [childrenSelected, setChildSelected] = useState<number>(idChild)
+
     const [timeSleep, setTimeSleep] = useState<string>("")
 
     function setSleepTimeInput() {
@@ -49,10 +47,10 @@ function RoutineSleep() {
         const fullDatas: RegisterSleep = {
             start_time: Date.convertISO(datas.start_time),
             end_time: Date.convertISO(datas.end_time),
-            fk_id_child: childrenSelected,
+            fk_id_child: idChild,
             description: datas.description == undefined ? null : datas.description
         }
-        console.log(fullDatas)
+
         onRegisterSleep(
             fullDatas,
             {
@@ -70,9 +68,6 @@ function RoutineSleep() {
         <div className="w-full min-h-full
         md:flex md:items-center
         xl:flex xl:flex-col xl:items-center xl:h-[calc(100%-85px)]">
-            <div className="flex w-full">
-                <ChildrenSelect idChild={childrenSelected} setChild={setChildSelected} />
-            </div>
             <form onSubmit={handleSubmit(sendDatas)} className="flex flex-col justify-between min-w-full h-full
             md:h-[90%]
             xl:justify-around xl:max-w-[90%] xl:min-w-[90%] xl:h-full xl:bg-lilas xl:mt-5 xl:rounded-2xl xl:px-14 xl:py-4 xl:shadow-purple-md">
@@ -98,7 +93,7 @@ function RoutineSleep() {
                 </div>
                 <div className="flex flex-col">
                     <label htmlFor="description" className={labelClassName}>Descrição</label>
-                    <textarea {...register("description")} id="description" className={`h-40 md:h-80 ${inputClassName} outline-0`} />
+                    <textarea {...register("description")} id="description" className={`h-40 md:h-80 py-2 ${inputClassName} outline-0`} />
                 </div>
                 <div className="flex justify-between w-full h-10 mb-1
                         md:justify-center md:gap-10 md:h-12

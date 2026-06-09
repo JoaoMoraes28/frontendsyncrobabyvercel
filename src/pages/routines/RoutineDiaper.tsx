@@ -40,9 +40,8 @@ export interface Products {
 }
 
 function RoutineDiaper() {
-    const { id } = useParams()
     const { mutate: onRegisterDiaper } = useRegisterDiaper()
-    const idChild: number = Number(id)
+    const idChild: number = Number(localStorage.getItem("select_child"))
 
     const {
         register,
@@ -55,8 +54,7 @@ function RoutineDiaper() {
     const refChild = useRef<HTMLInputElement | null>(null)
 
     const navigate = useNavigate()
-    const [childrenSelected, setChildSelected] = useState<number>(idChild)
-    const { data: onGetProducts } = useGetProductByTypeStorage(4, childrenSelected)
+    const { data: onGetProducts } = useGetProductByTypeStorage(4, idChild)
 
     const [expandSelectorProduct, setExpandSelectorProduct] = useState<boolean>(false)
     const [valueProduct, setValueProduct] = useState<string>("")
@@ -125,7 +123,7 @@ function RoutineDiaper() {
                 type: typeSelected,
                 product_id: newProductList,
                 description: datas.description,
-                fk_id_child: childrenSelected
+                fk_id_child: idChild
             }
             console.log(fullDatas)
 
@@ -175,9 +173,6 @@ function RoutineDiaper() {
             onClick={(e) => CloseElement.CloseElement(refChild, setExpandSelectorProduct, e)}
             className="w-full min-h-full
         xl:flex xl:flex-col xl:items-center xl:h-[calc(100%-85px)]">
-            <div className="flex w-full">
-                <ChildrenSelect idChild={childrenSelected} setChild={setChildSelected} />
-            </div>
             <form onSubmit={handleSubmit(sendDatas)} className="flex flex-col justify-between w-full h-full
             xl:justify-around xl:w-[90%] xl:h-full xl:bg-lilas xl:mt-5 xl:rounded-2xl xl:px-14 xl:py-4 xl:shadow-purple-md">
                 <header className="hidden xl:flex xl:justify-between">
@@ -278,7 +273,7 @@ function RoutineDiaper() {
                 </ul>
                 <div className="flex flex-col">
                     <label htmlFor="description" className={labelClassName}>Descrição</label>
-                    <InputDefault {...register("description")} className={inputClassName} />
+                    <InputDefault {...register("description")} className={`py-2 ${inputClassName}`} />
                     {errors.description && <p className="text-red-600/70 text-sm font-nunito">{errors.description.message}</p>}
                 </div>
                 <div className="flex justify-between w-full h-10 mb-1 mt-4

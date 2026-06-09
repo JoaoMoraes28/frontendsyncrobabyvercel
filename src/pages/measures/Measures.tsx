@@ -75,19 +75,12 @@ function Measures() {
     const { data: onGetHeadMeasures } = useGetHeadMeasures(idChild)
     const { data: onGetBmiMeasures, refetch: refetchBMI, isFetched: fetchBmi } = useGetBmiMeasures(idChild)
 
-    const [idChildSelected, setIdChild] = useState<number>(idChild)
     const [filterSelected, setFilterSelected] = useState<string>("Perímetro cefálico")
     const [dataChart, setDataChart] = useState<(Height | Weight | Bmi | Head)[]>([])
     const [lastRegister, setLastRegister] = useState<string>("Nenhum registro")
     const [beforeRegister, setBeforeRegister] = useState<string>("Nenhum registro")
     const [valueChart, setValueChart] = useState<string>("")
-    const [developmentResult] = useState<ResultDevelopment>(
-        {
-            id: 1,
-            result: "Desenvolvimento dentro do esperado para a idade"
-        }
-    )
-
+    
     function setDescriptionForMeasure() {
         if (filterSelected == "Perímetro cefálico") {
             return descriptionMeasure[0].description
@@ -246,9 +239,6 @@ function Measures() {
     return (
         <div className="flex flex-col w-full min-h-full gap-3
         xl:gap-0">
-            <div className="xl:flex xl:w-full">
-                <ChildrenSelect idChild={idChild} setChild={setIdChild} />
-            </div>
             <div className="flex justify-between items-center w-full
             xl:flex-col xl:justify-around xl:items-start xl:h-[23%]">
                 <div className="block xl:hidden">

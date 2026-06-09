@@ -22,7 +22,7 @@ function NavigationBar({ listIcons, child_name }: Props) {
 
   return (
     <nav
-      className="fixed bottom-0 flex justify-center w-full h-22 md:h-28 z-100 bg-light backdrop-blur-sm 
+      className="fixed bottom-0 flex justify-center w-full h-22 md:h-28 z-90 bg-light backdrop-blur-sm 
       xl:left-0 xl:w-50 xl:h-screen xl:bg-primary xl:flex-col xl:justify-between"
     >
       <div
@@ -57,7 +57,7 @@ function NavigationBar({ listIcons, child_name }: Props) {
               to={icon.path}
               className={`relative before:content-[''] before:absolute before:w-15 before:h-15 before:rounded-xl before:top-[calc(50%-30px)] before:left-[calc(50%-30px)] before:-z-10 before:transition-colors isolate before:inset-0 ${location.pathname == icon.path ? "before:bg-white/50 xl:before:bg-transparent xl:before:h-0 xl:before:w-0 before:shadow-purple-sm" : "before:bg-transparent"}
               md:before:w-16 md:before:h-16 before:top-[calc(50%-32px)] before:left-[calc(50%-32px)]
-              xl:w-auto xl:h-9 xl:rounded-lg xl:hover:bg-white/20 xl:hover:scale-103 xl:transition xl:duration-200`}
+              xl:w-33 xl:h-10 xl:rounded-lg xl:hover:bg-white/20 xl:hover:scale-103 xl:transition xl:duration-200`}
             >
               <li
                 className={`flex flex-col items-center gap-1 z-60
@@ -65,7 +65,9 @@ function NavigationBar({ listIcons, child_name }: Props) {
               ${location.pathname == icon.path && "xl:bg-white/40"}`}
               >
                 <picture>
-                  <source media="(min-width: 1280px)" srcSet={icon.iconDesk} />
+                  <source media="(min-width: 1280px)" srcSet={location.pathname == icon.path
+                    ? icon.iconDeskSelected
+                    : icon.iconDesk} />
                   <img
                     aria-hidden="true"
                     src={
@@ -76,13 +78,13 @@ function NavigationBar({ listIcons, child_name }: Props) {
                     alt=""
                     className={`w-auto h-auto
                     md:w-7.5 md:h-7.5
-                    xl:w-6`}
+                    xl:h-7`}
                   />
                 </picture>
                 <span
                   className={`font-nunito text-[10px] font-bold
                   md:text-[12px]
-                xl:text-white xl:text-[12px] xl:font-light ${location.pathname == icon.path ? "text-accent-dark" : "text-text-primary"}`}
+                xl:text-white xl:text-[14px] xl:font-light ${location.pathname == icon.path ? "text-accent-dark" : "text-text-primary"}`}
                 >
                   {icon.title}
                 </span>
@@ -102,19 +104,21 @@ function NavigationBar({ listIcons, child_name }: Props) {
             <Link
               key={icon.id}
               to={icon.path}
-              className="xl:w-auto xl:h-9 xl:rounded-lg xl:hover:bg-white/20 xl:hover:scale-103 xl:transition xl:duration-200"
+              className="xl:w-33 xl:h-10 xl:rounded-lg xl:hover:bg-white/20 xl:hover:scale-103 xl:transition xl:duration-200"
             >
               <li
                 className={`xl:flex xl:w-full xl:h-full xl:gap-4 xl:items-center xl:rounded-lg xl:p-2
-                ${location.pathname == icon.path && "xl:bg-white/40"}`}
+                ${location.pathname == icon.path && "xl:bg-white/70"}`}
               >
                 <img
                   aria-hidden="true"
-                  src={icon.icon}
+                  src={location.pathname == icon.path
+                    ? icon.iconSelected
+                    : icon.icon}
                   alt=""
-                  className="xl:w-6 xl:h-auto4"
+                  className="xl:w-6.5 xl:h-auto"
                 />
-                <span className="xl:text-white xl:text-[12px]">
+                <span className={`xl:text-[14px] ${location.pathname == icon.path ? "xl:text-primary xl:font-semibold" : "xl:text-white"}`}>
                   {icon.title}
                 </span>
               </li>

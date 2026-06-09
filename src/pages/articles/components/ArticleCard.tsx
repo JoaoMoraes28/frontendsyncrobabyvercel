@@ -2,6 +2,8 @@ import type { Article } from "../../../services/article/article.service.ts"
 
 import Date from "../../../utils/Date.ts"
 
+import BabyDefault from "../../../assets/articles/defaultBaby.jpg"
+
 interface Props {
     article: Article
     cardArticleDesktop: React.RefObject<HTMLLIElement | null>
@@ -21,7 +23,7 @@ function ArticleCard({ article, cardArticleDesktop }: Props) {
                                             md:w-30 md:h-8
                                             xl:absolute xl:bg-accent xl:text-white xl:font-normal xl:rounded-sm xl:w-24 xl:h-6 xl:top-2 xl:right-2 ${article.publication_date ? "" : "text-[7px] md:text-[10px] xl:text-[8px]"}`}>{article.publication_date ? Date.formatedDate(article.publication_date!) : "Sem data de publicação"}</span>
                     <figure className="hidden xl:block xl:w-full xl:h-full xl:rounded-t-sm">
-                        <img src={article.media!} alt="" className="xl:w-full xl:h-full xl:rounded-t-sm xl:object-cover xl:object-top" />
+                        <img src={article.media ? article.media : BabyDefault} alt="" className="xl:w-full xl:h-full xl:rounded-t-sm xl:object-cover xl:object-center" />
                     </figure>
                 </div>
                 <div className="flex flex-col justify-between w-2/3 h-full bg-lilas py-2 rounded-r-lg

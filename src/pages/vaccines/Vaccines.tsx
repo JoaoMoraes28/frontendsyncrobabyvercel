@@ -35,7 +35,6 @@ export function Vaccines() {
   const [vaccines, setVaccines] = useState<JSONAgeGroup[]>()
   const [useVaccines, setUseVaccines] = useState<JSONAgeGroup[]>()
   const [ageGroup, setAgeGroup] = useState<string>()
-  const [titleAgeGroup, setTitleAgeGroup] = useState<string>()
   const [options, setOptions] = useState<FilterOption[]>([])
   const [modalOpen, setModalOpen] = useState<boolean>(false)
   const [vaccineSelectedId, setVaccineDataSelectedId] = useState<number>()
@@ -57,23 +56,7 @@ export function Vaccines() {
       setUseVaccines(vaccines)
       return
     }
-    setTitleAgeGroup(option)
     setUseVaccines(vaccines?.filter(it => it.age_group_name == option))
-  }
-
-  function changeTitleAgeGroup() {
-    const container = containerVaccine.current
-    const vaccin = vaccine.current
-
-    if (container && vaccin) {
-      const containerPosition: number = container.scrollLeft
-      const widthVaccin: number = vaccin.offsetWidth
-
-      const index: number = Math.round(containerPosition / widthVaccin)
-
-      setTitleAgeGroup(options[index + 1].label)
-    }
-
   }
 
   function changeVaccineCarousel(direction: 'left' | 'right') {
@@ -128,22 +111,20 @@ export function Vaccines() {
     }
 
     if (onGetAllVaccines) {
+      console.log(onGetAllVaccines)
       setVaccines(onGetAllVaccines.vaccine)
       setUseVaccines(onGetAllVaccines.vaccine)
       setAgeGroup("Todas")
       getAgeGroup(onGetAllVaccines.vaccine)
-
-      if (ageGroup == undefined) {
-        setTitleAgeGroup(onGetAllVaccines.vaccine[0].age_group_name)
-      }
     }
   }, [onGetAllVaccines])
 
   return (
     <div className="flex flex-col w-full h-full
     xl:items-center">
-      <div className={`fixed bg-black/50 backdrop-blur-sm left-0 top-0 w-full h-full flex justify-center items-center z-40 ${modalOpen ? "block" : "hidden"}`}>
-        <form onSubmit={handleSubmit(updateVaccineDate)} className="flex flex-col items-center w-[90%] bg-lilas-bg h-60 rounded-xl justify-evenly font-poppins">
+      <div className={`fixed bg-black/50 backdrop-blur-sm left-0 top-0 w-full h-screen flex justify-center items-center z-93 ${modalOpen ? "block" : "hidden"}`}>
+        <form onSubmit={handleSubmit(updateVaccineDate)} className="flex flex-col items-center w-[90%] bg-lilas-bg h-60 rounded-xl justify-evenly font-poppins
+        xl:w-150">
           <p className="text-primary-text font-semibold text-center">Digite a data de aplicação da {vaccineSelectedName}</p>
           <InputDefault {...register("application_date", { required: "Data obrigatória" })} type="date" className="pl-2 text-primary bg-white rounded-sm w-[80%] h-10" />
           {errors.application_date?.message && <p className="text-red-600/70 text-sm font-nunito">{errors.application_date.message}</p>}
@@ -156,17 +137,16 @@ export function Vaccines() {
       </div>
       <div className="w-full h-12 flex justify-between items-start">
         <DropdownFilter options={options} onSelect={setAgeGroup} functionExtra={filterVaccine} selectedFilter={ageGroup ? ageGroup : "Todas"} />
-        <h3 className="bg-primary text-white font-semibold w-22 h-10 flex justify-center items-center shadow-purple-md">{titleAgeGroup}</h3>
       </div>
-      <div className="bg-primary w-full min-h-[calc(100%-48px)] max-h-[calc(100%-48px)] p-2
-      xl:relative">
+      <div className="bg-primary rounded-xl w-[calc(100%-10px)] min-h-[calc(100%-48px)] max-h-[calc(100%-48px)] p-2
+      xl:relative xl:w-[calc(100%-80px)]">
         <button onClick={() => changeVaccineCarousel('left')} className="hidden xl:flex xl:absolute xl:-left-10 xl:top-[calc(50%-25px)] xl:w-10 xl:h-10 xl:justify-center xl:items-center">
           <img src={SetBlack} alt="Retrocede os cards de vacine." className="xl:w-auto h-6" />
         </button>
-        <button onClick={() => changeVaccineCarousel('right')} className="hidden xl:flex xl:absolute xl:-right-10 xl:top-[calc(50%-25px)] xl:w-10 xl:h-10 xl:justify-center xl:items-center">
+        <button onClick={() => changeVaccineCarousel('right')} className="hidden xl:flex xl:absolute xl:-right-12 xl:top-[calc(50%-25px)] xl:w-10 xl:h-10 xl:justify-center xl:items-center">
           <img src={SetBlack} alt="Avança os cards de vacina." className="xl:rotate-180 xl:w-auto xl:h-6" />
         </button>
-        <ul ref={containerVaccine} onScroll={changeTitleAgeGroup} className="h-full min-w-full overflow-x-auto flex scroll-smooth snap-x snap-mandatory">
+        <ul ref={containerVaccine} className="-mr-5 mt-2 shadow-purple-sm h-[calc(100%-20px)] rounded-xl min-w-full overflow-x-auto flex scroll-smooth snap-x snap-mandatory">
           {isLoading && !isError && <LoadingBaby text="Procurando vacinas" />}
 
           {!isLoading && isError && <p className="text-red-500 font-poppins col-span-full text-center mt-4">Erro na API</p>}
@@ -174,13 +154,16 @@ export function Vaccines() {
           {!isLoading && !isError &&
             useVaccines?.map((age_group_vaccine) => {
               return (
-                <li ref={vaccine} key={age_group_vaccine.id_age_group} className="bg-lilas-bg min-w-full min-h-full h-full overflow-y-scroll snap-center">
-                  <ul className="min-w-full min-h-full max-h-full overflow-y-scroll">
+                <li ref={vaccine} key={age_group_vaccine.id_age_group} className="bg-lilas-medium p-4 min-w-full space-y-4 min-h-full h-full overflow-y-scroll snap-center">
+                          <h3 className="text-primary-text font-bold w-30 h-10 flex justify-center items-center text-2xl">
+                            {age_group_vaccine.age_group_name}
+                          </h3>
+                  <ul className="min-w-full min-h-full max-h-full overflow-y-scroll gap-4 flex flex-col">
                     {age_group_vaccine.vaccines.map((vaccine) => (
-                      <li key={vaccine.id_vaccine} className="relative flex flex-col pb-10 font-nunito bg-white min-h-40
+                      <li key={vaccine.id_vaccine} className="relative flex flex-col pb-10 font-nunito rounded-xl bg-white min-h-60
                       md:gap-3
                       xl:pb-12">
-                        <header className="px-2 w-full h-8 flex items-center font-poppins bg-primary text-light font-semibold
+                        <header className="px-2 pt-1 w-full h-8 flex items-center font-poppins rounded-t-xl bg-primary text-light font-semibold
                                 xl:text-[18px]">
                           <p className="w-[55%]">Vacina</p>
                           <p className="w-[22%]">Status</p>

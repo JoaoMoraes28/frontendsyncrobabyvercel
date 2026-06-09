@@ -14,12 +14,21 @@ import StorageIconDesk from "../assets/navigation/storageDesk.svg";
 import Pediatrician from "../assets/pediatricianIcon.svg";
 import vaccineIcon from "../assets/navigation/vacinasIcon.svg";
 import healthIcon from "../assets/navigation/saudeIcon.svg";
+import healthSelectedDesk from "../assets/navigation/heatSelectedDesk.svg";
 import statisticsIcon from "../assets/navigation/estatisticasIcon.svg";
 import diaryIcon from "../assets/navigation/diario.svg";
 import HomeSelected from "../assets/navigation/homeSelected.svg";
 import RoutineSelected from "../assets/navigation/routinesSelected.svg";
 import StorageSelected from "../assets/navigation/storageSelected.svg";
 import ArticlesSelected from "../assets/navigation/articlesSelected.svg";
+import RoutineSelectedDesk from "../assets/navigation/routineDeskSelected.svg";
+import StorageSelectedDesk from "../assets/navigation/storageDeskSelected.svg";
+import ArticlesSelectedDesk from "../assets/navigation/articlesDeskSelected.svg";
+import VaccineSelectedDesk from "../assets/navigation/vacinasIconSelected.svg";
+import MeasuresSelectedDesk from "../assets/navigation/estatisticasIconSelected.svg";
+import ProfessionalSelectedDesk from "../assets/navigation/pediatricianIconSelected.svg";
+import HomeSelectedDesk from "../assets/navigation/homeDeskSelected.svg";
+import DiarySelectedDesk from "../assets/navigation/diarioSelected.svg";
 import { useState, useEffect } from "react";
 
 import { useGetNotificationChild } from "../services/hooks/notification/useGetNotificationChild";
@@ -30,6 +39,7 @@ export interface IconsNavigation {
   icon: string;
   iconDesk?: string;
   iconSelected?: string;
+  iconDeskSelected?: string;
   title: string;
   path: string;
 }
@@ -40,6 +50,7 @@ export const listIcons: IconsNavigation[] = [
     icon: HomeIcon,
     iconDesk: HomeIconDesk,
     iconSelected: HomeSelected,
+    iconDeskSelected: HomeSelectedDesk,
     title: "Home",
     path: "/home",
   },
@@ -48,6 +59,7 @@ export const listIcons: IconsNavigation[] = [
     icon: RoutineIcon,
     iconDesk: RoutineIconDesk,
     iconSelected: RoutineSelected,
+    iconDeskSelected: RoutineSelectedDesk,
     title: "Rotinas",
     path: "/routines",
   },
@@ -56,6 +68,7 @@ export const listIcons: IconsNavigation[] = [
     icon: StorageIcon,
     iconDesk: StorageIconDesk,
     iconSelected: StorageSelected,
+    iconDeskSelected: StorageSelectedDesk,
     title: "Estoque",
     path: "/storage",
   },
@@ -64,36 +77,42 @@ export const listIcons: IconsNavigation[] = [
     icon: ArticlesIcon,
     iconDesk: ArticlesIconDesk,
     iconSelected: ArticlesSelected,
+    iconDeskSelected: ArticlesSelectedDesk,
     title: "Artigos",
     path: "/articles",
   },
   {
     id: 5,
     icon: vaccineIcon,
+    iconSelected: VaccineSelectedDesk,
     title: "Vacinas",
     path: "/vaccines",
   },
   {
     id: 6,
     icon: healthIcon,
+    iconSelected: healthSelectedDesk,
     title: "Saúde",
     path: "/health",
   },
   {
     id: 7,
     icon: statisticsIcon,
+    iconSelected: MeasuresSelectedDesk,
     title: "Medidas",
     path: "/measures",
   },
   {
     id: 8,
     icon: Pediatrician,
+    iconSelected: ProfessionalSelectedDesk,
     title: "Profissionais",
     path: "/pediatrician",
   },
   {
     id: 9,
     icon: diaryIcon,
+    iconSelected: DiarySelectedDesk,
     title: "Diário",
     path: "/diary",
   },
@@ -121,7 +140,7 @@ export function MainLayout() {
   useEffect(() => {
     setInterval(() => {
       refetch()
-    }, 30000);
+    }, 3000);
   })
 
   return (

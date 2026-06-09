@@ -6,8 +6,6 @@ import { useEffect, useRef, useState } from "react";
 import Date from "../../utils/Date.ts";
 import CloseElement from "../../utils/CloseElementClick.ts"
 
-import ChildrenSelect from "../../layouts/ChildrenSelect";
-
 import Milk from "../../assets/routines/milk.svg";
 import BabyFood from "../../assets/routines/baby_food.svg";
 import SolidFood from "../../assets/routines/solidFood.svg";
@@ -60,8 +58,7 @@ export const listProductsClass: string =
   "flex flex-col w-full min-h-34 border border-primary-darker bg-white rounded-lg px-4 py-3 gap-2 overflow-y-auto md:gap-4 xl:bg-white xl:min-h-24 xl:max-h-24 xl:px-6";
 
 function RoutineFeeding() {
-  const { id } = useParams()
-  const idChild: number = Number(id)
+  const idChild: number = Number(localStorage.getItem("select_child"))
   const { data: onGetType } = useGetTypeProduct()
   const { mutate: onInsertFeeding } = useRegisterFeeding()
 
@@ -80,7 +77,6 @@ function RoutineFeeding() {
   const refDiv = useRef<HTMLDivElement | null>(null)
   const refChild = useRef<HTMLInputElement | null>(null)
 
-  const [childrenSelected, setChildSelected] = useState<number>(idChild);
   const [typeFood, setTypeFood] = useState<number | null>(null);
   const [foodSelected, setFoodSelected] = useState<string>("");
   const [listFood, setListFood] = useState<ProductStorage[]>([]);
@@ -94,7 +90,7 @@ function RoutineFeeding() {
   const [foodsMain, setFoodsMain] = useState<ProductStorage[]>([]);
   const [foods, setFoods] = useState<ProductStorage[]>([])
 
-  const { data: onGetProduct } = useGetProductByTypeStorage(typeFood, childrenSelected)
+  const { data: onGetProduct } = useGetProductByTypeStorage(typeFood, idChild)
 
   function removeItemRegister(id: number) {
     const newData: ProductStorage[] = listFood.filter(it => it.id != id)
@@ -170,13 +166,13 @@ function RoutineFeeding() {
 
     if (typeFood != 0) {
       const fullDatas: RegisterFeeding = {
-        fk_id_child: childrenSelected,
+        fk_id_child: idChild,
         date_time: Date.convertISO(datas.date_time),
         fk_id_product_type: typeFood!,
         description: datas.description,
         product_id: newListFood
       };
-      console.log(fullDatas)
+
       onInsertFeeding(
         fullDatas,
         {
@@ -238,12 +234,6 @@ function RoutineFeeding() {
       className="w-screen min-h-full
                 xl:flex xl:flex-col xl:items-center xl:h-[calc(100%-85px)]"
     >
-      <div className="flex w-full">
-        <ChildrenSelect
-          idChild={childrenSelected}
-          setChild={setChildSelected}
-        />
-      </div>
       <form
         onSubmit={handleSubmit(sendDatas)}
         className="relative flex justify-between flex-col gap-2.5 w-full h-full
@@ -462,7 +452,7 @@ function RoutineFeeding() {
             {...register("description", { required: false })}
             id="description"
             maxLength={160}
-            className={inputClassName}
+            className={`py-2 ${inputClassName}`}
           />
         </div>
         <div

@@ -137,7 +137,7 @@ function Header({ notification }: Props) {
 
         }, onError: () => {
           alert("Erro ao deletar notificação!")
-          
+
         }
       }
     )
@@ -231,7 +231,7 @@ function Header({ notification }: Props) {
 
   return (
     <header
-      className={`fixed top-0 flex flex-col justify-between items-center w-screen px-6 pt-6 z-90 bg-light ${setTitleHeader(location.pathname) != "Home" ? "h-24" : "h-32"}
+      className={`fixed top-0 flex flex-col justify-between items-center w-screen px-6 pt-6 z-90 bg-light ${setTitleHeader(location.pathname) != "Home" ? "h-24" : "h-32 md:h-36"}
       md:px-14
       xl:h-24 xl:flex-row xl:px-20 xl:pt-8 xl:items-start xl:right-0 ${location.pathname == "/profile-children" || location.pathname == "/profile-user" || location.pathname == "/add-child" ? "xl:w-[calc(100%-20%)]" : "xl:max-w-[calc(100%-200px)]"}`}
     >
@@ -318,6 +318,7 @@ function Header({ notification }: Props) {
                 </span>
               </div>
               <img
+                key={notificationsUnread}
                 src={Notifications}
                 alt="Icone de redirecionamento para notificações."
                 className={`w-auto h-6 ${notificationsUnread != 0 ? "animate-bell" : ""}

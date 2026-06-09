@@ -3,7 +3,7 @@ import { getAllArticles } from "../../article/article.service";
 import type { ResponseArticles } from "../../article/article.service";
 
 export const useGetArticles = () => {
-    return useQuery<ResponseArticles | string>({
+    return useQuery<ResponseArticles>({
         queryKey: ['article'],
         queryFn: async () => {
                 

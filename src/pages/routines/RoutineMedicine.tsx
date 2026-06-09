@@ -1,6 +1,5 @@
 import BtnPrimary from "../../components/BtnPrimary"
 import { InputDefault } from "../../components/InputDefault"
-import ChildrenSelect from "../../layouts/ChildrenSelect";
 
 import { buttonCancel, buttonSubmit, radioButton, labelRadioButton, inputClassName, labelClassName } from "./RoutineFeeding"
 
@@ -12,6 +11,7 @@ import { useForm } from "react-hook-form"
 import { useNavigate, Link, useParams } from "react-router-dom"
 
 import Close from "../../assets/closeModal.svg"
+import setSelector from "../../assets/setExpandSelector.svg";
 
 import type { Products } from "./RoutineDiaper"
 
@@ -27,9 +27,8 @@ interface DataMedicine {
 }
 
 function RoutineMedicine() {
-    const { id } = useParams()
     const { mutate: onRegisterMedication } = useRegisterMedication()
-    const idChild: number = Number(id)
+    const idChild: number = Number(localStorage.getItem("select_child"))
 
     const {
         register,
@@ -42,9 +41,7 @@ function RoutineMedicine() {
 
     const refDiv = useRef<HTMLDivElement | null>(null)
     const refChild = useRef<HTMLInputElement | null>(null)
-
-    const [childrenSelected, setChildSelected] = useState<number>(1)
-    const { data: onGetProducts } = useGetProductByTypeStorage(6, childrenSelected)
+    const { data: onGetProducts } = useGetProductByTypeStorage(6, idChild)
 
     const [expandRemedy, setExpandRemedy] = useState<boolean>(false)
     const [remedyListSelected, setRemedyListSelected] = useState<string>("")
@@ -75,7 +72,7 @@ function RoutineMedicine() {
                 }
             ],
             'description': data.description,
-            'fk_id_child': childrenSelected
+            'fk_id_child': idChild
         }
 
         onRegisterMedication(
@@ -116,9 +113,6 @@ function RoutineMedicine() {
             className="w-screen min-h-full
         md:flex md:items-center
         xl:flex xl:flex-col xl:items-center xl:h-[calc(100%-85px)]">
-            <div className="flex w-full">
-                <ChildrenSelect idChild={childrenSelected} setChild={setChildSelected} />
-            </div>
             <form onSubmit={handleSubmit(sendDatas)} className="flex justify-between flex-col min-w-full h-full
             md:h-[93%]
             xl:justify-around xl:max-w-[90%] xl:min-w-[90%] xl:h-full xl:bg-lilas xl:mt-5 xl:rounded-2xl xl:px-14 xl:py-4 xl:shadow-purple-md">
@@ -135,12 +129,23 @@ function RoutineMedicine() {
                 </div>
                 <div className="relative flex flex-col">
                     <label htmlFor="medicine" className={labelClassName}>Medicação</label>
-                    <input
-                        ref={refChild}
-                        onClick={() => setExpandRemedy(true)} onChange={(e) => {
-                            setRemedyListSelected(e.target.value)
-                            filterRemedy(e.target.value)
-                        }} aria-label="Clique aqui para visualizar os medicamentos para registro." type="text" id="medicine" value={remedyListSelected} placeholder="Selecione um medicamento" className={`z-50 ${inputClassName}`} />
+                    <div className={`z-50 flex justify-between items-center ${inputClassName}`}>
+                        <input
+                            ref={refChild}
+                            onClick={() => setExpandRemedy(true)} onChange={(e) => {
+                                setRemedyListSelected(e.target.value)
+                                filterRemedy(e.target.value)
+                            }} aria-label="Clique aqui para visualizar os medicamentos para registro."
+                            type="text" id="medicine" value={remedyListSelected}
+                            placeholder="Selecione um medicamento"
+                            className="w-full"
+                        />
+                        <img
+                            src={setSelector}
+                            alt=""
+                            className={`xl:w-6 xl:h-6 ${expandRemedy ? "turn-set" : "return-set"}`}
+                        />
+                    </div>
 
                     <fieldset className={`absolute flex-col w-full h-68 top-16 md:top-18 overflow-y-scroll bg-lightest pt-4 gap-2 rounded-bl-lg rounded-br-lg border-b border-l border-r border-primary-darker z-40 ${expandRemedy ? 'flex' : 'hidden'}
                     xl:h-46`}>
@@ -171,7 +176,7 @@ function RoutineMedicine() {
                 </div>
                 <div className="flex flex-col">
                     <label htmlFor="description" className={labelClassName}>Descrição</label>
-                    <textarea {...register("description")} className={`h-56 outline-0 ${inputClassName}
+                    <textarea {...register("description")} className={`h-56 outline-0 py-2 ${inputClassName}
                     md:h-68`} />
                 </div>
                 <div className="flex justify-between w-full h-10 mb-1 mt-2
