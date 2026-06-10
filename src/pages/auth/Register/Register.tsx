@@ -78,6 +78,16 @@ export function Register() {
       return;
     }
 
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d\W]{8,}$/;
+    if (!passwordRegex.test(password)) {
+      setErrors((prev) => ({
+        ...prev,
+        password:
+          "Mínimo de 8 caracteres, 1 maiúscula, 1 minúscula e 1 número.",
+      }));
+      return;
+    }
+
     handleRegisterAPI(
       { email, guardian_name, password },
       {

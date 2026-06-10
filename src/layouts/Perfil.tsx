@@ -1,5 +1,4 @@
 import { useLocation } from "react-router-dom";
-import { useEffect } from "react";
 
 import Databar from "../pages/perfil/components/DataBar.tsx";
 import { InputDefault } from "../components/InputDefault.tsx";
@@ -32,7 +31,7 @@ function Perfil({
   const location = useLocation();
   
   return (
-    <aside className="hidden xl:flex xl:flex-col xl:z-99 xl:items-center xl:w-1/3 xl:min-w-136 xl:h-screen xl:pt-8 xl:bg-primary">
+    <aside className="hidden xl:flex xl:flex-col xl:z-90 xl:items-center xl:w-1/3 xl:min-w-136 xl:h-screen xl:pt-8 xl:bg-primary">
       <h1 className="xl:w-full xl:pl-18 xl:font-semibold xl:text-[4.2rem] xl:text-darker-purple">
         SYNCROBABY
       </h1>

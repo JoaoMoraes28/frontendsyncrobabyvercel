@@ -93,9 +93,20 @@ export const getChildren = async (): Promise<ResponseChild> => {
   }
 };
 
-export const getChildDeactivate = async (): Promise<ResponseChild[]> => {
-  const response = await api.get<ResponseChild[]>(`/user/child/deactivate`);
-  return response.data;
+export const getChildDeactivate = async (): Promise<ResponseChild> => {
+  try {
+    const response = await api.get<ResponseChild>(`/user/child/deactivate`);
+    return response.data;
+
+  } catch (error: any) {
+    if (String(error).includes("404")) {
+      return {
+        status_code: 404,
+        children: []
+      }
+    }
+    throw error
+  }
 };
 
 export const insertChild = async (data: FormData): Promise<ResponseInsertChild> => {

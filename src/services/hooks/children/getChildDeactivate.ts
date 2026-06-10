@@ -1,18 +1,14 @@
-import { useMutation } from "@tanstack/react-query";
-import { AxiosError } from "axios";
+import { useQuery } from "@tanstack/react-query";
 import { getChildDeactivate } from "../../children/children.service"
 
 export const onGetChildDeactivate = () => {
-    return useMutation({
-        mutationFn: () => getChildDeactivate(),
+    const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
 
-        onSuccess: (data) => {
-            return data
-        },
-
-        onError: (error: AxiosError) => {
-            console.log("ERRO DA API:", error.response?.data);
-            console.log("ERRO COMPLETO:", error);
-        },
+    return useQuery({
+        queryKey: ['child'],
+        queryFn: async () => {
+            delay(800)
+            return await getChildDeactivate()
+        }
     });
 }
