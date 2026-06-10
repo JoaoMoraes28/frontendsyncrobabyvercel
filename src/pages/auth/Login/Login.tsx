@@ -47,6 +47,16 @@ export function Login() {
       return;
     }
 
+    // const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d\W]{8,}$/;
+    // if (!passwordRegex.test(password)) {
+    //   setErrors((prev) => ({
+    //     ...prev,
+    //     password:
+    //       "Mínimo de 8 caracteres, 1 maiúscula, 1 minúscula e 1 número.",
+    //   }));
+    //   return;
+    // }
+
     handleLoginAPI(
       { email, password },
       {
@@ -68,6 +78,7 @@ export function Login() {
             {/* Campo de Email */}
             <div className="flex flex-col gap-1">
               <InputDefault
+              type="email"
                 placeholder="Email"
                 className={`${inputStyle} ${errors.email ? "border-2 border-red-500" : ""}`}
                 value={email}

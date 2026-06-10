@@ -42,7 +42,7 @@ interface ResponseReactivate {
   token: string
 }
 
-interface UpdatePassword {
+export interface UpdatePassword {
   current_password: string
   new_password: string
 }
@@ -71,7 +71,6 @@ export const updatePassword = async (data: UpdatePassword): Promise<any> => {
   const response = await api.patch<any>("/user/password", data);
   return response.data;
 };
-
 
 export const updatePicture = async (data: FormData): Promise<any> => {
   const response = await api.patch<any>("/user/profile-picture", data);

@@ -121,7 +121,7 @@ export const listIcons: IconsNavigation[] = [
 export function MainLayout() {
   const [childName, setChildName] = useState<string>(localStorage.getItem("select_child_name")!)
 
-  const idChild: number = Number(localStorage.getItem("select_child"))
+  const [idChild] = useState<number>(Number(localStorage.getItem("select_child")))
 
   const { data: onGetNotificationChild, refetch } = useGetNotificationChild(idChild)
 

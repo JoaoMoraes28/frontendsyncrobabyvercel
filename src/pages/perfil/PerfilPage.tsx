@@ -8,10 +8,14 @@ import Header from "../../layouts/Header";
 import NavigationBar from "../../layouts/NavigationBar";
 import { listIcons } from "../../layouts/MainLayout";
 import PerfilHeader from "../../layouts/Perfil";
+import Date from "../../utils/Date";
 
 import cameraIcon from "../../assets/cameraIcon.svg";
 import logoutIcon from "../../assets/logoutIcon.svg";
 import Profile from "../../assets/navigation/profileHeader.svg";
+import DisableChild from "../../assets/disableChild.svg"
+import Search from "../../assets/search.svg"
+import Close from "../../assets/closeGray.svg"
 
 import { inputClassName, labelClassName } from "../routines/RoutineFeeding";
 
@@ -21,15 +25,25 @@ import type { UpdateUser } from "../../services/user/user.service";
 import { useUpdatePictureUser } from "../../services/hooks/user/useUpdatePictureUser";
 import { useGetNotificationChild } from "../../services/hooks/notification/useGetNotificationChild";
 import type { Notification } from "../../services/notification/notification.service";
+import { onGetChildDeactivate } from "../../services/hooks/children/getChildDeactivate";
+import { onReactivateChild } from "../../services/hooks/children/rectivateChild";
+import type { Children } from "../../services/children/children.service";
+import { usePasswordUser } from "../../services/hooks/user/useUpdatePassword";
+
+import { LoadingBaby } from "../../components/LoadingBaby";
 
 interface UserData {
   name: string;
   email: string;
   password?: string;
+  new_password?: string
 }
 
 export function PerfilPage() {
   const idChild: number = Number(localStorage.getItem("select_child"))
+  const { data: useGetChildrenDeactivate, isLoading, isError } = onGetChildDeactivate()
+  const { mutate: useReactivateChild } = onReactivateChild()
+  const { mutate: onUpdatePass } = usePasswordUser()
 
   const { data: onGetNotificationChild } = useGetNotificationChild(idChild)
   const { mutate: onUpdateUser } = useUpdateUser()
@@ -37,6 +51,7 @@ export function PerfilPage() {
   const { data: onGetUserData, refetch } = useGetUser()
 
   const navigate = useNavigate();
+  const [openModal, setOPenModal] = useState<boolean>(false)
   const [isEditing, setIsEditing] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [preview, setPreview] = useState<string | null>(localStorage.getItem("user_photo") == undefined
@@ -46,6 +61,9 @@ export function PerfilPage() {
     Profile : localStorage.getItem("user_photo"))
   const [photoFile, setPhotoFile] = useState<File | string>("")
   const [editPhoto, setEditPhoto] = useState<boolean>(false)
+  const [valueInput, setInputValue] = useState<string>()
+  const [children, setChidren] = useState<Children[]>([])
+  const [childrenFilter, setChildreFilter] = useState<Children[]>([])
 
   const {
     register,
@@ -76,10 +94,32 @@ export function PerfilPage() {
             refetch()
 
           }, onError: () => {
-
+            alert("Erro ao atualizar foto")
           }
         }
       )
+    }
+
+    if (data.password) {
+      if (data.new_password) {
+        onUpdatePass(
+          {
+            current_password: data.password,
+            new_password: data.new_password
+          },
+          {
+            onSuccess: () => {
+              alert("Senha alterada com sucesso!")
+            }, onError: () => {
+              alert("Erro ao alterar senha!")
+            }
+          }
+        )
+      } else {
+        alert("Digite sua nova senha!")
+
+      }
+
     }
 
     onUpdateUser(
@@ -115,6 +155,29 @@ export function PerfilPage() {
     }
   }
 
+  function filterChild(text: string) {
+    const newData: Children[] = children.filter(it => it.child_name.toLowerCase().includes(text.toLowerCase()))
+    setChildreFilter(newData)
+  }
+
+  function reactivateChild(id: number) {
+    useReactivateChild(
+      id,
+      {
+        onSuccess: () => {
+          alert("Filho ativado com sucesso!")
+          setOPenModal(false)
+          const newData: Children[] = children.filter(it => it.id_child != id)
+          setChidren(newData)
+          setChildreFilter(newData)
+
+        }, onError: () => {
+          alert("Erro ao ativar filho!")
+        }
+      }
+    )
+  }
+
   useEffect(() => {
     if (!onGetUserData) {
       return
@@ -136,14 +199,75 @@ export function PerfilPage() {
     }
   }, [onGetNotificationChild])
 
+  useEffect(() => {
+    if (!useGetChildrenDeactivate) {
+      return
+    }
+
+    if (useGetChildrenDeactivate) {
+      setChildreFilter(useGetChildrenDeactivate.children)
+      setChidren(useGetChildrenDeactivate.children)
+    }
+  }, [useGetChildrenDeactivate])
+
   return (
     <div className="flex flex-col xl:flex-row w-full min-h-screen bg-light">
       <div>
         <Header notification={notifications} />
       </div>
       <PerfilHeader previewImg={onChangePreview} preview={preview!} readonly={isEditing} />
+      <div className={`fixed flex items-center justify-center font-nunito bg-black/50 backdrop-blur-sm w-full h-full z-91 top-0 ${openModal ? "block" : "hidden"}`}>
+        <section className="flex flex-col w-[95%] h-[60%] bg-white rounded-xl p-6
+        md:w-[75%]
+        xl:w-[30%]">
+          <header className="flex items-center justify-between">
+            <div className="flex gap-1 flex-col">
+              <h4 className="text-black font-bold text-xl">Perfis inativos</h4>
+              <span className="text-gray-600 font-semibold">Selecione um perfil para reativar.</span>
+            </div>
+            <button onClick={() => setOPenModal(false)}>
+              <img src={Close} alt="Fecha o modal de filhos inativos." className="w-auto h-8" />
+            </button>
+          </header>
+          <div className="flex items-center mt-8 gap-2 pl-2 w-full h-10 rounded-lg shadow-purple-sm">
+            <img aria-hidden="true" src={Search} alt="" className="w-auto h-4.5" />
+            <InputDefault onChange={(e) => {
+              setInputValue(e.target.value)
+              filterChild(e.target.value)
+            }} value={valueInput} placeholder="Pesquisar perfil..." />
+          </div>
+          {isLoading && !isError && <LoadingBaby text="Procurando perfis desativados" />}
 
-      <main className="flex-1 flex flex-col items-center justify-center w-full relative py-8 xl:py-0 font-nunito">
+          {!isLoading && isError &&
+            <p className="text-[12px] text-red-error">Erro ao carregar perfis!</p>
+          }
+
+          {!isLoading && !isError && childrenFilter.length == 0 &&
+            <p className="flex grow justify-center pt-34 text-primary-text font-semibold">Nenhum perfil desativado encontrado!</p>
+          }
+
+          {!isLoading && !isError && childrenFilter.length > 0 &&
+            <ul className="flex flex-col grow gap-2 pt-2">
+              {useGetChildrenDeactivate?.children.map((child) => (
+                <li key={child.id_child} className="flex justify-between items-center w-full h-20">
+                  <img src={child.photo == "" ? Profile : child.photo} alt="Foto de perfil da criança."
+                    className="object-cover object-center w-15 h-15 rounded-full"
+                  />
+                  <div className="flex flex-col grow justify-center pl-3">
+                    <p className="text-accent font-semibold">{child.child_name}</p>
+                    <p className="font-semibold text-lilas-dark text-[14px]">{Date.subYearsFormated(child.birth_date)} ano(s)</p>
+                  </div>
+                  <button onClick={() => reactivateChild(child.id_child)} className="text-accent font-semibold">
+                    Reativar
+                  </button>
+                </li>
+              ))}
+            </ul>
+          }
+        </section>
+      </div>
+      <main className="flex-1 flex flex-col items-center justify-center gap-4 w-full relative py-8 xl:py-0 font-nunito
+      xl:space-y-20">
         <div className="hidden xl:flex justify-end items-center w-full absolute top-25 left-0 px-19">
           <button onClick={() => {
             const answer = confirm("Você deseja sair de sua conta?")
@@ -171,7 +295,7 @@ export function PerfilPage() {
           </button>
 
           <div className="flex justify-center xl:hidden mb-3">
-            <div className="w-32 h-32 rounded-full border-2 border-purple-300 bg-white relative overflow-hidden md:w-40 md:h-40 xl:w-60 xl:h-60">
+            <div className="w-32 h-32 rounded-full border-2 border-purple-300 bg-white relative overflow-hidden md:w-34 md:h-34 xl:w-60 xl:h-60">
               <label htmlFor={isEditing ? "imgUser" : ""} className="w-full h-full rounded-full flex items-center justify-center">
                 <img
                   src={preview == "null" || preview == "" || preview == undefined ? cameraIcon : preview}
@@ -236,9 +360,9 @@ export function PerfilPage() {
             <div className="flex flex-col">
               <label
                 htmlFor="password"
-                className={`xl:hidden ${labelClassName}`}
+                className={`${labelClassName}`}
               >
-                Senha
+                Senha atual
               </label>
               <InputDefault
                 id="password"
@@ -246,17 +370,29 @@ export function PerfilPage() {
                 placeholder="***********"
                 className={`${inputClassName} bg-white xl:py-4 xl:text-lg rounded-xl`}
                 disabled={!isEditing}
-                {...register("password", { required: "A senha é obrigatória" })}
+                {...register("password")}
               />
-              {errors.password && (
-                <span className="text-red-500 text-xs mt-1">
-                  {errors.password.message}
-                </span>
-              )}
+            </div>
+
+            <div className="flex flex-col">
+              <label
+                htmlFor="newPassword"
+                className={`${labelClassName}`}
+              >
+                Nova senha
+              </label>
+              <InputDefault
+                id="newPassword"
+                type="password"
+                placeholder="***********"
+                className={`${inputClassName} bg-white xl:py-4 xl:text-lg rounded-xl`}
+                disabled={!isEditing}
+                {...register("new_password")}
+              />
             </div>
 
             {/* Container dos Botões */}
-            <div className="flex flex-col gap-2 mt-4 md:gap-5 md:mt-10 xl:justify-center xl:gap-8 xl:mt-8 xl:flex-row-reverse">
+            <div className="flex flex-col gap-2 mt-4 md:gap-5 md:mt-6 xl:justify-center xl:gap-8 xl:mt-8 xl:flex-row-reverse">
               <div className="xl:w-1/2">
                 {isEditing ? (
                   <BtnPrimary
@@ -285,8 +421,14 @@ export function PerfilPage() {
             </div>
           </form>
         </div>
+        <div className="flex justify-center items-center w-full h-15
+        xl:-mb-30">
+          <div className="flex h-15 gap-2 items-center">
+            <img aria-hidden="true" src={DisableChild} alt="" className="w-auto h-10" />
+            <button onClick={() => setOPenModal(true)} className="underline text-black text-[16px] font-semibold">Filhos desativados</button>
+          </div>
+        </div>
       </main>
-
       <div className="xl:hidden">
         <NavigationBar listIcons={listIcons} />
       </div>
