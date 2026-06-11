@@ -1,8 +1,5 @@
 import exportIcon from "../../assets/exportIcon.svg";
 import React, { useState, useMemo, useRef, useEffect } from "react";
-import {
-  type FilterOption,
-} from "../../components/DropDownFilter";
 import { InputDefault } from "../../components/InputDefault";
 import Search from "../../assets/search.svg";
 import HygieneIcon from "../../assets/hygieneIcon.svg?react";
