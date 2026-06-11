@@ -31,7 +31,7 @@ import HomeSelectedDesk from "../assets/navigation/homeDeskSelected.svg";
 import DiarySelectedDesk from "../assets/navigation/diarioSelected.svg";
 import { useState, useEffect } from "react";
 
-import { useGetNotificationChild } from "../services/hooks/notification/useGetNotificationChild";
+import { useGetNotificationUser } from "../services/hooks/notification/useGetNotificationUser";
 import type { Notification } from "../services/notification/notification.service";
 
 export interface IconsNavigation {
@@ -121,9 +121,7 @@ export const listIcons: IconsNavigation[] = [
 export function MainLayout() {
   const [childName, setChildName] = useState<string>(localStorage.getItem("select_child_name")!)
 
-  const [idChild] = useState<number>(Number(localStorage.getItem("select_child")))
-
-  const { data: onGetNotificationChild, refetch } = useGetNotificationChild(idChild)
+  const { data: onGetNotificationChild, refetch } = useGetNotificationUser()
 
   const [notifications, setNotifications] = useState<Notification[]>([])
 
