@@ -6,7 +6,6 @@ import Card from './components/HourCard'
 import DateUtils from '../../utils/Date.ts'
 import { LoadingBaby } from "../../components/LoadingBaby.tsx";
 
-import ChildrenSelect from "../../layouts/ChildrenSelect"
 import IconFeeding from '../../assets/routines/iconRoutineFood.svg'
 import IconSleep from '../../assets/routines/iconRoutineSleep.svg'
 import IconDiaper from '../../assets/routines/iconRoutineDiaper.svg'

@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { InputDefault } from "../../components/InputDefault";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 
 import Date from "../../utils/Date.ts";
@@ -176,10 +176,10 @@ function RoutineFeeding() {
       onInsertFeeding(
         fullDatas,
         {
-          onSuccess: (response) => {
-
+          onSuccess: () => {
+            alert("Sucesso ao registrar alimentação!")
           },
-          onError: (error) => {
+          onError: () => {
             alert("Ih deu errado hein...")
           }
         }
@@ -187,7 +187,7 @@ function RoutineFeeding() {
 
     } else {
 
-      alert("Selecione o tipo d registro!")
+      alert("Selecione o tipo de registro!")
     }
 
 

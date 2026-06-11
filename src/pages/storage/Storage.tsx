@@ -1,8 +1,5 @@
 import exportIcon from "../../assets/exportIcon.svg";
 import React, { useState, useMemo, useRef, useEffect } from "react";
-import {
-  type FilterOption,
-} from "../../components/DropDownFilter";
 import { InputDefault } from "../../components/InputDefault";
 import Search from "../../assets/search.svg";
 import HygieneIcon from "../../assets/hygieneIcon.svg?react";
@@ -37,16 +34,6 @@ export interface InventoryItem {
   description: string | null;
   themeColor: string;
 }
-
-const filterOptions: FilterOption[] = [
-  { id: "todas", label: "Todas" },
-  { id: "alimento-solido", label: "Alimento sólido" },
-  { id: "leite-derivados", label: "Leite e derivados" },
-  { id: "papinha-pure", label: "Papinha ou purê" },
-  { id: "higiene", label: "Higiene" },
-  { id: "medicamentos", label: "Medicamentos" },
-  { id: "acessorios", label: "Acessórios" },
-];
 
 const getCategoryIcon = (category: string): React.ElementType => {
   const icons: Record<string, React.ElementType> = {
@@ -148,7 +135,7 @@ export function Storage() {
     onDeleteStorage(
       itemId,
       {
-        onSuccess: (response) => {
+        onSuccess: () => {
           refetch()
           const newProducts: ProductStorage[] = inventoryItems!.filter(it => it.id != itemId)
           setInventoryItems(newProducts)

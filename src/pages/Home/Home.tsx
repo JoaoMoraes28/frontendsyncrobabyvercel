@@ -31,7 +31,6 @@ import type { ProductStorage } from "../../services/storage/storage.service.ts";
 
 import { useGetRoutinesByChild } from "../../services/hooks/routines/useGetRoutines.ts";
 import type { Routine } from "../../services/routines/routines.service.ts";
-import { subDays } from "date-fns";
 
 const articlesData = [
   {
@@ -65,53 +64,6 @@ const categoriesData = [
   { id: 5, title: "Medidas", icon: MeasurementsIcon, path: "/measures" },
   { id: 6, title: "Pediatra", icon: PediatricianIcon, path: "/pediatrician" },
   { id: 7, title: "Saúde", icon: healthIcon, path: "/health" },
-];
-
-const upcomingEventsData = [
-  {
-    id: 1,
-    title: "Soneca da Tarde",
-    time: "Em 2 Horas",
-    description: "Previsto para 14H",
-    icon: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        fill="currentColor"
-        className="w-6 h-6 text-blue-500"
-      >
-        <path d="M9.352 4.093c-2.316-2.023-5.836-1.503-6.953 1.134-.51 1.205-.51 2.585 0 3.79 1.117 2.637 4.637 3.157 6.953 1.134a.75.75 0 00-.982-1.127c-1.383 1.207-3.486.898-4.153-.679a3.004 3.004 0 010-2.27c.667-1.577 2.77-1.886 4.153-.679a.75.75 0 00.982-1.127z" />
-        <path d="M12.96 11.246c-2.316-2.023-5.836-1.503-6.953 1.134-.51 1.205-.51 2.585 0 3.79 1.117 2.637 4.637 3.157 6.953 1.134a.75.75 0 00-.982-1.127c-1.383 1.207-3.486.898-4.153-.679a3.004 3.004 0 010-2.27c.667-1.577 2.77-1.886 4.153-.679a.75.75 0 00.982-1.127z" />
-        <path
-          fillRule="evenodd"
-          d="M11.53 3.66a.75.75 0 01.696-.45h8.024a.75.75 0 01.696 1.03l-2.043 5.109h2.347a.75.75 0 01.625 1.164l-7.5 11.25a.75.75 0 01-1.312-.662l1.91-6.691h-3.21a.75.75 0 01-.663-1.096l3.398-9.055a.75.75 0 01.032-.05z"
-          clipRule="evenodd"
-        />
-      </svg>
-    ),
-    bgClass: "bg-blue-50",
-  },
-  {
-    id: 2,
-    title: "Almoço",
-    time: "Em 3 Horas",
-    description: "Previsto para 12H",
-    icon: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        fill="currentColor"
-        className="w-6 h-6 text-accent"
-      >
-        <path
-          fillRule="evenodd"
-          d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 6a.75.75 0 00-1.5 0v6c0 .414.336.75.75.75h4.5a.75.75 0 000-1.5h-3.75V6z"
-          clipRule="evenodd"
-        />
-      </svg>
-    ),
-    bgClass: "bg-orange-50",
-  },
 ];
 
 export function Home() {

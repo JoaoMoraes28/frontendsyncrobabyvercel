@@ -8,7 +8,7 @@ import CloseElement from "../../utils/CloseElementClick.ts"
 
 import { useEffect, useState, useRef } from "react"
 import { useForm } from "react-hook-form"
-import { useNavigate, Link, useParams } from "react-router-dom"
+import { useNavigate, Link } from "react-router-dom"
 
 import Close from "../../assets/closeModal.svg"
 import setSelector from "../../assets/setExpandSelector.svg";

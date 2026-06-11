@@ -6,7 +6,6 @@ import Alert from "../../assets/alertAccent.svg"
 import Plus from "../../assets/plusWhite.svg"
 
 import Chart from "./components/Chart"
-import ChildrenSelect from "../../layouts/ChildrenSelect"
 import { Link } from "react-router-dom"
 
 import { useGetHeightMeasures } from "../../services/hooks/measures/useGetHeightMeasures"
@@ -14,7 +13,6 @@ import { useGetWeightMeasures } from "../../services/hooks/measures/useGetWeight
 import { useGetHeadMeasures } from "../../services/hooks/measures/useGetHeadMeasures"
 import { useGetBmiMeasures } from "../../services/hooks/measures/useGetBmiMeasures"
 
-import type { ResponseMeasuresHeight } from "../../services/measures/measures.service"
 import type { Height } from "../../services/measures/measures.service"
 import type { Weight } from "../../services/measures/measures.service"
 import type { Bmi } from "../../services/measures/measures.service"
@@ -23,11 +21,6 @@ import type { Head } from "../../services/measures/measures.service"
 interface LabelDescription {
     label: string
     description: string
-}
-
-interface ResultDevelopment {
-    id: number
-    result: string
 }
 
 const filterOptions: FilterOption[] = [
