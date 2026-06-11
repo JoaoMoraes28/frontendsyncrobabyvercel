@@ -177,7 +177,7 @@ function RoutineFeeding() {
         fullDatas,
         {
           onSuccess: () => {
-            alert("Sucesso ao registrar alimentação!")
+            
           },
           onError: () => {
             alert("Ih deu errado hein...")
