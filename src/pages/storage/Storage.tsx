@@ -38,16 +38,6 @@ export interface InventoryItem {
   themeColor: string;
 }
 
-const filterOptions: FilterOption[] = [
-  { id: "todas", label: "Todas" },
-  { id: "alimento-solido", label: "Alimento sólido" },
-  { id: "leite-derivados", label: "Leite e derivados" },
-  { id: "papinha-pure", label: "Papinha ou purê" },
-  { id: "higiene", label: "Higiene" },
-  { id: "medicamentos", label: "Medicamentos" },
-  { id: "acessorios", label: "Acessórios" },
-];
-
 const getCategoryIcon = (category: string): React.ElementType => {
   const icons: Record<string, React.ElementType> = {
     Acessórios: Acessory,
@@ -148,7 +138,7 @@ export function Storage() {
     onDeleteStorage(
       itemId,
       {
-        onSuccess: (response) => {
+        onSuccess: () => {
           refetch()
           const newProducts: ProductStorage[] = inventoryItems!.filter(it => it.id != itemId)
           setInventoryItems(newProducts)

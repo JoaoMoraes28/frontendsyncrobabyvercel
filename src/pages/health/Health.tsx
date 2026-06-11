@@ -6,7 +6,6 @@ import {
 } from "../../components/DropDownFilter";
 import BtnPrimary from "../../components/BtnPrimary";
 import { IllnessCard } from "./components/IllnessCard";
-import ChildrenSelect from "../../layouts/ChildrenSelect";
 
 import { useGetIllness } from "../../services/hooks/illness/useGetIllness";
 import { useDeleteIllness } from "../../services/hooks/illness/useDeleteIllness";
@@ -46,7 +45,6 @@ export function Health() {
 
   const [selectedFilter, setSelectedFilter] = useState("Todas");
   const [expandedCardId, setExpandedCardId] = useState<number | null>(null);
-  const [childSelected, setChildSelected] = useState<number>(childId || 1);
 
   const illnessList = onGetIllness?.illness || [];
 

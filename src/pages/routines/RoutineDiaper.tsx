@@ -1,6 +1,5 @@
 import BtnPrimary from "../../components/BtnPrimary"
 import { InputDefault } from "../../components/InputDefault"
-import ChildrenSelect from "../../layouts/ChildrenSelect";
 
 import { buttonCancel, buttonSubmit, radioButton, labelRadioButton, inputMeasureClass, listProductsClass, inputClassName, labelClassName } from "./RoutineFeeding"
 
@@ -9,7 +8,7 @@ import CloseElement from "../../utils/CloseElementClick.ts"
 
 import { useEffect, useState, useRef } from "react"
 import { useForm } from "react-hook-form"
-import { useNavigate, useParams } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 
 import Pee from "../../assets/routines/pee.svg"
 import Poop from "../../assets/routines/poop.svg"
