@@ -79,7 +79,7 @@ export const getChild = async (id: number): Promise<ResponseChildId> => {
 
 export const getChildren = async (): Promise<ResponseChild> => {
   try {
-    const response = await api.get<ResponseChild>(`http://localhost:5173/syncrobaby/user/child`);
+    const response = await api.get<ResponseChild>(`https://syncrobabybackend-hmc2g7cqe9bfbqcr.brazilsouth-01.azurewebsites.net/syncrobaby/user/child`);
     return response.data;
 
   } catch (error: any) {
@@ -125,7 +125,7 @@ export const updatePictureChild = async (data: FormData, childId: number): Promi
 };
 
 export const deactivateChild = async (childId: number, data: VerifyDesactivate): Promise<any> => {
-  const response = await api.patch<any>(`http://localhost:5173/syncrobaby/child/deactivate/${childId}`, data);
+  const response = await api.patch<any>(`https://syncrobabybackend-hmc2g7cqe9bfbqcr.brazilsouth-01.azurewebsites.net/syncrobaby/child/deactivate/${childId}`, data);
   return response.data;
 };
 

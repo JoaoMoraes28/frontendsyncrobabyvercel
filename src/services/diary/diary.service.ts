@@ -56,7 +56,7 @@ export const getDiary = async (childId: number): Promise<ResponseDiary> => {
 
 export const getDiaryId = async (idDiary: number): Promise<ResponseDiary> => {
   try {
-    const response = await api.get<ResponseDiary>(`http://localhost:5173/syncrobaby/diary/${idDiary}`);
+    const response = await api.get<ResponseDiary>(`https://syncrobabybackend-hmc2g7cqe9bfbqcr.brazilsouth-01.azurewebsites.net/syncrobaby/diary/${idDiary}`);
     return response.data;
   } catch (error: unknown) {
     if (isAxiosError(error) && error.response?.status === 404) {
@@ -95,7 +95,7 @@ export const updateDiary = async (
 ): Promise<ResponseUpdateDiary> => {
   try {
     const response = await api.put<ResponseUpdateDiary>(
-      `http://localhost:5173/syncrobaby/diary/${idDiary}`,
+      `https://syncrobabybackend-hmc2g7cqe9bfbqcr.brazilsouth-01.azurewebsites.net/syncrobaby/diary/${idDiary}`,
       data
     );
     return response.data;
@@ -116,7 +116,7 @@ export const updatPictureDiary = async (
 ): Promise<ResponseUpdateDiary> => {
   try {
     const response = await api.patch<ResponseUpdateDiary>(
-      `http://localhost:5173/syncrobaby/diary/media/${idDiary}`,
+      `https://syncrobabybackend-hmc2g7cqe9bfbqcr.brazilsouth-01.azurewebsites.net/syncrobaby/diary/media/${idDiary}`,
       data,
       {
         headers: {

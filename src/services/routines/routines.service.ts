@@ -89,28 +89,28 @@ export const deleteRegisterRoutines = async (idRegister: number, type_delete: st
 
 
 export const insertRegisterSleep = async (data: RegisterSleep): Promise<RegisterSleep> => {
-  const response = await api.post<RegisterSleep>("http://localhost:5173/syncrobaby/routines/sleep", data);
+  const response = await api.post<RegisterSleep>("https://syncrobabybackend-hmc2g7cqe9bfbqcr.brazilsouth-01.azurewebsites.net/syncrobaby/routines/sleep", data);
   return response.data;
 };
 
 export const insertRegisterDiaper = async (data: RegisterDiaper): Promise<RegisterDiaper> => {
-  const response = await api.post<RegisterDiaper>("http://localhost:5173/syncrobaby/routines/diaper", data);
+  const response = await api.post<RegisterDiaper>("https://syncrobabybackend-hmc2g7cqe9bfbqcr.brazilsouth-01.azurewebsites.net/syncrobaby/routines/diaper", data);
   return response.data;
 };
 
 
 export const insertRegisterBath = async (data: RegisterBath): Promise<RegisterBath> => {
-  const response = await api.post<RegisterBath>("http://localhost:5173/syncrobaby/routines/bath", data);
+  const response = await api.post<RegisterBath>("https://syncrobabybackend-hmc2g7cqe9bfbqcr.brazilsouth-01.azurewebsites.net/syncrobaby/routines/bath", data);
   return response.data;
 };
 
 export const insertRegisterMedication = async (data: RegisterMedication): Promise<RegisterMedication> => {
-  const response = await api.post<RegisterMedication>("http://localhost:5173/syncrobaby/routines/medication", data);
+  const response = await api.post<RegisterMedication>("https://syncrobabybackend-hmc2g7cqe9bfbqcr.brazilsouth-01.azurewebsites.net/syncrobaby/routines/medication", data);
   return response.data;
 };
 
 
 export const insertRegisterFeeding = async (data: RegisterFeeding): Promise<RegisterFeeding> => {
-  const response = await api.post<RegisterFeeding>("http://localhost:5173/syncrobaby/routines/feeding", data);
+  const response = await api.post<RegisterFeeding>("https://syncrobabybackend-hmc2g7cqe9bfbqcr.brazilsouth-01.azurewebsites.net/syncrobaby/routines/feeding", data);
   return response.data;
 };
