@@ -57,7 +57,7 @@ export const getAllArticles = async (): Promise<ResponseArticles> => {
 export const getSingleArticle = async (idArticle: number): Promise<ResponseSingleArticle> => {
   try {
     const response = await api.get<ResponseSingleArticle>(
-      `http://localhost:5173/syncrobaby/article/${idArticle}`
+      `https://syncrobabybackend-hmc2g7cqe9bfbqcr.brazilsouth-01.azurewebsites.net/syncrobaby/article/${idArticle}`
     );
     return response.data;
   } catch (error: unknown) {

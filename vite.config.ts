@@ -15,7 +15,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/syncrobaby": {
-        target: "http://localhost:8080",
+        target: "https://syncrobabybackend-hmc2g7cqe9bfbqcr.brazilsouth-01.azurewebsites.net",
         changeOrigin: true,
       },
     },
