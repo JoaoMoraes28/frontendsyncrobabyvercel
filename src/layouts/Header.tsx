@@ -210,7 +210,7 @@ function Header({ notification }: Props) {
       md:px-14
       xl:h-24 xl:flex-row xl:px-20 xl:pt-8 xl:items-start xl:right-0 ${location.pathname == "/profile-children" || location.pathname == "/profile-user" || location.pathname == "/add-child" ? "xl:w-[calc(100%-20%)]" : "xl:max-w-[calc(100%-200px)]"}`}
     >
-      <div key={`bar/${notificationsUnread}`} className={`absolute z-91 bg-accent -top-15 rounded-lg p-4 shadow-lg text-white w-[95%] h-15 font-semibold flex justify-center items-center
+      <div key={`bar/${notificationsUnread}`} className={`absolute z-91 text-center bg-accent -top-15 rounded-lg p-4 shadow-lg text-white w-[95%] h-15 font-semibold flex justify-center items-center
       ${notificationsUnread != 0 ? 'move-new-notifications' : ''}
       md:w-1/2
       xl:w-1/3 xl:h-15 xl:text-[22px] xl:right-15`}>
