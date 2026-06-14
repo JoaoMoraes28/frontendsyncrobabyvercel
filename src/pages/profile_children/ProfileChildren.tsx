@@ -322,16 +322,20 @@ function ProfileChildren() {
 
       <form
         onSubmit={deleteSubmit(deleteChild)}
-        className={`absolute flex justify-center items-center top-[calc(50%-110px)] z-92 w-full h-50 ${deleteModal ? 'flex' : 'hidden'}`}>
-        <div className="flex flex-col items-center w-[90%] bg-lilas-bg h-full rounded-xl justify-evenly font-poppins">
-          <span className="text-primary-text font-semibold">Deseja desativar esta criança?</span>
-          <span className="text-[14px] text-primary-darker">Ela poderá ser reativada no menu de filhos</span>
-          <InputDefault {...deleteRegister("child_name", { required: "Campo obrigatório!" })} placeholder="Digite o nome da criança..." className="pl-2 text-primary bg-white rounded-sm w-[80%] h-8" />
+        className={`absolute flex justify-center items-center top-[calc(50%-110px)] z-92 w-full h-50 ${deleteModal ? 'flex' : 'hidden'}
+        xl:h-64`}>
+        <div className="flex flex-col items-center w-[90%] bg-lilas-bg h-full rounded-xl justify-evenly font-poppins
+        xl:w-[28%] xl:h-64">
+          <span className="text-primary-text font-semibold
+          xl:text-[20px]">Deseja desativar esta criança?</span>
+          <span className="text-[14px] text-primary-darker
+          xl:text-[16px]">Ela poderá ser reativada no menu de filhos</span>
+          <InputDefault {...deleteRegister("child_name", { required: "Campo obrigatório!" })} placeholder="Digite o nome da criança..." className="pl-2 text-primary bg-white rounded-sm w-[80%] h-8 xl:h-10" />
           {errors.child_name &&
             <p className="text-red-600/70 text-sm font-nunito">{errors.child_name.message}</p>}
           <div className="w-full flex justify-center gap-12">
-            <BtnPrimary onClick={() => setDeleteModal(false)} type="button" text="Cancelar" className="bg-white" />
-            <BtnPrimary type="submit" text="Confirmar" className="bg-accent text-white" />
+            <BtnPrimary onClick={() => setDeleteModal(false)} type="button" text="Cancelar" className="bg-white xl:w-36" />
+            <BtnPrimary type="submit" text="Confirmar" className="bg-accent text-white xl:w-36" />
           </div>
         </div>
       </form>
@@ -340,16 +344,22 @@ function ProfileChildren() {
         className="flex w-full h-full relative
             xl:justify-center xl:items-center xl:pt-10 xl:w-[calc(100%-632px)] bg-light"
       >
-        <div className={`fixed bg-black/50 backdrop-blur-sm w-full h-full z-91 top-0 ${deleteModal ? "block" : "hidden"}`}></div>
+        <div className={`fixed bg-black/50 backdrop-blur-sm w-full h-full z-91 top-0 ${deleteModal ? "block" : "hidden"}
+        xl:w-screen xl:left-0`}></div>
         <form
           onSubmit={handleSubmit(sendDatas)}
           className="flex flex-col w-full h-full pb-2 overflow-y-auto px-6
                 md:px-14
                 xl:bg-lilas xl:w-[85%] xl:h-[80%] xl:max-w-340 xl:max-h-250 xl:py-6 xl:space-y-0 xl:rounded-2xl xl:shadow-purple-md"
         >
-          <h2 className="hidden xl:block xl:-ml-7 xl:font-poppins xl:text-darker-purple xl:font-extrabold xl:text-[3.3rem]">
-            Seus Dados
-          </h2>
+          <div className="flex w-full items-center justify-between">
+            <h2 className="hidden xl:block xl:-ml-7 xl:font-poppins xl:text-darker-purple xl:font-extrabold xl:text-[3.3rem]">
+              Seus Dados
+            </h2>
+            <button onClick={() => setDeleteModal(true)} type="button" className="">
+              <img src={Trash} alt="" className="w-auto h-9" />
+            </button>
+          </div>
           <div className="flex justify-between items-start
           xl:hidden">
             <button type="button" onClick={() => ConvertImg.DownloadElement(refProfile.current!, 'profile-child')}>

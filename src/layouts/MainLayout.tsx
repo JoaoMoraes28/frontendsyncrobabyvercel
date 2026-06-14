@@ -119,7 +119,13 @@ export const listIcons: IconsNavigation[] = [
 ];
 
 export function MainLayout() {
-  const [childName, setChildName] = useState<string>(localStorage.getItem("select_child_name")!)
+  const [childName, setChildName] = useState<string>(localStorage.getItem("select_child_name") == undefined
+    || localStorage.getItem("select_child_name") == null
+    || localStorage.getItem("select_child_name") == "null"
+    || localStorage.getItem("select_child_name") == ""
+    || localStorage.getItem("select_child") == "0" ?
+    "" : localStorage.getItem("select_child_name")!
+  )
 
   const { data: onGetNotificationChild, refetch } = useGetNotificationUser()
 

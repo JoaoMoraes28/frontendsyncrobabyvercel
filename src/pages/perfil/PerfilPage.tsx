@@ -64,6 +64,7 @@ export function PerfilPage() {
   const [valueInput, setInputValue] = useState<string>()
   const [children, setChidren] = useState<Children[]>([])
   const [childrenFilter, setChildreFilter] = useState<Children[]>([])
+  const [openDeleteUser, setDeleteUser] = useState<boolean>(false)
 
   const {
     register,
@@ -216,6 +217,7 @@ export function PerfilPage() {
         <Header notification={notifications} />
       </div>
       <PerfilHeader previewImg={onChangePreview} preview={preview!} readonly={isEditing} />
+
       <div className={`fixed flex items-center justify-center font-nunito bg-black/50 backdrop-blur-sm w-full h-full z-91 top-0 ${openModal ? "block" : "hidden"}`}>
         <section className="flex flex-col w-[95%] h-[60%] bg-white rounded-xl p-6
         md:w-[75%]
@@ -266,6 +268,27 @@ export function PerfilPage() {
           }
         </section>
       </div>
+
+      <div
+        className={`absolute flex justify-center items-center top-[calc(50%-110px)] z-92 w-full h-50 ${openDeleteUser ? 'flex' : 'hidden'}
+        xl:h-64`}>
+        <div className="flex flex-col items-center w-[90%] bg-lilas-bg h-full rounded-xl justify-evenly font-poppins
+        xl:w-[28%] xl:h-64">
+          <span className="text-primary-text font-semibold
+          xl:text-[20px]">Deseja excluir esta conta?</span>
+          <span className="text-[14px] text-primary-darker
+          xl:text-[16px]">Ela poderá ser reativada tentando realizar login novamente</span>
+          <InputDefault placeholder="Digite sua senha para prosseguir" className="pl-2 text-primary bg-white rounded-sm w-[80%] h-8 xl:h-10" />
+          <div className="w-full flex justify-center gap-12">
+            <BtnPrimary onClick={() => setDeleteUser(false)} type="button" text="Cancelar" className="bg-white xl:w-36" />
+            <BtnPrimary text="Confirmar" className="bg-accent text-white xl:w-36" />
+          </div>
+        </div>
+      </div>
+
+      <div className={`fixed bg-black/50 backdrop-blur-sm w-full h-full z-91 top-0 ${openDeleteUser ? "block" : "hidden"}
+        xl:w-screen xl:left-0`}></div>
+
       <main className="flex-1 flex flex-col items-center justify-center gap-4 w-full relative py-8 xl:py-0 font-nunito
       xl:space-y-20">
         <div className="hidden xl:flex justify-end items-center w-full absolute top-25 left-0 px-19">
@@ -414,7 +437,7 @@ export function PerfilPage() {
               <button
                 type="button"
                 className="w-full bg-white text-purple-700 border border-purple-200  xl:text-primary-text xl:border-none xl:w-1/2 rounded-xl py-3 md:py-4 font-bold shadow-md hover:opacity-90 transition-all"
-                onClick={() => console.log("Excluir conta")}
+                onClick={() => setDeleteUser(true)}
               >
                 Excluir Perfil
               </button>

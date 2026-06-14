@@ -9,8 +9,6 @@ import Notifications from "../assets/notifications.svg";
 import SetBack from "../assets/navigation/setBack.svg";
 import Profile from "../assets/navigation/profileHeader.svg";
 import SetBackProfile from "../assets/profileChildren/setBackProfile.svg";
-import Moon from "../assets/moon.svg"
-import Sun from "../assets/sun.svg"
 
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import type { Notification } from "../services/notification/notification.service.ts";
@@ -26,7 +24,6 @@ function Header({ notification }: Props) {
   const { mutate: onDeleteNotification } = useDeleteNotification()
 
   const [DateHour, setDateHour] = useState<string>(Date.getDateFormated());
-  const [layoutColor, setLayoutColor] = useState<boolean>(true)
   const [photoUser] = useState<string | null>(
     localStorage.getItem("user_photo") == "null" ||
       localStorage.getItem("user_photo") == null ||
@@ -104,28 +101,6 @@ function Header({ notification }: Props) {
     } else if (path == "/new-anotation") {
       return "Nova lembrança";
     }
-  }
-
-  function changeLayout(light: boolean) {
-    const doc = document.documentElement.style
-    setLayoutColor(light)
-
-    if (light) {
-      doc.setProperty("--color-light", "#f9f5ff")
-      doc.setProperty("--color-lilas", "#e5daff")
-      doc.setProperty("--color-primary-text", "#41354c")
-      doc.setProperty("--color-white", "#ffffff")
-      doc.setProperty("--color-lilas-medium", "#d2beff")
-
-    } else {
-      doc.setProperty("--color-light", "#3C334F")
-      doc.setProperty("--color-lilas", "#73609F")
-      doc.setProperty("--color-primary-text", "#E5DAFF")
-      doc.setProperty("--color-white", "#352D48")
-      doc.setProperty("--color-lilas-medium", "#352D48")
-
-    }
-
   }
 
   function deleteNotification(id: number) {
@@ -235,6 +210,14 @@ function Header({ notification }: Props) {
       md:px-14
       xl:h-24 xl:flex-row xl:px-20 xl:pt-8 xl:items-start xl:right-0 ${location.pathname == "/profile-children" || location.pathname == "/profile-user" || location.pathname == "/add-child" ? "xl:w-[calc(100%-20%)]" : "xl:max-w-[calc(100%-200px)]"}`}
     >
+      <div key={`bar/${notificationsUnread}`} className={`absolute z-91 bg-accent -top-15 rounded-lg p-4 shadow-lg text-white w-[95%] h-15 font-semibold flex justify-center items-center
+      ${notificationsUnread != 0 ? 'move-new-notifications' : ''}
+      md:w-1/2
+      xl:w-1/3 xl:h-15 xl:text-[22px] xl:right-15`}>
+        <span>
+          Você possui novas notificações!
+        </span>
+      </div>
       <div
         onClick={moveNoticationsBar}
         className={`xl:absolute xl:top-0 xl:z-80 xl:right-0 xl:w-screen xl:h-screen xl:bg-black/60 ${visibleNotifications ? "xl:block" : "hidden"}`}
@@ -254,17 +237,6 @@ function Header({ notification }: Props) {
           <img aria-hidden="true" src={Search} alt="" className="w-4 h-auto" />
           <InputDefault className="w-full pl-2 font-poppins text-primary-text" />
         </div>
-        <button onClick={() => changeLayout(!layoutColor)} className={`shadow-purple-sm relative w-20 h-8 bg-primary rounded-full gap-1 items-center font-poppins px-2 text-sm xl:w-23 xl: xl:h-10 xl:gap-4  ${location.pathname == '/home' ? 'flex' : 'hidden'}`}>
-          <div className={`absolute flex justify-center items-center rounded-full w-10 h-10 bg-lilas-bg z-40 transition duration-300 xl:w-12 xl:h-12 ${layoutColor ? '-translate-x-2' : 'translate-x-8 xl:translate-x-9.5'}`}>
-            <img aria-hidden="true" src={layoutColor ? Sun : Moon} alt="" className="w-auto h-7" />
-          </div>
-          <span className="text-white">
-            Dark
-          </span>
-          <span className="text-white">
-            Light
-          </span>
-        </button>
       </div>
       <div
         className="flex w-full justify-between items-center mt-4
