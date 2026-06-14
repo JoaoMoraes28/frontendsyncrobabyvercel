@@ -2,11 +2,9 @@ import MeasuresIcon from "../../assets/measureAccent.svg"
 import CalcIcon from "../../assets/calcAccent.svg"
 
 import { useForm } from "react-hook-form"
-import { useState } from "react"
 
 import { InputDefault } from "../../components/InputDefault"
 import BtnPrimary from "../../components/BtnPrimary"
-import ChildrenSelect from "../../layouts/ChildrenSelect"
 import { useNavigate } from "react-router-dom"
 
 import { useInsertMeasures } from "../../services/hooks/measures/useInsertMeasures"
@@ -27,7 +25,6 @@ function UpdateMeasures() {
     } = useForm<InsertMeasures>()
 
     const navigate = useNavigate()
-    const [childSelected, setChildSelected] = useState<number>(1)
 
     function sendData(data: InsertMeasures) {
         let height: string | undefined | null = data.height?.toString()
@@ -50,9 +47,8 @@ function UpdateMeasures() {
         onInsertMeasures(
             newData,
             {
-                onSuccess: (response) => {
+                onSuccess: () => {
                     alert("Medidas registradas")
-                    console.log(response)
                 }, onError: () => {
 
                 }
@@ -62,15 +58,13 @@ function UpdateMeasures() {
 
     return (
         <div className="flex flex-col w-full min-h-full
-        xl:justify-around">
-            <div className="hidden xl:w-full xl:flex">
-                <ChildrenSelect idChild={childSelected} setChild={setChildSelected} />
-            </div>
-
+        xl:justify-around
+        2xl:items-center">
             <form onSubmit={handleSubmit(sendData)}
                 className="flex flex-col gap-3 w-full h-full shadow-purple-md rounded-md bg-white
                 md:justify-between md:pb-7 md:gap-5 md:pt-0
-                xl:h-[90%] xl:">
+                xl:h-[90%] 
+                2xl:h-full 2xl:w-[85%]">
                 <header className="flex flex-col gap-5
                 md:items-center">
                     <div className="flex flex-col items-center w-full gap-0.5 h-36 pt-4 px-4 rounded-t-md bg-linear-to-l from-[#f4ebfb] to-[#ffefef]

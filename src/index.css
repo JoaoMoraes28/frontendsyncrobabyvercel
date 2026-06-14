@@ -100,6 +100,20 @@
   }
 }
 
+@keyframes showNewNotifications {
+  0%, 20% {
+    transform: translateY(0);
+  }
+
+  20%, 80% {
+    transform: translateY(80px);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}
+
 @layer base {
   ::-webkit-scrollbar {
     display: none;
@@ -125,6 +139,7 @@
 @layer components {
   .animate-bell {
     animation: move-bell 2s ease-out forwards;
+    animation-delay: 4.5s;
     animation-iteration-count: 2;
     scrollbar-width: none;
   }
@@ -136,26 +151,15 @@
   .return-set {
     animation: returnSetSelector 0.4s ease-out forwards;
   }
+
+  .move-new-notifications {
+    animation: showNewNotifications 5s ease-in-out;
+  }
 }
 
 .recharts-responsive-container :focus {
   outline: none;
 }
-
-/* div:has(> input:focus)::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-
-  border-radius: 14px;
-  border-style: solid;
-  border-color: var(--color-primary-darker);
-  border-width: 2px;
-  pointer-events: none;
-} */
 
 input:focus {
   outline: none;
